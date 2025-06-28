@@ -88,7 +88,11 @@ export default function DeckList({
 						<div className="flex items-center gap-2">
 							<AlertDialog>
 								<AlertDialogTrigger asChild>
-									<Button variant="outline" disabled={deck.cardCount === 0}>
+									<Button
+										disabled={deck.cardCount === 0}
+										variant="outline"
+										className="p-5 rounded-lg"
+									>
 										<RefreshCw className="mr-2 w-4 h-4" /> Restart
 									</Button>
 								</AlertDialogTrigger>
@@ -114,7 +118,7 @@ export default function DeckList({
 								onClick={() => onStartReview(deck.id)}
 								disabled={deck.dueCount === 0}
 							>
-								Review
+								Start
 							</Button>
 						</div>
 					</CardFooter>

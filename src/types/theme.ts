@@ -31,36 +31,6 @@ export interface ColorScheme {
 
 export const COLOR_SCHEMES: ColorScheme[] = [
     {
-        id: "blue",
-        name: "Ocean Blue",
-        description: "Classic blue theme for focus and productivity",
-        colors: {
-            background: "0 0% 100%",
-            foreground: "222 84% 4.9%",
-            card: "0 0% 100%",
-            cardForeground: "222 84% 4.9%",
-            popover: "0 0% 100%",
-            popoverForeground: "222 84% 4.9%",
-            primary: "221 83% 53%",
-            primaryForeground: "210 40% 98%",
-            secondary: "210 40% 96.1%",
-            secondaryForeground: "222 47% 11%",
-            accent: "210 40% 96.1%",
-            accentForeground: "222 47% 11%",
-            muted: "210 40% 96.1%",
-            mutedForeground: "215 20% 65%",
-            destructive: "0 84% 60%",
-            destructiveForeground: "0 0% 98%",
-            success: "142 76% 36%",
-            successForeground: "142 76% 96%",
-            warning: "45 93% 47%",
-            warningForeground: "45 93% 7%",
-            border: "214 32% 91%",
-            input: "214 32% 91%",
-            ring: "221 83% 53%",
-        },
-    },
-    {
         id: "blue-dark",
         name: "Ocean Blue Dark",
         description: "Dark blue theme for nighttime focus",
@@ -542,4 +512,4 @@ export const COLOR_SCHEMES: ColorScheme[] = [
     },
 ];
 
-export const DEFAULT_COLOR_SCHEME = "blue"; 
+export const DEFAULT_COLOR_SCHEME = "minimal-black"; 

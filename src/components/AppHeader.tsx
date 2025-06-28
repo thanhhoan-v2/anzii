@@ -1,42 +1,22 @@
 import { ColorSchemeSelector } from "@/components/ColorSchemeSelector";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, Rocket, Upload } from "lucide-react";
+import { PlusIcon } from "lucide-react";
 import Link from "next/link";
+import AppLogo from "./AppLogo";
 
-interface AppHeaderProps {
-	hasDecks: boolean;
-	sessionInProgress: boolean;
-	onImportClick: () => void;
-	onCreateDeck: () => void;
-}
-
-export default function AppHeader({
-	hasDecks,
-	sessionInProgress,
-	onImportClick,
-	onCreateDeck,
-}: AppHeaderProps) {
+export default function AppHeader() {
 	return (
 		<header className="p-4 border-b">
 			<div className="flex justify-between items-center mx-auto container">
-				<Link
-					href="/"
-					className="flex items-center gap-2 hover:scale-105 transition-transform"
-				>
-					<Rocket className="w-8 h-8 text-primary" />
-					<h1 className="font-bold text-2xl tracking-tight">Anzii</h1>
-				</Link>
+				<AppLogo />
 				<div className="flex items-center gap-4">
-					{hasDecks && !sessionInProgress && (
-						<div className="flex gap-2">
-							<Button onClick={onImportClick} variant="outline">
-								<Upload /> Import
-							</Button>
-							<Button onClick={onCreateDeck}>
-								<PlusCircle /> Create Deck
-							</Button>
-						</div>
-					)}
+					<div className="flex gap-2">
+						<Button asChild>
+							<Link href="/create">
+								<PlusIcon /> Create
+							</Link>
+						</Button>
+					</div>
 					<div className="flex items-center gap-2">
 						<ColorSchemeSelector />
 					</div>

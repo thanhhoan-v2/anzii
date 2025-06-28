@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { FileText, Rocket, Upload } from "lucide-react";
+import { FileText, Rocket, Upload, Zap } from "lucide-react";
+import Link from "next/link";
 
 interface WelcomeScreenProps {
 	onImport: () => void;
@@ -20,11 +21,16 @@ export default function WelcomeScreen({
 				Your smart flashcard companion. Get started by creating your first deck.
 			</p>
 			<div className="flex flex-wrap justify-center gap-4 mt-8">
+				<Button asChild size="lg">
+					<Link href="/create">
+						<Zap className="mr-2" /> Create Cards
+					</Link>
+				</Button>
 				<Button onClick={onImport} size="lg" variant="outline">
 					<Upload className="mr-2" /> Import from File
 				</Button>
-				<Button onClick={onAiCreate} size="lg">
-					<FileText className="mr-2" /> Create with AI
+				<Button onClick={onAiCreate} size="lg" variant="outline">
+					<FileText className="mr-2" /> Quick AI
 				</Button>
 			</div>
 		</div>

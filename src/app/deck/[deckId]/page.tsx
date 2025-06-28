@@ -1,5 +1,6 @@
 "use client";
 
+import AppHeader from "@/components/AppHeader";
 import CardEditor from "@/components/CardEditor";
 import {
 	AlertDialog,
@@ -38,15 +39,7 @@ import {
 	updateDeckName,
 } from "@/lib/actions";
 import type { Card as CardType, Deck } from "@/types";
-import {
-	ArrowLeft,
-	Edit,
-	Loader2,
-	PlusCircle,
-	Save,
-	Trash2,
-} from "lucide-react";
-import Link from "next/link";
+import { Edit, Loader2, PlusCircle, Save, Trash2 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
@@ -185,18 +178,7 @@ export default function DeckManagerPage() {
 
 	return (
 		<div className="bg-background min-h-screen font-body text-foreground">
-			<header className="p-4 border-b">
-				<div className="flex justify-between items-center mx-auto container">
-					<Button variant="outline" asChild>
-						<Link href="/">
-							<ArrowLeft className="mr-2" /> Back to Decks
-						</Link>
-					</Button>
-					<div className="flex items-center gap-4">
-						<h1 className="font-bold text-2xl tracking-tight">Manage Deck</h1>
-					</div>
-				</div>
-			</header>
+			<AppHeader />
 
 			<main className="mx-auto p-4 md:p-8 container">
 				<Card>

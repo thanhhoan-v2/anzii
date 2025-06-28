@@ -2,78 +2,154 @@
 
 import { Button } from "@/components/ui/button";
 import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuLabel,
-	DropdownMenuSeparator,
-	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+	Sheet,
+	SheetContent,
+	SheetHeader,
+	SheetTitle,
+	SheetTrigger,
+} from "@/components/ui/sheet";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { Check, Palette } from "lucide-react";
+import { useMemo, useState } from "react";
 
 export function ColorSchemeSelector() {
-	const { colorScheme, colorSchemeData, setColorScheme, availableSchemes } =
-		useColorScheme();
+	const { colorScheme, setColorScheme, availableSchemes } = useColorScheme();
+	const [isOpen, setIsOpen] = useState(false);
+
+	const handleSchemeSelect = (schemeId: string) => {
+		setColorScheme(schemeId);
+		setIsOpen(false);
+	};
+
+	// Sort schemes to put the selected one at the top
+	const sortedSchemes = useMemo(() => {
+		const selectedScheme = availableSchemes.find(
+			(scheme) => scheme.id === colorScheme,
+		);
+		const otherSchemes = availableSchemes.filter(
+			(scheme) => scheme.id !== colorScheme,
+		);
+
+		return selectedScheme
+			? [selectedScheme, ...otherSchemes]
+			: availableSchemes;
+	}, [availableSchemes, colorScheme]);
 
 	return (
-		<DropdownMenu>
-			<DropdownMenuTrigger asChild>
+		<Sheet open={isOpen} onOpenChange={setIsOpen}>
+			<SheetTrigger asChild>
 				<Button variant="outline" size="icon">
 					<Palette className="w-[1.2rem] h-[1.2rem]" />
 					<span className="sr-only">Select color scheme</span>
 				</Button>
-			</DropdownMenuTrigger>
-			<DropdownMenuContent align="end" className="w-64">
-				<DropdownMenuLabel>Color Schemes</DropdownMenuLabel>
-				<DropdownMenuSeparator />
-				{availableSchemes.map((scheme) => (
-					<DropdownMenuItem
-						key={scheme.id}
-						onClick={() => setColorScheme(scheme.id)}
-						className="cursor-pointer"
-					>
-						<div className="flex items-center gap-3 w-full">
-							{/* Color Preview */}
-							<div className="flex gap-1">
-								<div
-									className="border border-gray-300 rounded-full w-3 h-3"
-									style={{
-										backgroundColor: `hsl(${scheme.colors.primary})`,
-									}}
-								/>
-								<div
-									className="border border-gray-300 rounded-full w-3 h-3"
-									style={{
-										backgroundColor: `hsl(${scheme.colors.secondary})`,
-									}}
-								/>
-								<div
-									className="border border-gray-300 rounded-full w-3 h-3"
-									style={{
-										backgroundColor: `hsl(${scheme.colors.accent})`,
-									}}
-								/>
-							</div>
+			</SheetTrigger>
+			<SheetContent
+				side="right"
+				className="flex flex-col w-80 sm:w-96"
+				onOpenAutoFocus={(e) => e.preventDefault()}
+			>
+				<SheetHeader className="flex-shrink-0">
+					<SheetTitle className="flex items-center gap-2">
+						<Palette className="w-5 h-5" />
+						Color Schemes
+					</SheetTitle>
+				</SheetHeader>
 
-							{/* Scheme Info */}
-							<div className="flex-1 min-w-0">
-								<div className="font-medium text-sm truncate">
-									{scheme.name}
-								</div>
-								<div className="text-muted-foreground text-xs truncate">
-									{scheme.description}
-								</div>
-							</div>
+				<div className="flex-1 mt-6 -mr-2 pr-2 overflow-y-auto">
+					<div className="space-y-3 pb-4">
+						{sortedSchemes.map((scheme) => {
+							const isSelected = colorScheme === scheme.id;
+							return (
+								<button
+									key={scheme.id}
+									type="button"
+									onClick={() => handleSchemeSelect(scheme.id)}
+									className={`w-full p-4 rounded-lg border transition-all text-left group ${
+										isSelected
+											? "border-primary bg-primary/5 shadow-sm"
+											: "border-border hover:bg-muted/50 hover:border-primary/50"
+									}`}
+								>
+									<div className="flex items-center gap-4">
+										{/* Large Color Preview */}
+										<div className="flex flex-col gap-2">
+											<div className="flex gap-1">
+												<div
+													className="shadow-sm border border-border/50 rounded-full w-4 h-4"
+													style={{
+														backgroundColor: `hsl(${scheme.colors.primary})`,
+													}}
+												/>
+												<div
+													className="shadow-sm border border-border/50 rounded-full w-4 h-4"
+													style={{
+														backgroundColor: `hsl(${scheme.colors.secondary})`,
+													}}
+												/>
+												<div
+													className="shadow-sm border border-border/50 rounded-full w-4 h-4"
+													style={{
+														backgroundColor: `hsl(${scheme.colors.accent})`,
+													}}
+												/>
+											</div>
+											<div className="flex gap-1">
+												<div
+													className="shadow-sm border border-border/50 rounded-full w-4 h-4"
+													style={{
+														backgroundColor: `hsl(${scheme.colors.background})`,
+													}}
+												/>
+												<div
+													className="shadow-sm border border-border/50 rounded-full w-4 h-4"
+													style={{
+														backgroundColor: `hsl(${scheme.colors.card})`,
+													}}
+												/>
+												<div
+													className="shadow-sm border border-border/50 rounded-full w-4 h-4"
+													style={{
+														backgroundColor: `hsl(${scheme.colors.muted})`,
+													}}
+												/>
+											</div>
+										</div>
 
-							{/* Selected Indicator */}
-							{colorScheme === scheme.id && (
-								<Check className="flex-shrink-0 w-4 h-4 text-primary" />
-							)}
-						</div>
-					</DropdownMenuItem>
-				))}
-			</DropdownMenuContent>
-		</DropdownMenu>
+										{/* Scheme Info */}
+										<div className="flex-1 min-w-0">
+											<div
+												className={`font-semibold text-base mb-1 transition-colors ${
+													isSelected
+														? "text-primary"
+														: "group-hover:text-primary"
+												}`}
+											>
+												{scheme.name}
+											</div>
+											<div className="text-muted-foreground text-sm leading-relaxed">
+												{scheme.description}
+											</div>
+										</div>
+
+										{/* Selected Indicator */}
+										{isSelected && (
+											<div className="flex flex-shrink-0 justify-center items-center bg-primary rounded-full w-6 h-6">
+												<Check className="w-4 h-4 text-primary-foreground" />
+											</div>
+										)}
+									</div>
+								</button>
+							);
+						})}
+					</div>
+				</div>
+
+				<div className="flex-shrink-0 mt-4 pt-4 border-t">
+					<p className="text-muted-foreground text-xs text-center">
+						Theme changes apply instantly across the entire app
+					</p>
+				</div>
+			</SheetContent>
+		</Sheet>
 	);
 }

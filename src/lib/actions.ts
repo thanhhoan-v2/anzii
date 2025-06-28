@@ -1,8 +1,5 @@
 "use server";
 
-import { asc, eq, lte, sql } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
-import { z } from "zod";
 import { generateCardsFromMarkdown } from "@/ai/flows/generate-cards-from-markdown";
 import { generateDeckFromTopic } from "@/ai/flows/generate-deck-from-topic";
 import { getDb } from "@/db";
@@ -15,10 +12,14 @@ import type {
 	Deck as DeckType,
 	Rating,
 } from "@/types";
+import { asc, eq, lte, sql } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
+import { z } from "zod";
 
 type ActionResponse = {
 	success: boolean;
 	error?: string;
+	deckId?: string;
 };
 
 // Type for raw card data from database (with Date objects)
@@ -42,7 +43,7 @@ export async function getDecksWithCounts(): Promise<DeckListItem[]> {
 				cardCount: sql<number>`count(${cards.id})`.as("card_count"),
 			})
 			.from(cards)
-			.groupBy(cards.deckId)
+			.groupBy(cards.deckId),
 	);
 
 	const dueCountSubquery = db.$with("due_count_sq").as(
@@ -53,7 +54,7 @@ export async function getDecksWithCounts(): Promise<DeckListItem[]> {
 			})
 			.from(cards)
 			.where(lte(cards.dueDate, new Date()))
-			.groupBy(cards.deckId)
+			.groupBy(cards.deckId),
 	);
 
 	const result = await db
@@ -63,10 +64,10 @@ export async function getDecksWithCounts(): Promise<DeckListItem[]> {
 			name: decks.name,
 			cardCount:
 				sql<number>`coalesce(${cardCountSubquery.cardCount}, 0)`.mapWith(
-					Number
+					Number,
 				),
 			dueCount: sql<number>`coalesce(${dueCountSubquery.dueCount}, 0)`.mapWith(
-				Number
+				Number,
 			),
 		})
 		.from(decks)
@@ -126,7 +127,7 @@ export async function createDeckFromMarkdown(data: {
 						deckId: newDeck.id,
 						question: card.question,
 						answer: card.answer,
-					}))
+					})),
 				);
 			}
 		});
@@ -170,7 +171,7 @@ const ImportDeckSchema = z.object({
 });
 
 export async function createDeckFromImport(
-	data: unknown
+	data: unknown,
 ): Promise<ActionResponse> {
 	const db = getDb();
 	const validation = ImportDeckSchema.safeParse(data);
@@ -193,7 +194,7 @@ export async function createDeckFromImport(
 						interval: card.interval ?? 0,
 						easeFactor: card.easeFactor ?? 2.5,
 						dueDate: card.dueDate ? new Date(card.dueDate) : new Date(),
-					}))
+					})),
 				);
 			}
 		});
@@ -358,7 +359,7 @@ export async function createDeckFromAi(data: {
 						deckId: newDeck.id,
 						question: card.question,
 						answer: card.answer,
-					}))
+					})),
 				);
 			}
 		});
@@ -407,7 +408,7 @@ export async function deleteCard({
 }
 
 export async function resetDeckProgress(
-	deckId: string
+	deckId: string,
 ): Promise<ActionResponse> {
 	const db = getDb();
 	try {
@@ -425,5 +426,23 @@ export async function resetDeckProgress(
 	} catch (error) {
 		console.error(error);
 		return { success: false, error: "Failed to reset deck progress." };
+	}
+}
+
+export async function createDeck(data: {
+	name: string;
+}): Promise<ActionResponse> {
+	const db = getDb();
+	try {
+		const [newDeck] = await db
+			.insert(decks)
+			.values({ name: data.name })
+			.returning();
+
+		revalidatePath("/");
+		return { success: true, deckId: newDeck.id };
+	} catch (error) {
+		console.error(error);
+		return { success: false, error: "Failed to create deck." };
 	}
 }
