@@ -23,7 +23,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { getDecksWithCounts, getDeck, deleteDeck, reviewCard, createDeckFromImport } from '@/lib/actions';
+import { getDecksWithCounts, getDeck, deleteDeck, reviewCard, createDeckFromImport, resetDeckProgress } from '@/lib/actions';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { shuffle } from '@/lib/utils';
 
@@ -154,25 +154,6 @@ export default function Home() {
     }
   }, [toast]);
 
-  const startFullReview = useCallback(async (deckId: string) => {
-    try {
-        const deckToReview = await getDeck(deckId);
-        if (!deckToReview) {
-            toast({ variant: "destructive", title: "Error", description: "Could not find deck." });
-            return;
-        }
-
-        if (deckToReview.cards.length === 0) {
-            toast({ title: "Empty Deck", description: "This deck has no cards to review." });
-            return;
-        }
-
-        startSession(deckToReview as Deck, deckToReview.cards);
-    } catch (error) {
-        toast({ variant: "destructive", title: "Error", description: "Could not start review session." });
-    }
-  }, [toast]);
-
   const handleDeckCreated = () => {
     setIsAiDeckGeneratorOpen(false);
     toast({
@@ -209,6 +190,16 @@ export default function Home() {
       fetchDecks();
     } else {
       toast({ variant: "destructive", title: "Error", description: result.error });
+    }
+  };
+
+  const handleResetDeck = async (deckId: string) => {
+    const result = await resetDeckProgress(deckId);
+    if (result.success) {
+      toast({ title: "Deck Reset", description: "All cards are now due for review." });
+      fetchDecks();
+    } else {
+      toast({ variant: "destructive", title: "Error", description: result.error || "Failed to reset deck." });
     }
   };
 
@@ -314,9 +305,26 @@ export default function Home() {
                       </AlertDialog>
                     </div>
                     <div className="flex items-center gap-2">
-                        <Button variant="outline" onClick={() => startFullReview(deck.id)} disabled={deck.cardCount === 0}>
-                            <RefreshCw className="mr-2 h-4 w-4" /> Restart
-                        </Button>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button variant="outline" disabled={deck.cardCount === 0}>
+                                <RefreshCw className="mr-2 h-4 w-4" /> Restart
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Reset deck progress?</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                This will reset the review progress for all cards in the "{deck.name}" deck. All cards will be due for review today. This action cannot be undone.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction onClick={() => handleResetDeck(deck.id)}>Reset Progress</AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+
                         <Button onClick={() => startReviewSession(deck.id)} disabled={deck.dueCount === 0}>
                         Review
                         </Button>

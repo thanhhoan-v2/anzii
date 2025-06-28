@@ -341,3 +341,37 @@ export async function deleteCard({ cardId, deckId }: { cardId: string; deckId: s
     return { success: false, error: "Failed to delete card." };
   }
 }
+
+export async function resetDeckProgress(deckId: string): Promise<ActionResponse> {
+  try {
+    const cardsCol = collection(db, 'decks', deckId, 'cards');
+    const cardsSnapshot = await getDocs(cardsCol);
+
+    if (cardsSnapshot.empty) {
+      return { success: true }; // Nothing to reset
+    }
+
+    // Firestore batch writes have a limit of 500 operations.
+    const BATCH_SIZE = 499;
+    const cardDocs = cardsSnapshot.docs;
+
+    for (let i = 0; i < cardDocs.length; i += BATCH_SIZE) {
+        const batch = writeBatch(db);
+        const chunk = cardDocs.slice(i, i + BATCH_SIZE);
+        chunk.forEach(doc => {
+            batch.update(doc.ref, {
+                interval: 0,
+                easeFactor: 2.5,
+                dueDate: Timestamp.now(),
+            });
+        });
+        await batch.commit();
+    }
+
+    revalidatePath('/');
+    return { success: true };
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: "Failed to reset deck progress." };
+  }
+}
