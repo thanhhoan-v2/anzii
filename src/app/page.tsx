@@ -4,7 +4,7 @@
 import React, { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { BrainCircuit, Upload, FileText, Trash2, Settings, BookOpen, PlusCircle, Loader2, RefreshCw } from 'lucide-react';
+import { BrainCircuit, Upload, FileText, Trash2, Settings, BookOpen, PlusCircle, Loader2, RefreshCw, ArrowLeft } from 'lucide-react';
 import { Card as ShadCard, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -118,6 +118,18 @@ export default function Home() {
     setCurrentCardIndex(0);
     setIsFlipped(false);
     setSessionInProgress(true);
+  };
+
+  const handleEndSession = () => {
+    setSessionInProgress(false);
+    setActiveDeck(null);
+    setReviewQueue([]);
+    setCurrentCardIndex(0);
+    toast({
+      title: "Session Paused",
+      description: "You've returned to the dashboard.",
+    });
+    fetchDecks();
   };
 
   const startReviewSession = useCallback(async (deckId: string) => {
@@ -237,6 +249,10 @@ export default function Home() {
             <div className="w-full max-w-2xl mb-4">
               <div className="flex items-center justify-between mb-2">
                 <p className="text-sm text-muted-foreground">{`Reviewing "${activeDeck.name}" | Card ${currentCardIndex + 1} of ${reviewQueue.length}`}</p>
+                 <Button variant="outline" size="sm" onClick={handleEndSession}>
+                    <ArrowLeft className="mr-2 h-4 w-4" />
+                    Back to Decks
+                </Button>
               </div>
               <Progress value={progressValue} className="w-full h-2 mt-1" />
             </div>
