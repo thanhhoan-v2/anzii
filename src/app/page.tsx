@@ -4,7 +4,7 @@
 import React, { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { BrainCircuit, Upload, FileText, Trash2, Settings, BookOpen, PlusCircle, Loader2, RefreshCw, ArrowLeft } from 'lucide-react';
+import { Rocket, Upload, FileText, Trash2, Settings, PlusCircle, Loader2, RefreshCw, ArrowLeft } from 'lucide-react';
 import { Card as ShadCard, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -29,12 +29,12 @@ import { shuffle } from '@/lib/utils';
 
 
 const WelcomeScreen = ({ onImport, onAiCreate }: { onImport: () => void; onAiCreate: () => void; }) => (
-  <div className="text-center py-16">
-    <BookOpen className="mx-auto h-16 w-16 text-primary" />
-    <h2 className="mt-4 text-3xl font-bold tracking-tight text-foreground">Create Your First Deck</h2>
-    <p className="mt-2 text-lg text-muted-foreground">Import from a file or use AI to generate cards from a topic.</p>
+  <div className="text-center py-16 px-4">
+    <Rocket className="mx-auto h-16 w-16 text-primary" />
+    <h2 className="mt-6 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">Welcome to Anji</h2>
+    <p className="mt-4 text-lg text-muted-foreground">Your smart flashcard companion. Get started by creating your first deck.</p>
     <div className="mt-8 flex flex-wrap justify-center gap-4">
-      <Button onClick={onImport} size="lg"><Upload className="mr-2" /> Import from File</Button>
+      <Button onClick={onImport} size="lg" variant="outline"><Upload className="mr-2" /> Import from File</Button>
       <Button onClick={onAiCreate} size="lg"><FileText className="mr-2" /> Create with AI</Button>
     </div>
   </div>
@@ -215,12 +215,12 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-background font-body text-foreground">
+    <div className="min-h-screen bg-background font-sans text-foreground">
       <header className="p-4 border-b">
         <div className="container mx-auto flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <BrainCircuit className="h-8 w-8 text-primary" />
-            <h1 className="text-2xl font-bold font-headline tracking-tight">FlashSync</h1>
+          <Link href="/" className="flex items-center gap-2 transition-transform hover:scale-105">
+            <Rocket className="h-8 w-8 text-primary" />
+            <h1 className="text-2xl font-bold tracking-tight">Anji</h1>
           </Link>
           <div className="flex items-center gap-4">
             {decks.length > 0 && !sessionInProgress && (
@@ -252,31 +252,31 @@ export default function Home() {
               isFlipped={isFlipped}
               onFlip={() => setIsFlipped(true)}
             />
-            <div className="mt-4 flex justify-center gap-3 w-full">
-                {isFlipped ? (
-                  <>
-                    <Button onClick={() => handleRate('hard')} className="bg-red-500 hover:bg-red-600 text-white w-28">Hard</Button>
-                    <Button onClick={() => handleRate('medium')} className="bg-yellow-500 hover:bg-yellow-600 text-white w-28">Medium</Button>
-                    <Button onClick={() => handleRate('easy')} className="bg-green-500 hover:bg-green-600 text-white w-28">Easy</Button>
-                  </>
-                ) : (
-                  <Button onClick={() => setIsFlipped(true)} className="w-48">Show Answer</Button>
-                )}
+            <div className="mt-6 flex justify-center gap-4 w-full">
+              {isFlipped ? (
+                <>
+                  <Button onClick={() => handleRate('hard')} variant="destructive" className="w-28">Hard</Button>
+                  <Button onClick={() => handleRate('medium')} className="w-28 bg-warning text-warning-foreground hover:bg-warning/90">Medium</Button>
+                  <Button onClick={() => handleRate('easy')} className="w-28 bg-success text-success-foreground hover:bg-success/90">Easy</Button>
+                </>
+              ) : (
+                <Button onClick={() => setIsFlipped(true)} size="lg" className="w-48">Show Answer</Button>
+              )}
             </div>
           </div>
         ) : decks.length === 0 ? (
           <WelcomeScreen onImport={handleImportClick} onAiCreate={() => setIsAiDeckGeneratorOpen(true)} />
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {decks.map(deck => {
               return (
-                <ShadCard key={deck.id} className="flex flex-col shadow-lg hover:shadow-xl transition-shadow">
+                <ShadCard key={deck.id} className="flex flex-col transition-all duration-200 hover:shadow-xl hover:-translate-y-1">
                   <CardHeader>
                     <CardTitle>{deck.name}</CardTitle>
                     <CardDescription>{deck.cardCount} cards</CardDescription>
                   </CardHeader>
                   <CardContent className="flex-grow">
-                    <div className={`text-lg font-bold ${deck.dueCount > 0 ? 'text-accent' : 'text-muted-foreground'}`}>
+                    <div className={`text-lg font-bold ${deck.dueCount > 0 ? 'text-primary' : 'text-muted-foreground'}`}>
                       {deck.dueCount} due
                     </div>
                     <p className="text-sm text-muted-foreground">for review today</p>
