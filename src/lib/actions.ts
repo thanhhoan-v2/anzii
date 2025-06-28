@@ -103,22 +103,26 @@ export async function createDeckFromMarkdown(data: { topic: string; markdown: st
         createdAt: Timestamp.now(),
     });
 
-    const batch = writeBatch(db);
     const shuffledCards = shuffle(aiResult.cards);
-
-    shuffledCards.forEach(card => {
-        const cardRef = doc(collection(db, 'decks', newDeckRef.id, 'cards'));
-        batch.set(cardRef, {
-            question: card.question,
-            answer: card.answer,
-            interval: 0,
-            easeFactor: 2.5,
-            dueDate: Timestamp.now(),
-            createdAt: Timestamp.now(),
+    
+    // Firestore batch writes have a limit of 500 operations.
+    const BATCH_SIZE = 499;
+    for (let i = 0; i < shuffledCards.length; i += BATCH_SIZE) {
+        const batch = writeBatch(db);
+        const chunk = shuffledCards.slice(i, i + BATCH_SIZE);
+        chunk.forEach(card => {
+            const cardRef = doc(collection(db, 'decks', newDeckRef.id, 'cards'));
+            batch.set(cardRef, {
+                question: card.question,
+                answer: card.answer,
+                interval: 0,
+                easeFactor: 2.5,
+                dueDate: Timestamp.now(),
+                createdAt: Timestamp.now(),
+            });
         });
-    });
-
-    await batch.commit();
+        await batch.commit();
+    }
 
     revalidatePath('/');
     return { success: true };
@@ -157,21 +161,24 @@ export async function createDeckFromImport(data: unknown): Promise<ActionRespons
         createdAt: Timestamp.now(),
     });
 
-    const batch = writeBatch(db);
-
-    importedCards.forEach(card => {
-        const cardRef = doc(collection(db, 'decks', newDeckRef.id, 'cards'));
-        batch.set(cardRef, {
-            question: card.question,
-            answer: card.answer,
-            interval: card.interval ?? 0,
-            easeFactor: card.easeFactor ?? 2.5,
-            dueDate: card.dueDate ? Timestamp.fromDate(new Date(card.dueDate)) : Timestamp.now(),
-            createdAt: Timestamp.now(),
+    // Firestore batch writes have a limit of 500 operations.
+    const BATCH_SIZE = 499;
+    for (let i = 0; i < importedCards.length; i += BATCH_SIZE) {
+        const batch = writeBatch(db);
+        const chunk = importedCards.slice(i, i + BATCH_SIZE);
+        chunk.forEach(card => {
+            const cardRef = doc(collection(db, 'decks', newDeckRef.id, 'cards'));
+            batch.set(cardRef, {
+                question: card.question,
+                answer: card.answer,
+                interval: card.interval ?? 0,
+                easeFactor: card.easeFactor ?? 2.5,
+                dueDate: card.dueDate ? Timestamp.fromDate(new Date(card.dueDate)) : Timestamp.now(),
+                createdAt: Timestamp.now(),
+            });
         });
-    });
-
-    await batch.commit();
+        await batch.commit();
+    }
     
     revalidatePath('/');
     return { success: true };
@@ -183,18 +190,24 @@ export async function createDeckFromImport(data: unknown): Promise<ActionRespons
 
 export async function deleteDeck(deckId: string): Promise<ActionResponse> {
   try {
-    const batch = writeBatch(db);
-    
     const cardsCol = collection(db, 'decks', deckId, 'cards');
     const cardsSnapshot = await getDocs(cardsCol);
-    cardsSnapshot.docs.forEach(doc => {
-        batch.delete(doc.ref);
-    });
+    
+    // Firestore batch writes have a limit of 500 operations.
+    const BATCH_SIZE = 499;
+    const cardDocs = cardsSnapshot.docs;
+
+    for (let i = 0; i < cardDocs.length; i += BATCH_SIZE) {
+        const batch = writeBatch(db);
+        const chunk = cardDocs.slice(i, i + BATCH_SIZE);
+        chunk.forEach(doc => {
+            batch.delete(doc.ref);
+        });
+        await batch.commit();
+    }
 
     const deckRef = doc(db, 'decks', deckId);
-    batch.delete(deckRef);
-
-    await batch.commit();
+    await deleteDoc(deckRef);
 
     revalidatePath('/');
     return { success: true };
