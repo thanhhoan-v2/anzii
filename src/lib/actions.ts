@@ -69,6 +69,9 @@ export async function createDeckFromMarkdown(data: { topic: string; markdown: st
           deckId: newDeck.id,
           question: card.question,
           answer: card.answer,
+          interval: 0,
+          easeFactor: 2.5,
+          dueDate: new Date(),
         })));
       }
     });
@@ -178,7 +181,14 @@ export async function updateDeckName({ deckId, name }: { deckId: string, name: s
 
 export async function addCard({ deckId, question, answer }: { deckId: string, question: string, answer: string }): Promise<ActionResponse> {
   try {
-    await db.insert(cards).values({ deckId, question, answer });
+    await db.insert(cards).values({ 
+      deckId, 
+      question, 
+      answer,
+      interval: 0,
+      easeFactor: 2.5,
+      dueDate: new Date(),
+    });
     revalidatePath(`/deck/${deckId}`);
     revalidatePath('/');
     return { success: true };
