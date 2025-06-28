@@ -1,21 +1,9 @@
 'use server';
 
-import { db } from '@/lib/firebase';
-import {
-  collection,
-  getDocs,
-  getDoc,
-  doc,
-  addDoc,
-  updateDoc,
-  deleteDoc,
-  writeBatch,
-  query,
-  orderBy,
-  Timestamp,
-  where,
-} from 'firebase/firestore';
-import type { Card as CardType, Rating, DeckListItem } from '@/types';
+import { db } from '@/db';
+import { cards, decks } from '@/db/schema';
+import { eq, and, lte, sql, asc, count } from 'drizzle-orm';
+import type { Rating, DeckListItem, Deck as DeckType, Card as CardType } from '@/types';
 import { revalidatePath } from 'next/cache';
 import { calculateNextReview } from '@/lib/srs';
 import { generateCardsFromMarkdown } from '@/ai/flows/generate-cards-from-markdown';
@@ -28,102 +16,83 @@ type ActionResponse = {
   error?: string;
 };
 
-// Helper to convert Firestore Timestamps in cards to strings
-const convertCardTimestamps = (cardData: any): CardType => {
-  const data = cardData as any;
-  return {
-    ...data,
-    dueDate: (data.dueDate as Timestamp)?.toDate().toISOString(),
-    createdAt: (data.createdAt as Timestamp)?.toDate().toISOString(),
-  } as CardType;
-};
+const convertCardTimestamps = (cardData: any): CardType => ({
+  ...cardData,
+  dueDate: cardData.dueDate.toISOString(),
+  createdAt: cardData.createdAt?.toISOString(),
+});
 
 export async function getDecksWithCounts(): Promise<DeckListItem[]> {
-  const decksCol = collection(db, 'decks');
-  const decksQuery = query(decksCol, orderBy('createdAt', 'asc'));
-  const deckSnapshot = await getDocs(decksQuery);
-  
-  const deckList: DeckListItem[] = [];
+  const cardCountSubquery = db.$with('card_count_sq').as(
+    db.select({
+      deckId: cards.deckId,
+      count: sql<number>`count(${cards.id})`.as('count')
+    }).from(cards).groupBy(cards.deckId)
+  );
 
-  for (const deckDoc of deckSnapshot.docs) {
-    const deckData = deckDoc.data();
-    const cardsCol = collection(db, 'decks', deckDoc.id, 'cards');
-    
-    // Get total card count
-    const cardSnapshot = await getDocs(cardsCol);
-    const cardCount = cardSnapshot.size;
+  const dueCountSubquery = db.$with('due_count_sq').as(
+    db.select({
+      deckId: cards.deckId,
+      count: sql<number>`count(${cards.id})`.as('count')
+    }).from(cards).where(lte(cards.dueDate, new Date())).groupBy(cards.deckId)
+  );
 
-    // Get due card count
-    const dueQuery = query(cardsCol, where('dueDate', '<=', Timestamp.now()));
-    const dueSnapshot = await getDocs(dueQuery);
-    const dueCount = dueSnapshot.size;
+  const result = await db.with(cardCountSubquery, dueCountSubquery).select({
+    id: decks.id,
+    name: decks.name,
+    cardCount: sql<number>`coalesce(${cardCountSubquery.count}, 0)`.mapWith(Number),
+    dueCount: sql<number>`coalesce(${dueCountSubquery.count}, 0)`.mapWith(Number),
+  })
+    .from(decks)
+    .leftJoin(cardCountSubquery, eq(decks.id, cardCountSubquery.deckId))
+    .leftJoin(dueCountSubquery, eq(decks.id, dueCountSubquery.deckId))
+    .orderBy(asc(decks.createdAt));
 
-    deckList.push({
-      id: deckDoc.id,
-      name: deckData.name,
-      cardCount,
-      dueCount,
-    });
-  }
-  
-  return deckList;
+  return result;
 }
 
-export async function getDeck(deckId: string) {
-  const deckRef = doc(db, 'decks', deckId);
-  const deckDoc = await getDoc(deckRef);
+export async function getDeck(deckId: string): Promise<DeckType | null> {
+  const deckData = await db.query.decks.findFirst({
+    where: eq(decks.id, deckId),
+    with: {
+      cards: {
+        orderBy: asc(cards.createdAt),
+      },
+    },
+  });
 
-  if (!deckDoc.exists()) {
+  if (!deckData) {
     return null;
   }
-
-  const cardsCol = collection(db, 'decks', deckId, 'cards');
-  const cardsQuery = query(cardsCol, orderBy('createdAt', 'asc'));
-  const cardSnapshot = await getDocs(cardsQuery);
-
-  const cards = cardSnapshot.docs.map(doc => convertCardTimestamps({ id: doc.id, ...doc.data() }));
-
+  
   return {
-    id: deckDoc.id,
-    name: deckDoc.data().name,
-    cards,
-    createdAt: (deckDoc.data().createdAt as Timestamp)?.toDate().toISOString(),
+    ...deckData,
+    createdAt: deckData.createdAt.toISOString(),
+    cards: deckData.cards.map(convertCardTimestamps),
   };
 }
 
 export async function createDeckFromMarkdown(data: { topic: string; markdown: string }): Promise<ActionResponse> {
   try {
     const aiResult = await generateCardsFromMarkdown(data);
-
     if (!aiResult.cards || aiResult.cards.length === 0) {
       return { success: false, error: "The AI could not generate any cards from the provided text." };
     }
-    
-    const newDeckRef = await addDoc(collection(db, 'decks'), {
-        name: data.topic,
-        createdAt: Timestamp.now(),
-    });
 
-    const shuffledCards = shuffle(aiResult.cards);
-    
-    // Firestore batch writes have a limit of 500 operations.
-    const BATCH_SIZE = 499;
-    for (let i = 0; i < shuffledCards.length; i += BATCH_SIZE) {
-        const batch = writeBatch(db);
-        const chunk = shuffledCards.slice(i, i + BATCH_SIZE);
-        chunk.forEach(card => {
-            const cardRef = doc(collection(db, 'decks', newDeckRef.id, 'cards'));
-            batch.set(cardRef, {
-                question: card.question,
-                answer: card.answer,
-                interval: 0,
-                easeFactor: 2.5,
-                dueDate: Timestamp.now(),
-                createdAt: Timestamp.now(),
-            });
-        });
-        await batch.commit();
-    }
+    await db.transaction(async (tx) => {
+      const [newDeck] = await tx.insert(decks).values({ name: data.topic }).returning();
+      
+      if (aiResult.cards.length > 0) {
+        const shuffledCards = shuffle(aiResult.cards);
+        await tx.insert(cards).values(
+          shuffledCards.map(card => ({
+            deckId: newDeck.id,
+            question: card.question,
+            answer: card.answer,
+          }))
+        );
+      }
+    });
 
     revalidatePath('/');
     return { success: true };
@@ -147,7 +116,6 @@ const ImportDeckSchema = z.object({
   cards: z.array(ImportCardSchema),
 });
 
-
 export async function createDeckFromImport(data: unknown): Promise<ActionResponse> {
   const validation = ImportDeckSchema.safeParse(data);
   if (!validation.success) {
@@ -157,29 +125,22 @@ export async function createDeckFromImport(data: unknown): Promise<ActionRespons
   const { name, cards: importedCards } = validation.data;
   
   try {
-    const newDeckRef = await addDoc(collection(db, 'decks'), {
-        name: name,
-        createdAt: Timestamp.now(),
-    });
+    await db.transaction(async (tx) => {
+      const [newDeck] = await tx.insert(decks).values({ name }).returning();
 
-    // Firestore batch writes have a limit of 500 operations.
-    const BATCH_SIZE = 499;
-    for (let i = 0; i < importedCards.length; i += BATCH_SIZE) {
-        const batch = writeBatch(db);
-        const chunk = importedCards.slice(i, i + BATCH_SIZE);
-        chunk.forEach(card => {
-            const cardRef = doc(collection(db, 'decks', newDeckRef.id, 'cards'));
-            batch.set(cardRef, {
-                question: card.question,
-                answer: card.answer,
-                interval: card.interval ?? 0,
-                easeFactor: card.easeFactor ?? 2.5,
-                dueDate: card.dueDate ? Timestamp.fromDate(new Date(card.dueDate)) : Timestamp.now(),
-                createdAt: Timestamp.now(),
-            });
-        });
-        await batch.commit();
-    }
+      if (importedCards.length > 0) {
+        await tx.insert(cards).values(
+          importedCards.map(card => ({
+            deckId: newDeck.id,
+            question: card.question,
+            answer: card.answer,
+            interval: card.interval ?? 0,
+            easeFactor: card.easeFactor ?? 2.5,
+            dueDate: card.dueDate ? new Date(card.dueDate) : new Date(),
+          }))
+        );
+      }
+    });
     
     revalidatePath('/');
     return { success: true };
@@ -191,25 +152,7 @@ export async function createDeckFromImport(data: unknown): Promise<ActionRespons
 
 export async function deleteDeck(deckId: string): Promise<ActionResponse> {
   try {
-    const cardsCol = collection(db, 'decks', deckId, 'cards');
-    const cardsSnapshot = await getDocs(cardsCol);
-    
-    // Firestore batch writes have a limit of 500 operations.
-    const BATCH_SIZE = 499;
-    const cardDocs = cardsSnapshot.docs;
-
-    for (let i = 0; i < cardDocs.length; i += BATCH_SIZE) {
-        const batch = writeBatch(db);
-        const chunk = cardDocs.slice(i, i + BATCH_SIZE);
-        chunk.forEach(doc => {
-            batch.delete(doc.ref);
-        });
-        await batch.commit();
-    }
-
-    const deckRef = doc(db, 'decks', deckId);
-    await deleteDoc(deckRef);
-
+    await db.delete(decks).where(eq(decks.id, deckId));
     revalidatePath('/');
     return { success: true };
   } catch (error) {
@@ -220,20 +163,27 @@ export async function deleteDeck(deckId: string): Promise<ActionResponse> {
 
 export async function reviewCard({ cardId, deckId, rating }: { cardId: string, deckId: string, rating: Rating }): Promise<ActionResponse> {
   try {
-    const cardRef = doc(db, 'decks', deckId, 'cards', cardId);
-    const cardDoc = await getDoc(cardRef);
-    if (!cardDoc.exists()) {
+    const cardData = await db.query.cards.findFirst({
+      where: eq(cards.id, cardId),
+    });
+
+    if (!cardData) {
       return { success: false, error: "Card not found." };
     }
 
-    const card = convertCardTimestamps({ id: cardDoc.id, ...cardDoc.data() });
+    const card: CardType = {
+        ...cardData,
+        dueDate: cardData.dueDate.toISOString(),
+        createdAt: cardData.createdAt.toISOString()
+    };
+    
     const updatedCard = calculateNextReview(card, rating);
 
-    await updateDoc(cardRef, {
+    await db.update(cards).set({
       easeFactor: updatedCard.easeFactor,
       interval: updatedCard.interval,
-      dueDate: Timestamp.fromDate(new Date(updatedCard.dueDate)),
-    });
+      dueDate: new Date(updatedCard.dueDate),
+    }).where(eq(cards.id, cardId));
     
     return { success: true };
   } catch (error) {
@@ -244,8 +194,7 @@ export async function reviewCard({ cardId, deckId, rating }: { cardId: string, d
 
 export async function updateDeckName({ deckId, name }: { deckId: string, name: string }): Promise<ActionResponse> {
   try {
-    const deckRef = doc(db, 'decks', deckId);
-    await updateDoc(deckRef, { name });
+    await db.update(decks).set({ name }).where(eq(decks.id, deckId));
     revalidatePath('/');
     revalidatePath(`/deck/${deckId}`);
     return { success: true };
@@ -257,14 +206,10 @@ export async function updateDeckName({ deckId, name }: { deckId: string, name: s
 
 export async function addCard({ deckId, question, answer }: { deckId: string, question: string, answer: string }): Promise<ActionResponse> {
   try {
-    const cardsCol = collection(db, 'decks', deckId, 'cards');
-    await addDoc(cardsCol, { 
-      question, 
+    await db.insert(cards).values({
+      deckId,
+      question,
       answer,
-      interval: 0,
-      easeFactor: 2.5,
-      dueDate: Timestamp.now(),
-      createdAt: Timestamp.now(),
     });
     revalidatePath(`/deck/${deckId}`);
     revalidatePath('/');
@@ -277,8 +222,7 @@ export async function addCard({ deckId, question, answer }: { deckId: string, qu
 
 export async function updateCard({ cardId, deckId, question, answer }: { cardId: string, deckId: string, question: string, answer: string }): Promise<ActionResponse> {
   try {
-    const cardRef = doc(db, 'decks', deckId, 'cards', cardId);
-    await updateDoc(cardRef, { question, answer });
+    await db.update(cards).set({ question, answer }).where(eq(cards.id, cardId));
     revalidatePath(`/deck/${deckId}`);
     return { success: true };
   } catch (error) {
@@ -290,36 +234,23 @@ export async function updateCard({ cardId, deckId, question, answer }: { cardId:
 export async function createDeckFromAi(data: { topic: string }): Promise<ActionResponse> {
   try {
     const aiResult = await generateDeckFromTopic(data);
-
     if (!aiResult.cards || aiResult.cards.length === 0) {
       return { success: false, error: "The AI could not generate any cards for the provided topic." };
     }
     
-    const newDeckRef = await addDoc(collection(db, 'decks'), {
-        name: data.topic,
-        createdAt: Timestamp.now(),
+    await db.transaction(async (tx) => {
+      const [newDeck] = await tx.insert(decks).values({ name: data.topic }).returning();
+      if (aiResult.cards.length > 0) {
+        const shuffledCards = shuffle(aiResult.cards);
+        await tx.insert(cards).values(
+          shuffledCards.map(card => ({
+            deckId: newDeck.id,
+            question: card.question,
+            answer: card.answer,
+          }))
+        );
+      }
     });
-
-    const shuffledCards = shuffle(aiResult.cards);
-    
-    // Firestore batch writes have a limit of 500 operations.
-    const BATCH_SIZE = 499;
-    for (let i = 0; i < shuffledCards.length; i += BATCH_SIZE) {
-        const batch = writeBatch(db);
-        const chunk = shuffledCards.slice(i, i + BATCH_SIZE);
-        chunk.forEach(card => {
-            const cardRef = doc(collection(db, 'decks', newDeckRef.id, 'cards'));
-            batch.set(cardRef, {
-                question: card.question,
-                answer: card.answer,
-                interval: 0,
-                easeFactor: 2.5,
-                dueDate: Timestamp.now(),
-                createdAt: Timestamp.now(),
-            });
-        });
-        await batch.commit();
-    }
 
     revalidatePath('/');
     return { success: true };
@@ -331,8 +262,7 @@ export async function createDeckFromAi(data: { topic: string }): Promise<ActionR
 
 export async function deleteCard({ cardId, deckId }: { cardId: string; deckId: string }): Promise<ActionResponse> {
   try {
-    const cardRef = doc(db, 'decks', deckId, 'cards', cardId);
-    await deleteDoc(cardRef);
+    await db.delete(cards).where(eq(cards.id, cardId));
     revalidatePath(`/deck/${deckId}`);
     revalidatePath('/');
     return { success: true };
@@ -344,30 +274,14 @@ export async function deleteCard({ cardId, deckId }: { cardId: string; deckId: s
 
 export async function resetDeckProgress(deckId: string): Promise<ActionResponse> {
   try {
-    const cardsCol = collection(db, 'decks', deckId, 'cards');
-    const cardsSnapshot = await getDocs(cardsCol);
-
-    if (cardsSnapshot.empty) {
-      return { success: true }; // Nothing to reset
-    }
-
-    // Firestore batch writes have a limit of 500 operations.
-    const BATCH_SIZE = 499;
-    const cardDocs = cardsSnapshot.docs;
-
-    for (let i = 0; i < cardDocs.length; i += BATCH_SIZE) {
-        const batch = writeBatch(db);
-        const chunk = cardDocs.slice(i, i + BATCH_SIZE);
-        chunk.forEach(doc => {
-            batch.update(doc.ref, {
-                interval: 0,
-                easeFactor: 2.5,
-                dueDate: Timestamp.now(),
-            });
-        });
-        await batch.commit();
-    }
-
+    await db.update(cards)
+      .set({
+        interval: 0,
+        easeFactor: 2.5,
+        dueDate: new Date(),
+      })
+      .where(eq(cards.deckId, deckId));
+      
     revalidatePath('/');
     return { success: true };
   } catch (error) {
