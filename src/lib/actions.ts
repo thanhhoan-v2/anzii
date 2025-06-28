@@ -1,9 +1,21 @@
 'use server';
 
-import { db } from '@/lib/db';
-import { decks, cards } from '@/lib/db/schema';
+import { db } from '@/lib/firebase';
+import {
+  collection,
+  getDocs,
+  getDoc,
+  doc,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  writeBatch,
+  query,
+  orderBy,
+  Timestamp,
+  where,
+} from 'firebase/firestore';
 import type { Card as CardType, Rating, DeckListItem } from '@/types';
-import { eq, lte, sql, and } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import { calculateNextReview } from '@/lib/srs';
 import { generateCardsFromMarkdown } from '@/ai/flows/generate-cards-from-markdown';
@@ -13,42 +25,68 @@ import { z } from 'zod';
 type ActionResponse = {
   success: boolean;
   error?: string;
-}
+};
+
+// Helper to convert Firestore Timestamps in cards to strings
+const convertCardTimestamps = (cardData: any): CardType => {
+  const data = cardData as any;
+  return {
+    ...data,
+    dueDate: (data.dueDate as Timestamp)?.toDate().toISOString(),
+    createdAt: (data.createdAt as Timestamp)?.toDate().toISOString(),
+  } as CardType;
+};
 
 export async function getDecksWithCounts(): Promise<DeckListItem[]> {
-  const today = new Date();
-  const deckList = await db.select({
-    id: decks.id,
-    name: decks.name,
-    cardCount: sql<number>`count(${cards.id})`.mapWith(Number),
-    dueCount: sql<number>`count(CASE WHEN ${cards.dueDate} <= ${today} THEN 1 END)`.mapWith(Number),
-  })
-  .from(decks)
-  .leftJoin(cards, eq(decks.id, cards.deckId))
-  .groupBy(decks.id)
-  .orderBy(decks.createdAt);
+  const decksCol = collection(db, 'decks');
+  const decksQuery = query(decksCol, orderBy('createdAt', 'asc'));
+  const deckSnapshot = await getDocs(decksQuery);
+  
+  const deckList: DeckListItem[] = [];
+
+  for (const deckDoc of deckSnapshot.docs) {
+    const deckData = deckDoc.data();
+    const cardsCol = collection(db, 'decks', deckDoc.id, 'cards');
+    
+    // Get total card count
+    const cardSnapshot = await getDocs(cardsCol);
+    const cardCount = cardSnapshot.size;
+
+    // Get due card count
+    const dueQuery = query(cardsCol, where('dueDate', '<=', Timestamp.now()));
+    const dueSnapshot = await getDocs(dueQuery);
+    const dueCount = dueSnapshot.size;
+
+    deckList.push({
+      id: deckDoc.id,
+      name: deckData.name,
+      cardCount,
+      dueCount,
+    });
+  }
   
   return deckList;
 }
 
 export async function getDeck(deckId: string) {
-  const deck = await db.query.decks.findFirst({
-    where: eq(decks.id, deckId),
-    with: {
-      cards: {
-        orderBy: (cards, { asc }) => [asc(cards.createdAt)],
-      },
-    },
-  });
+  const deckRef = doc(db, 'decks', deckId);
+  const deckDoc = await getDoc(deckRef);
 
-  if (!deck) return null;
+  if (!deckDoc.exists()) {
+    return null;
+  }
+
+  const cardsCol = collection(db, 'decks', deckId, 'cards');
+  const cardsQuery = query(cardsCol, orderBy('createdAt', 'asc'));
+  const cardSnapshot = await getDocs(cardsQuery);
+
+  const cards = cardSnapshot.docs.map(doc => convertCardTimestamps({ id: doc.id, ...doc.data() }));
 
   return {
-    ...deck,
-    cards: deck.cards.map(card => ({
-      ...card,
-      dueDate: card.dueDate.toISOString(),
-    })),
+    id: deckDoc.id,
+    name: deckDoc.data().name,
+    cards,
+    createdAt: (deckDoc.data().createdAt as Timestamp)?.toDate().toISOString(),
   };
 }
 
@@ -59,22 +97,28 @@ export async function createDeckFromMarkdown(data: { topic: string; markdown: st
     if (!aiResult.cards || aiResult.cards.length === 0) {
       return { success: false, error: "The AI could not generate any cards from the provided text." };
     }
+    
+    const newDeckRef = await addDoc(collection(db, 'decks'), {
+        name: data.topic,
+        createdAt: Timestamp.now(),
+    });
 
+    const batch = writeBatch(db);
     const shuffledCards = shuffle(aiResult.cards);
 
-    await db.transaction(async (tx) => {
-      const [newDeck] = await tx.insert(decks).values({ name: data.topic }).returning();
-      if (shuffledCards.length > 0) {
-        await tx.insert(cards).values(shuffledCards.map(card => ({
-          deckId: newDeck.id,
-          question: card.question,
-          answer: card.answer,
-          interval: 0,
-          easeFactor: 2.5,
-          dueDate: new Date(),
-        })));
-      }
+    shuffledCards.forEach(card => {
+        const cardRef = doc(collection(db, 'decks', newDeckRef.id, 'cards'));
+        batch.set(cardRef, {
+            question: card.question,
+            answer: card.answer,
+            interval: 0,
+            easeFactor: 2.5,
+            dueDate: Timestamp.now(),
+            createdAt: Timestamp.now(),
+        });
     });
+
+    await batch.commit();
 
     revalidatePath('/');
     return { success: true };
@@ -108,19 +152,26 @@ export async function createDeckFromImport(data: unknown): Promise<ActionRespons
   const { name, cards: importedCards } = validation.data;
   
   try {
-    await db.transaction(async (tx) => {
-      const [newDeck] = await tx.insert(decks).values({ name }).returning();
-      if (importedCards.length > 0) {
-        await tx.insert(cards).values(importedCards.map(card => ({
-          deckId: newDeck.id,
-          question: card.question,
-          answer: card.answer,
-          interval: card.interval,
-          easeFactor: card.easeFactor,
-          dueDate: card.dueDate ? new Date(card.dueDate) : new Date(),
-        })));
-      }
+    const newDeckRef = await addDoc(collection(db, 'decks'), {
+        name: name,
+        createdAt: Timestamp.now(),
     });
+
+    const batch = writeBatch(db);
+
+    importedCards.forEach(card => {
+        const cardRef = doc(collection(db, 'decks', newDeckRef.id, 'cards'));
+        batch.set(cardRef, {
+            question: card.question,
+            answer: card.answer,
+            interval: card.interval ?? 0,
+            easeFactor: card.easeFactor ?? 2.5,
+            dueDate: card.dueDate ? Timestamp.fromDate(new Date(card.dueDate)) : Timestamp.now(),
+            createdAt: Timestamp.now(),
+        });
+    });
+
+    await batch.commit();
     
     revalidatePath('/');
     return { success: true };
@@ -132,7 +183,19 @@ export async function createDeckFromImport(data: unknown): Promise<ActionRespons
 
 export async function deleteDeck(deckId: string): Promise<ActionResponse> {
   try {
-    await db.delete(decks).where(eq(decks.id, deckId));
+    const batch = writeBatch(db);
+    
+    const cardsCol = collection(db, 'decks', deckId, 'cards');
+    const cardsSnapshot = await getDocs(cardsCol);
+    cardsSnapshot.docs.forEach(doc => {
+        batch.delete(doc.ref);
+    });
+
+    const deckRef = doc(db, 'decks', deckId);
+    batch.delete(deckRef);
+
+    await batch.commit();
+
     revalidatePath('/');
     return { success: true };
   } catch (error) {
@@ -141,25 +204,23 @@ export async function deleteDeck(deckId: string): Promise<ActionResponse> {
   }
 }
 
-export async function reviewCard({ cardId, rating }: { cardId: string, rating: Rating }): Promise<ActionResponse> {
+export async function reviewCard({ cardId, deckId, rating }: { cardId: string, deckId: string, rating: Rating }): Promise<ActionResponse> {
   try {
-    const card = await db.query.cards.findFirst({ where: eq(cards.id, cardId) });
-    if (!card) {
+    const cardRef = doc(db, 'decks', deckId, 'cards', cardId);
+    const cardDoc = await getDoc(cardRef);
+    if (!cardDoc.exists()) {
       return { success: false, error: "Card not found." };
     }
 
-    const updatedCard = calculateNextReview(
-      { ...card, dueDate: card.dueDate.toISOString() }, 
-      rating
-    );
+    const card = convertCardTimestamps({ id: cardDoc.id, ...cardDoc.data() });
+    const updatedCard = calculateNextReview(card, rating);
 
-    await db.update(cards).set({
+    await updateDoc(cardRef, {
       easeFactor: updatedCard.easeFactor,
       interval: updatedCard.interval,
-      dueDate: new Date(updatedCard.dueDate),
-    }).where(eq(cards.id, cardId));
+      dueDate: Timestamp.fromDate(new Date(updatedCard.dueDate)),
+    });
     
-    // No revalidation needed here as it doesn't affect list views immediately
     return { success: true };
   } catch (error) {
     console.error(error);
@@ -169,7 +230,8 @@ export async function reviewCard({ cardId, rating }: { cardId: string, rating: R
 
 export async function updateDeckName({ deckId, name }: { deckId: string, name: string }): Promise<ActionResponse> {
   try {
-    await db.update(decks).set({ name }).where(eq(decks.id, deckId));
+    const deckRef = doc(db, 'decks', deckId);
+    await updateDoc(deckRef, { name });
     revalidatePath('/');
     revalidatePath(`/deck/${deckId}`);
     return { success: true };
@@ -181,13 +243,14 @@ export async function updateDeckName({ deckId, name }: { deckId: string, name: s
 
 export async function addCard({ deckId, question, answer }: { deckId: string, question: string, answer: string }): Promise<ActionResponse> {
   try {
-    await db.insert(cards).values({ 
-      deckId, 
+    const cardsCol = collection(db, 'decks', deckId, 'cards');
+    await addDoc(cardsCol, { 
       question, 
       answer,
       interval: 0,
       easeFactor: 2.5,
-      dueDate: new Date(),
+      dueDate: Timestamp.now(),
+      createdAt: Timestamp.now(),
     });
     revalidatePath(`/deck/${deckId}`);
     revalidatePath('/');
@@ -198,13 +261,11 @@ export async function addCard({ deckId, question, answer }: { deckId: string, qu
   }
 }
 
-export async function updateCard({ cardId, question, answer }: { cardId: string, question: string, answer: string }): Promise<ActionResponse> {
+export async function updateCard({ cardId, deckId, question, answer }: { cardId: string, deckId: string, question: string, answer: string }): Promise<ActionResponse> {
   try {
-    const card = await db.query.cards.findFirst({ where: eq(cards.id, cardId) });
-    if (!card) return { success: false, error: "Card not found" };
-
-    await db.update(cards).set({ question, answer }).where(eq(cards.id, cardId));
-    revalidatePath(`/deck/${card.deckId}`);
+    const cardRef = doc(db, 'decks', deckId, 'cards', cardId);
+    await updateDoc(cardRef, { question, answer });
+    revalidatePath(`/deck/${deckId}`);
     return { success: true };
   } catch (error) {
     console.error(error);
@@ -212,13 +273,11 @@ export async function updateCard({ cardId, question, answer }: { cardId: string,
   }
 }
 
-export async function deleteCard(cardId: string): Promise<ActionResponse> {
+export async function deleteCard({ cardId, deckId }: { cardId: string; deckId: string }): Promise<ActionResponse> {
   try {
-    const card = await db.query.cards.findFirst({ where: eq(cards.id, cardId) });
-    if (!card) return { success: false, error: "Card not found" };
-
-    await db.delete(cards).where(eq(cards.id, cardId));
-    revalidatePath(`/deck/${card.deckId}`);
+    const cardRef = doc(db, 'decks', deckId, 'cards', cardId);
+    await deleteDoc(cardRef);
+    revalidatePath(`/deck/${deckId}`);
     revalidatePath('/');
     return { success: true };
   } catch (error) {

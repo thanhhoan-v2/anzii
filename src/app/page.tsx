@@ -124,7 +124,7 @@ export default function Home() {
         return;
       }
       
-      setActiveDeck(deckToReview);
+      setActiveDeck(deckToReview as Deck);
       setReviewQueue(dueCards);
       setCurrentCardIndex(0);
       setIsFlipped(false);
@@ -148,7 +148,7 @@ export default function Home() {
     if (!isFlipped || !activeDeck) return;
 
     const currentCard = reviewQueue[currentCardIndex];
-    await reviewCard({ cardId: currentCard.id, rating });
+    await reviewCard({ cardId: currentCard.id, deckId: activeDeck.id, rating });
     
     if (currentCardIndex + 1 < reviewQueue.length) {
       setCurrentCardIndex(prev => prev + 1);

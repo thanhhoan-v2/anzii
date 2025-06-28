@@ -45,7 +45,7 @@ export default function DeckManagerPage() {
     try {
       const currentDeck = await getDeck(deckId);
       if (currentDeck) {
-        setDeck(currentDeck);
+        setDeck(currentDeck as Deck);
         setDeckName(currentDeck.name);
       } else {
         toast({ variant: 'destructive', title: 'Deck not found' });
@@ -82,7 +82,7 @@ export default function DeckManagerPage() {
     let result;
     if (cardToEdit) {
       // Editing existing card
-      result = await updateCard({ cardId: cardToEdit.id, ...cardData });
+      result = await updateCard({ cardId: cardToEdit.id, deckId: deck!.id, ...cardData });
     } else {
       // Adding new card
       result = await addCard({ deckId: deck!.id, ...cardData });
@@ -110,7 +110,7 @@ export default function DeckManagerPage() {
   }
 
   const handleDeleteCard = async (cardId: string) => {
-    const result = await deleteCard(cardId);
+    const result = await deleteCard({ cardId, deckId: deck!.id });
      if (result.success) {
       toast({ title: 'Card Deleted' });
       fetchDeck();

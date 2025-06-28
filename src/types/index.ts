@@ -5,12 +5,14 @@ export interface Card {
   interval: number; // in days
   easeFactor: number; // multiplier for interval
   dueDate: string; // ISO date string
+  createdAt?: string; // ISO date string
 }
 
 export interface Deck {
   id: string;
   name: string;
   cards: Card[];
+  createdAt?: string; // ISO date string
 }
 
 export interface DeckListItem {
