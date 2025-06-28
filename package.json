@@ -1,6 +1,8 @@
 {
-	"name": "nextn",
+	"name": "anzii",
 	"version": "0.1.0",
+	"description": "An intelligent spaced repetition learning system with AI-powered content generation",
+	"license": "MIT",
 	"private": true,
 	"scripts": {
 		"dev": "next dev --turbopack -p 9002",
