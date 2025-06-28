@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useMemo, useCallback, useRef, useEffect } from 'react';
@@ -24,6 +25,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { getDecksWithCounts, getDeck, deleteDeck, reviewCard, createDeckFromImport } from '@/lib/actions';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { shuffle } from '@/lib/utils';
 
 
 const WelcomeScreen = ({ onImport, onAiCreate }: { onImport: () => void; onAiCreate: () => void; }) => (
@@ -110,6 +112,14 @@ export default function Home() {
     event.target.value = '';
   };
   
+  const startSession = (deck: Deck, cards: CardType[]) => {
+    setActiveDeck(deck);
+    setReviewQueue(shuffle(cards));
+    setCurrentCardIndex(0);
+    setIsFlipped(false);
+    setSessionInProgress(true);
+  };
+
   const startReviewSession = useCallback(async (deckId: string) => {
     try {
       const deckToReview = await getDeck(deckId);
@@ -125,14 +135,29 @@ export default function Home() {
         return;
       }
       
-      setActiveDeck(deckToReview as Deck);
-      setReviewQueue(dueCards);
-      setCurrentCardIndex(0);
-      setIsFlipped(false);
-      setSessionInProgress(true);
+      startSession(deckToReview as Deck, dueCards);
 
     } catch (error) {
       toast({ variant: "destructive", title: "Error", description: "Could not start review session." });
+    }
+  }, [toast]);
+
+  const startFullReview = useCallback(async (deckId: string) => {
+    try {
+        const deckToReview = await getDeck(deckId);
+        if (!deckToReview) {
+            toast({ variant: "destructive", title: "Error", description: "Could not find deck." });
+            return;
+        }
+
+        if (deckToReview.cards.length === 0) {
+            toast({ title: "Empty Deck", description: "This deck has no cards to review." });
+            return;
+        }
+
+        startSession(deckToReview as Deck, deckToReview.cards);
+    } catch (error) {
+        toast({ variant: "destructive", title: "Error", description: "Could not start review session." });
     }
   }, [toast]);
 
@@ -163,15 +188,6 @@ export default function Home() {
       });
       fetchDecks();
     }
-  };
-
-  const handleRestartSession = () => {
-    setCurrentCardIndex(0);
-    setIsFlipped(false);
-    toast({
-      title: 'Session Restarted',
-      description: 'You are now at the beginning of your review queue.',
-    });
   };
 
   const handleDeleteDeck = async (deckId: string) => {
@@ -221,10 +237,6 @@ export default function Home() {
             <div className="w-full max-w-2xl mb-4">
               <div className="flex items-center justify-between mb-2">
                 <p className="text-sm text-muted-foreground">{`Reviewing "${activeDeck.name}" | Card ${currentCardIndex + 1} of ${reviewQueue.length}`}</p>
-                <Button variant="outline" size="sm" onClick={handleRestartSession}>
-                    <RefreshCw className="mr-2 h-4 w-4" />
-                    Restart
-                </Button>
               </div>
               <Progress value={progressValue} className="w-full h-2 mt-1" />
             </div>
@@ -285,9 +297,14 @@ export default function Home() {
                         </AlertDialogContent>
                       </AlertDialog>
                     </div>
-                    <Button onClick={() => startReviewSession(deck.id)} disabled={deck.dueCount === 0}>
-                      Review
-                    </Button>
+                    <div className="flex items-center gap-2">
+                        <Button variant="outline" onClick={() => startFullReview(deck.id)} disabled={deck.cardCount === 0}>
+                            <RefreshCw className="mr-2 h-4 w-4" /> Restart
+                        </Button>
+                        <Button onClick={() => startReviewSession(deck.id)} disabled={deck.dueCount === 0}>
+                        Review
+                        </Button>
+                    </div>
                   </CardFooter>
                 </ShadCard>
               )
