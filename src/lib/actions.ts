@@ -98,7 +98,10 @@ export async function createDeckFromMarkdown(data: { topic: string; markdown: st
     return { success: true };
   } catch (error) {
     console.error(error);
-    return { success: false, error: "Failed to create deck from Markdown." };
+    if (error instanceof Error && (error.message.includes('API key not valid') || error.message.includes('permission denied') || error.message.includes('API_KEY_INVALID'))) {
+      return { success: false, error: "AI configuration error. Please ensure your Google AI API key is set correctly in a .env file and is valid." };
+    }
+    return { success: false, error: "Failed to create deck from Markdown. The AI may have returned an unexpected response." };
   }
 }
 
@@ -256,7 +259,10 @@ export async function createDeckFromAi(data: { topic: string }): Promise<ActionR
     return { success: true };
   } catch (error) {
     console.error(error);
-    return { success: false, error: "Failed to create AI-generated deck." };
+    if (error instanceof Error && (error.message.includes('API key not valid') || error.message.includes('permission denied') || error.message.includes('API_KEY_INVALID'))) {
+      return { success: false, error: "AI configuration error. Please ensure your Google AI API key is set correctly in a .env file and is valid." };
+    }
+    return { success: false, error: "Failed to create AI-generated deck. The AI may have returned an unexpected response." };
   }
 }
 
