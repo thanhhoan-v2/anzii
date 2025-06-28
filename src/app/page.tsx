@@ -1,34 +1,45 @@
 "use client";
 
 import React, { useState, useMemo, useCallback, useRef } from 'react';
+import Link from 'next/link';
 import { isBefore, startOfToday } from 'date-fns';
-import { BrainCircuit, Upload, Sparkles, BookOpen, RotateCcw, FileText } from 'lucide-react';
-import { Card as ShadCard, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { BrainCircuit, Upload, FileText, Trash2, Settings, BookOpen, PlusCircle } from 'lucide-react';
+import { Card as ShadCard, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { Separator } from '@/components/ui/separator';
-import AiQuestionSuggester from '@/components/AiQuestionSuggester';
+import { useLocalStorage } from '@/hooks/use-local-storage';
 import Flashcard from '@/components/Flashcard';
 import MarkdownImporter from '@/components/MarkdownImporter';
 import type { Card as CardType, Deck, Rating } from '@/types';
 import { calculateNextReview } from '@/lib/srs';
 import { useToast } from "@/hooks/use-toast";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
-const WelcomeScreen = ({ onStart, onImport, onMarkdownImport, hasDeck }: { onStart: () => void; onImport: () => void; onMarkdownImport: () => void; hasDeck: boolean }) => (
-  <div className="text-center">
+const WelcomeScreen = ({ onImport, onMarkdownImport }: { onImport: () => void; onMarkdownImport: () => void; }) => (
+  <div className="text-center py-16">
     <BookOpen className="mx-auto h-16 w-16 text-primary" />
-    <h2 className="mt-4 text-2xl font-bold tracking-tight text-foreground">Welcome to your study session</h2>
-    <p className="mt-2 text-muted-foreground">Import a deck, create one with AI, or start reviewing.</p>
-    <div className="mt-6 flex flex-wrap justify-center gap-4">
-      <Button onClick={onImport} variant="outline"><Upload className="mr-2" /> Import from File</Button>
-      <Button onClick={onMarkdownImport} variant="outline"><FileText className="mr-2" /> Create with AI</Button>
-      {hasDeck && <Button onClick={onStart}>Start Review</Button>}
+    <h2 className="mt-4 text-3xl font-bold tracking-tight text-foreground">Create Your First Deck</h2>
+    <p className="mt-2 text-lg text-muted-foreground">Import from a file or use AI to generate cards from your notes.</p>
+    <div className="mt-8 flex flex-wrap justify-center gap-4">
+      <Button onClick={onImport} size="lg"><Upload className="mr-2" /> Import from File</Button>
+      <Button onClick={onMarkdownImport} size="lg"><FileText className="mr-2" /> Create with AI</Button>
     </div>
   </div>
 );
 
 export default function Home() {
-  const [deck, setDeck] = useState<Deck | null>(null);
+  const [decks, setDecks] = useLocalStorage<Deck[]>('decks', []);
+  const [activeDeck, setActiveDeck] = useState<Deck | null>(null);
   const [reviewQueue, setReviewQueue] = useState<CardType[]>([]);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
@@ -37,12 +48,6 @@ export default function Home() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
-  const dueCards = useMemo(() => {
-    if (!deck) return [];
-    const today = startOfToday();
-    return deck.cards.filter(card => isBefore(new Date(card.dueDate), today) || new Date(card.dueDate).getTime() === today.getTime());
-  }, [deck]);
-  
   const progressValue = useMemo(() => {
     if (reviewQueue.length === 0) return 0;
     return (currentCardIndex / reviewQueue.length) * 100;
@@ -61,14 +66,12 @@ export default function Home() {
       try {
         const content = e.target?.result as string;
         const importedJson = JSON.parse(content);
-
-        // Basic validation
         if (!importedJson.name || !Array.isArray(importedJson.cards)) {
           throw new Error("Invalid deck format. 'name' and 'cards' array are required.");
         }
-
         const today = startOfToday();
         const newDeck: Deck = {
+          id: `${Date.now()}`,
           name: importedJson.name,
           cards: importedJson.cards.map((card: any, index: number) => ({
             id: card.id || `${Date.now()}-${index}`,
@@ -79,8 +82,7 @@ export default function Home() {
             dueDate: card.dueDate || today.toISOString(),
           })),
         };
-        setDeck(newDeck);
-        setSessionInProgress(false);
+        setDecks(prev => [...prev, newDeck]);
         toast({
           title: "Deck Imported!",
           description: `"${newDeck.name}" with ${newDeck.cards.length} cards has been loaded.`,
@@ -95,26 +97,30 @@ export default function Home() {
       }
     };
     reader.readAsText(file);
-    event.target.value = ''; // Reset file input
+    event.target.value = '';
   };
   
-  const startReviewSession = useCallback(() => {
-    if(dueCards.length === 0) {
-      toast({
-        title: "All Caught Up!",
-        description: "You have no cards due for review today.",
-      });
+  const startReviewSession = useCallback((deckId: string) => {
+    const deckToReview = decks.find(d => d.id === deckId);
+    if (!deckToReview) return;
+    
+    const today = startOfToday();
+    const dueCards = deckToReview.cards.filter(card => isBefore(new Date(card.dueDate), today) || new Date(card.dueDate).getTime() === today.getTime());
+
+    if (dueCards.length === 0) {
+      toast({ title: "All Caught Up!", description: "You have no cards due for review today in this deck." });
       return;
     }
+    
+    setActiveDeck(deckToReview);
     setReviewQueue(dueCards);
     setCurrentCardIndex(0);
     setIsFlipped(false);
     setSessionInProgress(true);
-  }, [dueCards, toast]);
+  }, [decks, toast]);
 
   const handleDeckGenerated = (newDeck: Deck) => {
-    setDeck(newDeck);
-    setSessionInProgress(false);
+    setDecks(prev => [...prev, newDeck]);
     setIsMarkdownImporterOpen(false);
     toast({
       title: "Deck Generated!",
@@ -123,27 +129,33 @@ export default function Home() {
   };
 
   const handleRate = (rating: Rating) => {
-    if (!isFlipped || !deck) return;
+    if (!isFlipped || !activeDeck) return;
 
     const currentCard = reviewQueue[currentCardIndex];
     const updatedCard = calculateNextReview(currentCard, rating);
 
-    const newDeckCards = deck.cards.map(card =>
-      card.id === updatedCard.id ? updatedCard : card
-    );
-
-    setDeck({ ...deck, cards: newDeckCards });
+    setDecks(prevDecks => prevDecks.map(d => 
+        d.id === activeDeck.id 
+            ? { ...d, cards: d.cards.map(c => c.id === updatedCard.id ? updatedCard : c) }
+            : d
+    ));
 
     if (currentCardIndex + 1 < reviewQueue.length) {
       setCurrentCardIndex(prev => prev + 1);
       setIsFlipped(false);
     } else {
       setSessionInProgress(false);
+      setActiveDeck(null);
       toast({
         title: "Session Complete!",
         description: `You've reviewed ${reviewQueue.length} cards. Great job!`,
       });
     }
+  };
+
+  const handleDeleteDeck = (deckId: string) => {
+    setDecks(decks => decks.filter(d => d.id !== deckId));
+    toast({ title: "Deck Deleted", description: "The deck has been removed." });
   };
 
   const currentCard = sessionInProgress ? reviewQueue[currentCardIndex] : null;
@@ -152,75 +164,96 @@ export default function Home() {
     <div className="min-h-screen bg-background font-body text-foreground">
       <header className="p-4 border-b">
         <div className="container mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2">
             <BrainCircuit className="h-8 w-8 text-primary" />
             <h1 className="text-2xl font-bold font-headline tracking-tight">FlashSync</h1>
-          </div>
+          </Link>
+          {decks.length > 0 && !sessionInProgress && (
+            <div className="flex gap-2">
+              <Button onClick={handleImportClick} variant="outline"><Upload /> Import</Button>
+              <Button onClick={() => setIsMarkdownImporterOpen(true)}><PlusCircle /> Create Deck</Button>
+            </div>
+          )}
         </div>
       </header>
       
       <main className="container mx-auto p-4 md:p-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          
-          <div className="lg:col-span-2">
-            <ShadCard className="h-full min-h-[60vh] flex flex-col justify-center items-center p-4 shadow-lg">
-              {sessionInProgress && currentCard ? (
-                 <div className="w-full h-full flex flex-col">
-                  <div className="mb-4">
-                    <p className="text-center text-sm text-muted-foreground">{`Card ${currentCardIndex + 1} of ${reviewQueue.length}`}</p>
-                    <Progress value={progressValue} className="w-full h-2 mt-1" />
-                  </div>
-                  <div className="flex-grow flex items-center justify-center">
-                    <Flashcard
-                      card={currentCard}
-                      isFlipped={isFlipped}
-                      onFlip={() => setIsFlipped(true)}
-                    />
-                  </div>
-                   <div className="mt-4 flex justify-center gap-3 w-full">
-                      {isFlipped ? (
-                        <>
-                          <Button onClick={() => handleRate('hard')} className="bg-red-500 hover:bg-red-600 text-white w-28">Hard</Button>
-                          <Button onClick={() => handleRate('medium')} className="bg-yellow-500 hover:bg-yellow-600 text-white w-28">Medium</Button>
-                          <Button onClick={() => handleRate('easy')} className="bg-green-500 hover:bg-green-600 text-white w-28">Easy</Button>
-                        </>
-                      ) : (
-                        <Button onClick={() => setIsFlipped(true)} className="w-48">Show Answer</Button>
-                      )}
-                  </div>
-                 </div>
-              ) : (
-                <WelcomeScreen onStart={startReviewSession} onImport={handleImportClick} onMarkdownImport={() => setIsMarkdownImporterOpen(true)} hasDeck={!!deck} />
-              )}
-            </ShadCard>
+        {sessionInProgress && currentCard && activeDeck ? (
+          <div className="w-full h-full flex flex-col items-center">
+            <div className="w-full max-w-2xl mb-4">
+              <p className="text-center text-sm text-muted-foreground">{`Reviewing "${activeDeck.name}" | Card ${currentCardIndex + 1} of ${reviewQueue.length}`}</p>
+              <Progress value={progressValue} className="w-full h-2 mt-1" />
+            </div>
+            <Flashcard
+              card={currentCard}
+              isFlipped={isFlipped}
+              onFlip={() => setIsFlipped(true)}
+            />
+            <div className="mt-4 flex justify-center gap-3 w-full">
+                {isFlipped ? (
+                  <>
+                    <Button onClick={() => handleRate('hard')} className="bg-red-500 hover:bg-red-600 text-white w-28">Hard</Button>
+                    <Button onClick={() => handleRate('medium')} className="bg-yellow-500 hover:bg-yellow-600 text-white w-28">Medium</Button>
+                    <Button onClick={() => handleRate('easy')} className="bg-green-500 hover:bg-green-600 text-white w-28">Easy</Button>
+                  </>
+                ) : (
+                  <Button onClick={() => setIsFlipped(true)} className="w-48">Show Answer</Button>
+                )}
+            </div>
           </div>
-          
-          <div className="flex flex-col gap-8">
-            <ShadCard className="shadow-lg">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2"><BookOpen/>Deck Status</CardTitle>
-                <CardDescription>{deck ? `Deck: "${deck.name}"` : "No deck loaded."}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3 text-sm">
-                  <div className="flex justify-between"><span>Total Cards:</span> <span className="font-bold">{deck?.cards.length ?? 0}</span></div>
-                  <div className="flex justify-between"><span>Due for Review:</span> <span className="font-bold">{dueCards.length}</span></div>
-                </div>
-                <Separator className="my-4" />
-                <div className="flex flex-col gap-2">
-                  <Button onClick={handleImportClick} variant="outline"><Upload className="mr-2" /> Import From File</Button>
-                  <Button onClick={() => setIsMarkdownImporterOpen(true)} variant="outline"><FileText className="mr-2" /> Create with AI</Button>
-                  <input type="file" ref={fileInputRef} onChange={handleFileChange} accept=".json" className="hidden" />
-                  {deck && <Button onClick={startReviewSession} disabled={sessionInProgress || dueCards.length === 0}><RotateCcw className="mr-2"/> Start Review</Button>}
-                </div>
-              </CardContent>
-            </ShadCard>
-            
-            <AiQuestionSuggester />
+        ) : decks.length === 0 ? (
+          <WelcomeScreen onImport={handleImportClick} onMarkdownImport={() => setIsMarkdownImporterOpen(true)} />
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {decks.map(deck => {
+              const today = startOfToday();
+              const dueCount = deck.cards.filter(card => isBefore(new Date(card.dueDate), today) || new Date(card.dueDate).getTime() === today.getTime()).length;
+              return (
+                <ShadCard key={deck.id} className="flex flex-col shadow-lg hover:shadow-xl transition-shadow">
+                  <CardHeader>
+                    <CardTitle>{deck.name}</CardTitle>
+                    <CardDescription>{deck.cards.length} cards</CardDescription>
+                  </CardHeader>
+                  <CardContent className="flex-grow">
+                    <div className={`text-lg font-bold ${dueCount > 0 ? 'text-accent' : 'text-muted-foreground'}`}>
+                      {dueCount} due
+                    </div>
+                    <p className="text-sm text-muted-foreground">for review today</p>
+                  </CardContent>
+                  <CardFooter className="flex justify-between gap-2">
+                    <div className="flex gap-2">
+                      <Link href={`/deck/${deck.id}`} passHref>
+                        <Button variant="outline" size="icon"><Settings/></Button>
+                      </Link>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="destructive" size="icon"><Trash2/></Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              This action cannot be undone. This will permanently delete the "{deck.name}" deck and all its cards.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction onClick={() => handleDeleteDeck(deck.id)}>Delete</AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </div>
+                    <Button onClick={() => startReviewSession(deck.id)} disabled={dueCount === 0}>
+                      Review
+                    </Button>
+                  </CardFooter>
+                </ShadCard>
+              )
+            })}
           </div>
-
-        </div>
+        )}
       </main>
+      <input type="file" ref={fileInputRef} onChange={handleFileChange} accept=".json" className="hidden" />
       <MarkdownImporter 
         isOpen={isMarkdownImporterOpen}
         onOpenChange={setIsMarkdownImporterOpen}

@@ -66,6 +66,7 @@ export default function MarkdownImporter({ isOpen, onOpenChange, onDeckGenerated
             const today = startOfToday();
 
             const newDeck: Deck = {
+                id: `${Date.now()}`,
                 name: data.topic,
                 cards: shuffledCards.map((card, index) => ({
                     id: `${Date.now()}-${index}`,
