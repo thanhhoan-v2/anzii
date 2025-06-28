@@ -19,7 +19,7 @@ import {
 	Card as ShadCard,
 } from "@/components/ui/card";
 import type { DeckListItem } from "@/types";
-import { RefreshCw, Settings, Trash2 } from "lucide-react";
+import { RefreshCw, Settings, XIcon } from "lucide-react";
 import Link from "next/link";
 
 interface DeckListProps {
@@ -36,16 +36,37 @@ export default function DeckList({
 	onResetDeck,
 }: DeckListProps) {
 	return (
-		<div className="place-items-center gap-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
+		<div className="flex flex-col gap-6">
 			{decks.map((deck) => (
-				<ShadCard
-					key={deck.id}
-					className="flex flex-col w-[400px] transition-all"
-				>
-					<CardHeader>
-						<CardTitle>{deck.name}</CardTitle>
-						<CardDescription>{deck.cardCount} cards</CardDescription>
-					</CardHeader>
+				<ShadCard key={deck.id} className="flex flex-col transition-all">
+					<div className="flex justify-between">
+						<CardHeader>
+							<CardTitle>{deck.name}</CardTitle>
+							<CardDescription>{deck.cardCount} cards</CardDescription>
+						</CardHeader>
+						<AlertDialog>
+							<AlertDialogTrigger asChild>
+								<Button variant="ghost" size="icon" className="mt-4 mr-4">
+									<XIcon />
+								</Button>
+							</AlertDialogTrigger>
+							<AlertDialogContent>
+								<AlertDialogHeader>
+									<AlertDialogTitle>Are you sure?</AlertDialogTitle>
+									<AlertDialogDescription>
+										This action cannot be undone. This will permanently delete
+										the "{deck.name}" deck and all its cards.
+									</AlertDialogDescription>
+								</AlertDialogHeader>
+								<AlertDialogFooter>
+									<AlertDialogCancel>Cancel</AlertDialogCancel>
+									<AlertDialogAction onClick={() => onDeleteDeck(deck.id)}>
+										Delete
+									</AlertDialogAction>
+								</AlertDialogFooter>
+							</AlertDialogContent>
+						</AlertDialog>
+					</div>
 					<CardContent className="flex-grow">
 						<div
 							className={`text-lg font-bold ${
@@ -58,33 +79,11 @@ export default function DeckList({
 					</CardContent>
 					<CardFooter className="flex justify-between gap-2">
 						<div className="flex gap-2">
-							<Link href={`/deck/${deck.id}`} passHref>
-								<Button variant="outline" size="icon">
+							<Button asChild variant="outline" size="icon">
+								<Link href={`/deck/${deck.id}`} passHref>
 									<Settings />
-								</Button>
-							</Link>
-							<AlertDialog>
-								<AlertDialogTrigger asChild>
-									<Button variant="destructive" size="icon">
-										<Trash2 />
-									</Button>
-								</AlertDialogTrigger>
-								<AlertDialogContent>
-									<AlertDialogHeader>
-										<AlertDialogTitle>Are you sure?</AlertDialogTitle>
-										<AlertDialogDescription>
-											This action cannot be undone. This will permanently delete
-											the "{deck.name}" deck and all its cards.
-										</AlertDialogDescription>
-									</AlertDialogHeader>
-									<AlertDialogFooter>
-										<AlertDialogCancel>Cancel</AlertDialogCancel>
-										<AlertDialogAction onClick={() => onDeleteDeck(deck.id)}>
-											Delete
-										</AlertDialogAction>
-									</AlertDialogFooter>
-								</AlertDialogContent>
-							</AlertDialog>
+								</Link>
+							</Button>
 						</div>
 						<div className="flex items-center gap-2">
 							<AlertDialog>

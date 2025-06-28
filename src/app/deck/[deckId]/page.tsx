@@ -1,7 +1,6 @@
 "use client";
 
 import CardEditor from "@/components/CardEditor";
-import { ThemeToggle } from "@/components/ThemeToggle";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -78,7 +77,7 @@ export default function DeckManagerPage() {
 				toast({ variant: "destructive", title: "Deck not found" });
 				router.push("/");
 			}
-		} catch (error) {
+		} catch (_error) {
 			toast({ variant: "destructive", title: "Error fetching deck" });
 			router.push("/");
 		} finally {
@@ -123,7 +122,7 @@ export default function DeckManagerPage() {
 		question: string;
 		answer: string;
 	}) => {
-		let result;
+		let result: { success: boolean; error?: string };
 		if (cardToEdit) {
 			// Editing existing card
 			result = await updateCard({
@@ -194,10 +193,7 @@ export default function DeckManagerPage() {
 						</Link>
 					</Button>
 					<div className="flex items-center gap-4">
-						<h1 className="font-headline font-bold text-2xl tracking-tight">
-							Manage Deck
-						</h1>
-						<ThemeToggle />
+						<h1 className="font-bold text-2xl tracking-tight">Manage Deck</h1>
 					</div>
 				</div>
 			</header>
@@ -253,14 +249,14 @@ export default function DeckManagerPage() {
 									{deck.cards.map((card) => (
 										<TableRow key={card.id}>
 											<TableCell className="align-top">
-												<div className="dark:prose-invert max-w-none prose prose-sm">
+												<div className="max-w-none text-foreground [&_*]:text-foreground prose prose-sm">
 													<ReactMarkdown remarkPlugins={[remarkGfm]}>
 														{card.question}
 													</ReactMarkdown>
 												</div>
 											</TableCell>
 											<TableCell className="align-top">
-												<div className="dark:prose-invert max-w-none text-muted-foreground prose prose-sm">
+												<div className="max-w-none text-muted-foreground [&_*]:text-muted-foreground prose prose-sm">
 													<ReactMarkdown remarkPlugins={[remarkGfm]}>
 														{card.answer}
 													</ReactMarkdown>

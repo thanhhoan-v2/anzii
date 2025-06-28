@@ -1,4 +1,4 @@
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { ColorSchemeSelector } from "@/components/ColorSchemeSelector";
 import { Button } from "@/components/ui/button";
 import { PlusCircle, Rocket, Upload } from "lucide-react";
 import Link from "next/link";
@@ -37,7 +37,9 @@ export default function AppHeader({
 							</Button>
 						</div>
 					)}
-					<ThemeToggle />
+					<div className="flex items-center gap-2">
+						<ColorSchemeSelector />
+					</div>
 				</div>
 			</div>
 		</header>

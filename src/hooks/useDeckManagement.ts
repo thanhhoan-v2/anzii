@@ -29,7 +29,7 @@ export function useDeckManagement(): UseDeckManagementReturn {
             try {
                 const fetchedDecks = await getDecksWithCounts();
                 setDecks(fetchedDecks);
-            } catch (error) {
+            } catch (_error) {
                 toast({
                     variant: "destructive",
                     title: "Error",

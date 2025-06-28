@@ -10,13 +10,11 @@ import { useDeckManagement } from "@/hooks/useDeckManagement";
 import { useFileImport } from "@/hooks/useFileImport";
 import { useReviewSession } from "@/hooks/useReviewSession";
 import { Loader2 } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function Home() {
 	const [isAiDeckGeneratorOpen, setIsAiDeckGeneratorOpen] = useState(false);
 	const { toast } = useToast();
-	const router = useRouter();
 
 	// Custom hooks
 	const deckManagement = useDeckManagement();
