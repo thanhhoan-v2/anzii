@@ -1,6 +1,6 @@
 'use server';
 
-import { db } from '@/db';
+import { getDb } from '@/db';
 import { cards, decks } from '@/db/schema';
 import { eq, and, lte, sql, asc, count } from 'drizzle-orm';
 import type { Rating, DeckListItem, Deck as DeckType, Card as CardType } from '@/types';
@@ -23,6 +23,7 @@ const convertCardTimestamps = (cardData: any): CardType => ({
 });
 
 export async function getDecksWithCounts(): Promise<DeckListItem[]> {
+  const db = getDb();
   const cardCountSubquery = db.$with('card_count_sq').as(
     db.select({
       deckId: cards.deckId,
@@ -52,6 +53,7 @@ export async function getDecksWithCounts(): Promise<DeckListItem[]> {
 }
 
 export async function getDeck(deckId: string): Promise<DeckType | null> {
+  const db = getDb();
   const deckData = await db.query.decks.findFirst({
     where: eq(decks.id, deckId),
     with: {
@@ -73,6 +75,7 @@ export async function getDeck(deckId: string): Promise<DeckType | null> {
 }
 
 export async function createDeckFromMarkdown(data: { topic: string; markdown: string }): Promise<ActionResponse> {
+  const db = getDb();
   try {
     const aiResult = await generateCardsFromMarkdown(data);
     if (!aiResult.cards || aiResult.cards.length === 0) {
@@ -120,6 +123,7 @@ const ImportDeckSchema = z.object({
 });
 
 export async function createDeckFromImport(data: unknown): Promise<ActionResponse> {
+  const db = getDb();
   const validation = ImportDeckSchema.safeParse(data);
   if (!validation.success) {
     return { success: false, error: "Invalid deck format." };
@@ -154,6 +158,7 @@ export async function createDeckFromImport(data: unknown): Promise<ActionRespons
 }
 
 export async function deleteDeck(deckId: string): Promise<ActionResponse> {
+  const db = getDb();
   try {
     await db.delete(decks).where(eq(decks.id, deckId));
     revalidatePath('/');
@@ -165,6 +170,7 @@ export async function deleteDeck(deckId: string): Promise<ActionResponse> {
 }
 
 export async function reviewCard({ cardId, deckId, rating }: { cardId: string, deckId: string, rating: Rating }): Promise<ActionResponse> {
+  const db = getDb();
   try {
     const cardData = await db.query.cards.findFirst({
       where: eq(cards.id, cardId),
@@ -196,6 +202,7 @@ export async function reviewCard({ cardId, deckId, rating }: { cardId: string, d
 }
 
 export async function updateDeckName({ deckId, name }: { deckId: string, name: string }): Promise<ActionResponse> {
+  const db = getDb();
   try {
     await db.update(decks).set({ name }).where(eq(decks.id, deckId));
     revalidatePath('/');
@@ -208,6 +215,7 @@ export async function updateDeckName({ deckId, name }: { deckId: string, name: s
 }
 
 export async function addCard({ deckId, question, answer }: { deckId: string, question: string, answer: string }): Promise<ActionResponse> {
+  const db = getDb();
   try {
     await db.insert(cards).values({
       deckId,
@@ -224,6 +232,7 @@ export async function addCard({ deckId, question, answer }: { deckId: string, qu
 }
 
 export async function updateCard({ cardId, deckId, question, answer }: { cardId: string, deckId: string, question: string, answer: string }): Promise<ActionResponse> {
+  const db = getDb();
   try {
     await db.update(cards).set({ question, answer }).where(eq(cards.id, cardId));
     revalidatePath(`/deck/${deckId}`);
@@ -235,6 +244,7 @@ export async function updateCard({ cardId, deckId, question, answer }: { cardId:
 }
 
 export async function createDeckFromAi(data: { topic: string }): Promise<ActionResponse> {
+  const db = getDb();
   try {
     const aiResult = await generateDeckFromTopic(data);
     if (!aiResult.cards || aiResult.cards.length === 0) {
@@ -267,6 +277,7 @@ export async function createDeckFromAi(data: { topic: string }): Promise<ActionR
 }
 
 export async function deleteCard({ cardId, deckId }: { cardId: string; deckId: string }): Promise<ActionResponse> {
+  const db = getDb();
   try {
     await db.delete(cards).where(eq(cards.id, cardId));
     revalidatePath(`/deck/${deckId}`);
@@ -279,6 +290,7 @@ export async function deleteCard({ cardId, deckId }: { cardId: string; deckId: s
 }
 
 export async function resetDeckProgress(deckId: string): Promise<ActionResponse> {
+  const db = getDb();
   try {
     await db.update(cards)
       .set({
