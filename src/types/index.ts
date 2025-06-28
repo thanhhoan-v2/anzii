@@ -13,4 +13,12 @@ export interface Deck {
   cards: Card[];
 }
 
+export interface DeckListItem {
+  id: string;
+  name: string;
+  cardCount: number;
+  dueCount: number;
+}
+
+
 export type Rating = 'hard' | 'medium' | 'easy';

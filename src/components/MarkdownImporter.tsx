@@ -4,12 +4,9 @@ import * as React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { startOfToday } from 'date-fns';
 import { Loader2 } from 'lucide-react';
 
-import { generateCardsFromMarkdown } from '@/ai/flows/generate-cards-from-markdown';
-import { shuffle } from '@/lib/utils';
-import type { Deck } from '@/types';
+import { createDeckFromMarkdown } from '@/lib/actions';
 import { useToast } from "@/hooks/use-toast";
 import {
   Dialog,
@@ -28,7 +25,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 interface MarkdownImporterProps {
     isOpen: boolean;
     onOpenChange: (isOpen: boolean) => void;
-    onDeckGenerated: (deck: Deck) => void;
+    onSuccess: () => void;
 }
 
 const FormSchema = z.object({
@@ -36,7 +33,7 @@ const FormSchema = z.object({
     markdown: z.string().min(20, { message: "Markdown content must be at least 20 characters." }),
 });
 
-export default function MarkdownImporter({ isOpen, onOpenChange, onDeckGenerated }: MarkdownImporterProps) {
+export default function MarkdownImporter({ isOpen, onOpenChange, onSuccess }: MarkdownImporterProps) {
     const [isLoading, setIsLoading] = React.useState(false);
     const { toast } = useToast();
 
@@ -51,35 +48,18 @@ export default function MarkdownImporter({ isOpen, onOpenChange, onDeckGenerated
     async function onSubmit(data: z.infer<typeof FormSchema>) {
         setIsLoading(true);
         try {
-            const result = await generateCardsFromMarkdown({ topic: data.topic, markdown: data.markdown });
+            const result = await createDeckFromMarkdown(data);
             
-            if (!result.cards || result.cards.length === 0) {
-                toast({
+            if (result.success) {
+                onSuccess();
+                form.reset();
+            } else {
+                 toast({
                     variant: "destructive",
-                    title: "No Cards Generated",
-                    description: "The AI could not generate any cards from the provided text. Please try again with different content.",
+                    title: "Error",
+                    description: result.error,
                 });
-                return;
             }
-
-            const shuffledCards = shuffle(result.cards);
-            const today = startOfToday();
-
-            const newDeck: Deck = {
-                id: `${Date.now()}`,
-                name: data.topic,
-                cards: shuffledCards.map((card, index) => ({
-                    id: `${Date.now()}-${index}`,
-                    question: card.question,
-                    answer: card.answer,
-                    interval: 0,
-                    easeFactor: 2.5,
-                    dueDate: today.toISOString(),
-                })),
-            };
-            
-            onDeckGenerated(newDeck);
-            form.reset();
 
         } catch (error) {
             console.error("AI deck generation error:", error);

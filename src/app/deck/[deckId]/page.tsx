@@ -1,18 +1,16 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useLocalStorage } from '@/hooks/use-local-storage';
 import type { Deck, Card as CardType } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { ArrowLeft, PlusCircle, Trash2, Edit, Save } from 'lucide-react';
+import { ArrowLeft, PlusCircle, Trash2, Edit, Save, Loader2 } from 'lucide-react';
 import CardEditor from '@/components/CardEditor';
 import { useToast } from "@/hooks/use-toast";
-import { startOfToday } from 'date-fns';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -26,6 +24,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { getDeck, updateDeckName, addCard, updateCard, deleteCard } from '@/lib/actions';
 
 export default function DeckManagerPage() {
   const router = useRouter();
@@ -33,53 +32,69 @@ export default function DeckManagerPage() {
   const { deckId } = params;
   const { toast } = useToast();
 
-  const [decks, setDecks] = useLocalStorage<Deck[]>('decks', []);
   const [deck, setDeck] = useState<Deck | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [isEditingName, setIsEditingName] = useState(false);
   const [deckName, setDeckName] = useState('');
   const [isCardEditorOpen, setIsCardEditorOpen] = useState(false);
   const [cardToEdit, setCardToEdit] = useState<CardType | null>(null);
 
-  useEffect(() => {
-    const currentDeck = decks.find(d => d.id === deckId);
-    if (currentDeck) {
-      setDeck(currentDeck);
-      setDeckName(currentDeck.name);
-    } else {
-      // Redirect or show not found
+  const fetchDeck = useCallback(async () => {
+    if (typeof deckId !== 'string') return;
+    setIsLoading(true);
+    try {
+      const currentDeck = await getDeck(deckId);
+      if (currentDeck) {
+        setDeck(currentDeck);
+        setDeckName(currentDeck.name);
+      } else {
+        toast({ variant: 'destructive', title: 'Deck not found' });
+        router.push('/');
+      }
+    } catch (error) {
+      toast({ variant: 'destructive', title: 'Error fetching deck' });
       router.push('/');
+    } finally {
+      setIsLoading(false);
     }
-  }, [deckId, decks, router]);
+  }, [deckId, router, toast]);
 
-  const handleNameSave = () => {
+  useEffect(() => {
+    fetchDeck();
+  }, [fetchDeck]);
+
+  const handleNameSave = async () => {
     if (deckName.trim().length < 3) {
       toast({ variant: 'destructive', title: 'Invalid Name', description: 'Deck name must be at least 3 characters.' });
       return;
     }
-    setDecks(decks.map(d => (d.id === deckId ? { ...d, name: deckName.trim() } : d)));
-    setIsEditingName(false);
-    toast({ title: 'Deck Renamed', description: `Deck is now named "${deckName.trim()}".` });
+    const result = await updateDeckName({ deckId: deck!.id, name: deckName.trim() });
+    if (result.success) {
+      setIsEditingName(false);
+      toast({ title: 'Deck Renamed', description: `Deck is now named "${deckName.trim()}".` });
+      fetchDeck();
+    } else {
+      toast({ variant: 'destructive', title: 'Error', description: result.error });
+    }
   };
 
-  const handleSaveCard = (cardData: { question: string, answer: string }) => {
+  const handleSaveCard = async (cardData: { question: string, answer: string }) => {
+    let result;
     if (cardToEdit) {
       // Editing existing card
-      const updatedCards = deck!.cards.map(c => c.id === cardToEdit.id ? { ...c, ...cardData } : c);
-      setDecks(decks.map(d => (d.id === deckId ? { ...d, cards: updatedCards } : d)));
-      toast({ title: 'Card Updated' });
+      result = await updateCard({ cardId: cardToEdit.id, ...cardData });
     } else {
       // Adding new card
-      const newCard: CardType = {
-        ...cardData,
-        id: `${Date.now()}`,
-        interval: 0,
-        easeFactor: 2.5,
-        dueDate: startOfToday().toISOString(),
-      };
-      const updatedCards = [...deck!.cards, newCard];
-      setDecks(decks.map(d => (d.id === deckId ? { ...d, cards: updatedCards } : d)));
-      toast({ title: 'Card Added' });
+      result = await addCard({ deckId: deck!.id, ...cardData });
     }
+
+    if (result.success) {
+      toast({ title: cardToEdit ? 'Card Updated' : 'Card Added' });
+      fetchDeck();
+    } else {
+      toast({ variant: 'destructive', title: 'Error', description: result.error });
+    }
+
     setCardToEdit(null);
     setIsCardEditorOpen(false);
   };
@@ -94,16 +109,21 @@ export default function DeckManagerPage() {
     setIsCardEditorOpen(true);
   }
 
-  const handleDeleteCard = (cardId: string) => {
-    const updatedCards = deck!.cards.filter(c => c.id !== cardId);
-    setDecks(decks.map(d => (d.id === deckId ? { ...d, cards: updatedCards } : d)));
-    toast({ title: 'Card Deleted' });
+  const handleDeleteCard = async (cardId: string) => {
+    const result = await deleteCard(cardId);
+     if (result.success) {
+      toast({ title: 'Card Deleted' });
+      fetchDeck();
+    } else {
+      toast({ variant: 'destructive', title: 'Error', description: result.error });
+    }
   }
 
-  if (!deck) {
+  if (isLoading || !deck) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <p>Loading deck...</p>
+        <Loader2 className="h-8 w-8 animate-spin" />
+        <p className="ml-4">Loading deck...</p>
       </div>
     );
   }

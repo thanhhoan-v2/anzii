@@ -1,17 +1,15 @@
 "use client";
 
-import React, { useState, useMemo, useCallback, useRef } from 'react';
+import React, { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { isBefore, startOfToday } from 'date-fns';
-import { BrainCircuit, Upload, FileText, Trash2, Settings, BookOpen, PlusCircle } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { BrainCircuit, Upload, FileText, Trash2, Settings, BookOpen, PlusCircle, Loader2 } from 'lucide-react';
 import { Card as ShadCard, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { useLocalStorage } from '@/hooks/use-local-storage';
 import Flashcard from '@/components/Flashcard';
 import MarkdownImporter from '@/components/MarkdownImporter';
-import type { Card as CardType, Deck, Rating } from '@/types';
-import { calculateNextReview } from '@/lib/srs';
+import type { Card as CardType, Deck, Rating, DeckListItem } from '@/types';
 import { useToast } from "@/hooks/use-toast";
 import {
   AlertDialog,
@@ -24,6 +22,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { getDecksWithCounts, getDeck, deleteDeck, reviewCard, createDeckFromImport } from '@/lib/actions';
+
 
 const WelcomeScreen = ({ onImport, onMarkdownImport }: { onImport: () => void; onMarkdownImport: () => void; }) => (
   <div className="text-center py-16">
@@ -38,7 +38,8 @@ const WelcomeScreen = ({ onImport, onMarkdownImport }: { onImport: () => void; o
 );
 
 export default function Home() {
-  const [decks, setDecks] = useLocalStorage<Deck[]>('decks', []);
+  const [decks, setDecks] = useState<DeckListItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [activeDeck, setActiveDeck] = useState<Deck | null>(null);
   const [reviewQueue, setReviewQueue] = useState<CardType[]>([]);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
@@ -47,6 +48,23 @@ export default function Home() {
   const [isMarkdownImporterOpen, setIsMarkdownImporterOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
+  const router = useRouter();
+
+  const fetchDecks = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const fetchedDecks = await getDecksWithCounts();
+      setDecks(fetchedDecks);
+    } catch (error) {
+      toast({ variant: "destructive", title: "Error", description: "Could not fetch decks." });
+    } finally {
+      setIsLoading(false);
+    }
+  }, [toast]);
+
+  useEffect(() => {
+    fetchDecks();
+  }, [fetchDecks]);
 
   const progressValue = useMemo(() => {
     if (reviewQueue.length === 0) return 0;
@@ -57,36 +75,27 @@ export default function Home() {
     fileInputRef.current?.click();
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = (e) => {
+    reader.onload = async (e) => {
       try {
         const content = e.target?.result as string;
         const importedJson = JSON.parse(content);
-        if (!importedJson.name || !Array.isArray(importedJson.cards)) {
-          throw new Error("Invalid deck format. 'name' and 'cards' array are required.");
+        
+        const result = await createDeckFromImport(importedJson);
+
+        if (result.success) {
+          toast({
+            title: "Deck Imported!",
+            description: `Your new deck has been loaded.`,
+          });
+          fetchDecks();
+        } else {
+          throw new Error(result.error || "Failed to import deck.");
         }
-        const today = startOfToday();
-        const newDeck: Deck = {
-          id: `${Date.now()}`,
-          name: importedJson.name,
-          cards: importedJson.cards.map((card: any, index: number) => ({
-            id: card.id || `${Date.now()}-${index}`,
-            question: card.question || '',
-            answer: card.answer || '',
-            interval: card.interval || 0,
-            easeFactor: card.easeFactor || 2.5,
-            dueDate: card.dueDate || today.toISOString(),
-          })),
-        };
-        setDecks(prev => [...prev, newDeck]);
-        toast({
-          title: "Deck Imported!",
-          description: `"${newDeck.name}" with ${newDeck.cards.length} cards has been loaded.`,
-        });
       } catch (error) {
         console.error("Failed to parse JSON:", error);
         toast({
@@ -100,46 +109,47 @@ export default function Home() {
     event.target.value = '';
   };
   
-  const startReviewSession = useCallback((deckId: string) => {
-    const deckToReview = decks.find(d => d.id === deckId);
-    if (!deckToReview) return;
-    
-    const today = startOfToday();
-    const dueCards = deckToReview.cards.filter(card => isBefore(new Date(card.dueDate), today) || new Date(card.dueDate).getTime() === today.getTime());
+  const startReviewSession = useCallback(async (deckId: string) => {
+    try {
+      const deckToReview = await getDeck(deckId);
+      if (!deckToReview) {
+        toast({ variant: "destructive", title: "Error", description: "Could not find deck." });
+        return;
+      }
+      
+      const dueCards = deckToReview.cards.filter(card => new Date(card.dueDate) <= new Date());
+  
+      if (dueCards.length === 0) {
+        toast({ title: "All Caught Up!", description: "You have no cards due for review today in this deck." });
+        return;
+      }
+      
+      setActiveDeck(deckToReview);
+      setReviewQueue(dueCards);
+      setCurrentCardIndex(0);
+      setIsFlipped(false);
+      setSessionInProgress(true);
 
-    if (dueCards.length === 0) {
-      toast({ title: "All Caught Up!", description: "You have no cards due for review today in this deck." });
-      return;
+    } catch (error) {
+      toast({ variant: "destructive", title: "Error", description: "Could not start review session." });
     }
-    
-    setActiveDeck(deckToReview);
-    setReviewQueue(dueCards);
-    setCurrentCardIndex(0);
-    setIsFlipped(false);
-    setSessionInProgress(true);
-  }, [decks, toast]);
+  }, [toast]);
 
-  const handleDeckGenerated = (newDeck: Deck) => {
-    setDecks(prev => [...prev, newDeck]);
+  const handleDeckCreated = () => {
     setIsMarkdownImporterOpen(false);
     toast({
       title: "Deck Generated!",
-      description: `"${newDeck.name}" with ${newDeck.cards.length} cards has been created.`,
+      description: `Your new deck has been created.`,
     });
+    fetchDecks();
   };
 
-  const handleRate = (rating: Rating) => {
+  const handleRate = async (rating: Rating) => {
     if (!isFlipped || !activeDeck) return;
 
     const currentCard = reviewQueue[currentCardIndex];
-    const updatedCard = calculateNextReview(currentCard, rating);
-
-    setDecks(prevDecks => prevDecks.map(d => 
-        d.id === activeDeck.id 
-            ? { ...d, cards: d.cards.map(c => c.id === updatedCard.id ? updatedCard : c) }
-            : d
-    ));
-
+    await reviewCard({ cardId: currentCard.id, rating });
+    
     if (currentCardIndex + 1 < reviewQueue.length) {
       setCurrentCardIndex(prev => prev + 1);
       setIsFlipped(false);
@@ -150,15 +160,30 @@ export default function Home() {
         title: "Session Complete!",
         description: `You've reviewed ${reviewQueue.length} cards. Great job!`,
       });
+      fetchDecks();
     }
   };
 
-  const handleDeleteDeck = (deckId: string) => {
-    setDecks(decks => decks.filter(d => d.id !== deckId));
-    toast({ title: "Deck Deleted", description: "The deck has been removed." });
+  const handleDeleteDeck = async (deckId: string) => {
+    const result = await deleteDeck(deckId);
+    if (result.success) {
+      toast({ title: "Deck Deleted", description: "The deck has been removed." });
+      fetchDecks();
+    } else {
+      toast({ variant: "destructive", title: "Error", description: result.error });
+    }
   };
 
   const currentCard = sessionInProgress ? reviewQueue[currentCardIndex] : null;
+
+  if (isLoading) {
+    return (
+        <div className="flex justify-center items-center h-screen">
+            <Loader2 className="h-8 w-8 animate-spin" />
+            <p className="ml-4">Loading decks...</p>
+        </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background font-body text-foreground">
@@ -206,17 +231,15 @@ export default function Home() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {decks.map(deck => {
-              const today = startOfToday();
-              const dueCount = deck.cards.filter(card => isBefore(new Date(card.dueDate), today) || new Date(card.dueDate).getTime() === today.getTime()).length;
               return (
                 <ShadCard key={deck.id} className="flex flex-col shadow-lg hover:shadow-xl transition-shadow">
                   <CardHeader>
                     <CardTitle>{deck.name}</CardTitle>
-                    <CardDescription>{deck.cards.length} cards</CardDescription>
+                    <CardDescription>{deck.cardCount} cards</CardDescription>
                   </CardHeader>
                   <CardContent className="flex-grow">
-                    <div className={`text-lg font-bold ${dueCount > 0 ? 'text-accent' : 'text-muted-foreground'}`}>
-                      {dueCount} due
+                    <div className={`text-lg font-bold ${deck.dueCount > 0 ? 'text-accent' : 'text-muted-foreground'}`}>
+                      {deck.dueCount} due
                     </div>
                     <p className="text-sm text-muted-foreground">for review today</p>
                   </CardContent>
@@ -243,7 +266,7 @@ export default function Home() {
                         </AlertDialogContent>
                       </AlertDialog>
                     </div>
-                    <Button onClick={() => startReviewSession(deck.id)} disabled={dueCount === 0}>
+                    <Button onClick={() => startReviewSession(deck.id)} disabled={deck.dueCount === 0}>
                       Review
                     </Button>
                   </CardFooter>
@@ -257,7 +280,7 @@ export default function Home() {
       <MarkdownImporter 
         isOpen={isMarkdownImporterOpen}
         onOpenChange={setIsMarkdownImporterOpen}
-        onDeckGenerated={handleDeckGenerated}
+        onSuccess={handleDeckCreated}
       />
     </div>
   );
