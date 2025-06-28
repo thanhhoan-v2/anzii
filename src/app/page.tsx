@@ -2,25 +2,27 @@
 
 import React, { useState, useMemo, useCallback, useRef } from 'react';
 import { isBefore, startOfToday } from 'date-fns';
-import { BrainCircuit, Upload, Sparkles, BookOpen, RotateCcw } from 'lucide-react';
+import { BrainCircuit, Upload, Sparkles, BookOpen, RotateCcw, FileText } from 'lucide-react';
 import { Card as ShadCard, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
 import AiQuestionSuggester from '@/components/AiQuestionSuggester';
 import Flashcard from '@/components/Flashcard';
+import MarkdownImporter from '@/components/MarkdownImporter';
 import type { Card as CardType, Deck, Rating } from '@/types';
 import { calculateNextReview } from '@/lib/srs';
 import { useToast } from "@/hooks/use-toast";
 
-const WelcomeScreen = ({ onStart, onImport, hasDeck }: { onStart: () => void; onImport: () => void; hasDeck: boolean }) => (
+const WelcomeScreen = ({ onStart, onImport, onMarkdownImport, hasDeck }: { onStart: () => void; onImport: () => void; onMarkdownImport: () => void; hasDeck: boolean }) => (
   <div className="text-center">
     <BookOpen className="mx-auto h-16 w-16 text-primary" />
     <h2 className="mt-4 text-2xl font-bold tracking-tight text-foreground">Welcome to your study session</h2>
-    <p className="mt-2 text-muted-foreground">Import a deck to begin, or start reviewing your due cards.</p>
-    <div className="mt-6 flex justify-center gap-4">
-      <Button onClick={onImport}><Upload className="mr-2" /> Import Deck</Button>
-      {hasDeck && <Button onClick={onStart} variant="secondary">Start Review</Button>}
+    <p className="mt-2 text-muted-foreground">Import a deck, create one with AI, or start reviewing.</p>
+    <div className="mt-6 flex flex-wrap justify-center gap-4">
+      <Button onClick={onImport} variant="outline"><Upload className="mr-2" /> Import from File</Button>
+      <Button onClick={onMarkdownImport} variant="outline"><FileText className="mr-2" /> Create with AI</Button>
+      {hasDeck && <Button onClick={onStart}>Start Review</Button>}
     </div>
   </div>
 );
@@ -31,6 +33,7 @@ export default function Home() {
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [sessionInProgress, setSessionInProgress] = useState(false);
+  const [isMarkdownImporterOpen, setIsMarkdownImporterOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
@@ -109,6 +112,15 @@ export default function Home() {
     setSessionInProgress(true);
   }, [dueCards, toast]);
 
+  const handleDeckGenerated = (newDeck: Deck) => {
+    setDeck(newDeck);
+    setSessionInProgress(false);
+    setIsMarkdownImporterOpen(false);
+    toast({
+      title: "Deck Generated!",
+      description: `"${newDeck.name}" with ${newDeck.cards.length} cards has been created.`,
+    });
+  };
 
   const handleRate = (rating: Rating) => {
     if (!isFlipped || !deck) return;
@@ -178,7 +190,7 @@ export default function Home() {
                   </div>
                  </div>
               ) : (
-                <WelcomeScreen onStart={startReviewSession} onImport={handleImportClick} hasDeck={!!deck} />
+                <WelcomeScreen onStart={startReviewSession} onImport={handleImportClick} onMarkdownImport={() => setIsMarkdownImporterOpen(true)} hasDeck={!!deck} />
               )}
             </ShadCard>
           </div>
@@ -196,7 +208,8 @@ export default function Home() {
                 </div>
                 <Separator className="my-4" />
                 <div className="flex flex-col gap-2">
-                  <Button onClick={handleImportClick} variant="outline"><Upload className="mr-2" /> Import New Deck</Button>
+                  <Button onClick={handleImportClick} variant="outline"><Upload className="mr-2" /> Import From File</Button>
+                  <Button onClick={() => setIsMarkdownImporterOpen(true)} variant="outline"><FileText className="mr-2" /> Create with AI</Button>
                   <input type="file" ref={fileInputRef} onChange={handleFileChange} accept=".json" className="hidden" />
                   {deck && <Button onClick={startReviewSession} disabled={sessionInProgress || dueCards.length === 0}><RotateCcw className="mr-2"/> Start Review</Button>}
                 </div>
@@ -208,6 +221,11 @@ export default function Home() {
 
         </div>
       </main>
+      <MarkdownImporter 
+        isOpen={isMarkdownImporterOpen}
+        onOpenChange={setIsMarkdownImporterOpen}
+        onDeckGenerated={handleDeckGenerated}
+      />
     </div>
   );
 }
