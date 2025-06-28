@@ -1,14 +1,14 @@
 'use server';
 
-import { getDb } from '@/db';
-import { cards, decks, testTable } from '@/db/schema';
-import { eq, and, lte, sql, asc, count } from 'drizzle-orm';
-import type { Rating, DeckListItem, Deck as DeckType, Card as CardType } from '@/types';
-import { revalidatePath } from 'next/cache';
-import { calculateNextReview } from '@/lib/srs';
 import { generateCardsFromMarkdown } from '@/ai/flows/generate-cards-from-markdown';
 import { generateDeckFromTopic } from '@/ai/flows/generate-deck-from-topic';
+import { getDb } from '@/db';
+import { cards, decks, } from '@/db/schema';
+import { calculateNextReview } from '@/lib/srs';
 import { shuffle } from '@/lib/utils';
+import type { Card as CardType, DeckListItem, Deck as DeckType, Rating } from '@/types';
+import { asc, eq, lte, sql } from 'drizzle-orm';
+import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 
 type ActionResponse = {
@@ -16,7 +16,13 @@ type ActionResponse = {
   error?: string;
 };
 
-const convertCardTimestamps = (cardData: any): CardType => ({
+// Type for raw card data from database (with Date objects)
+type RawCardData = Omit<CardType, 'dueDate' | 'createdAt'> & {
+  dueDate: Date;
+  createdAt?: Date;
+};
+
+const convertCardTimestamps = (cardData: RawCardData): CardType => ({
   ...cardData,
   dueDate: cardData.dueDate.toISOString(),
   createdAt: cardData.createdAt?.toISOString(),
@@ -27,22 +33,22 @@ export async function getDecksWithCounts(): Promise<DeckListItem[]> {
   const cardCountSubquery = db.$with('card_count_sq').as(
     db.select({
       deckId: cards.deckId,
-      count: sql<number>`count(${cards.id})`.as('count')
+      cardCount: sql<number>`count(${cards.id})`.as('card_count')
     }).from(cards).groupBy(cards.deckId)
   );
 
   const dueCountSubquery = db.$with('due_count_sq').as(
     db.select({
       deckId: cards.deckId,
-      count: sql<number>`count(${cards.id})`.as('count')
+      dueCount: sql<number>`count(${cards.id})`.as('due_count')
     }).from(cards).where(lte(cards.dueDate, new Date())).groupBy(cards.deckId)
   );
 
   const result = await db.with(cardCountSubquery, dueCountSubquery).select({
     id: decks.id,
     name: decks.name,
-    cardCount: sql<number>`coalesce(${cardCountSubquery.count}, 0)`.mapWith(Number),
-    dueCount: sql<number>`coalesce(${dueCountSubquery.count}, 0)`.mapWith(Number),
+    cardCount: sql<number>`coalesce(${cardCountSubquery.cardCount}, 0)`.mapWith(Number),
+    dueCount: sql<number>`coalesce(${dueCountSubquery.dueCount}, 0)`.mapWith(Number),
   })
     .from(decks)
     .leftJoin(cardCountSubquery, eq(decks.id, cardCountSubquery.deckId))
@@ -66,7 +72,7 @@ export async function getDeck(deckId: string): Promise<DeckType | null> {
   if (!deckData) {
     return null;
   }
-  
+
   return {
     ...deckData,
     createdAt: deckData.createdAt.toISOString(),
@@ -84,7 +90,7 @@ export async function createDeckFromMarkdown(data: { topic: string; markdown: st
 
     await db.transaction(async (tx) => {
       const [newDeck] = await tx.insert(decks).values({ name: data.topic }).returning();
-      
+
       if (aiResult.cards.length > 0) {
         const shuffledCards = shuffle(aiResult.cards);
         await tx.insert(cards).values(
@@ -128,9 +134,9 @@ export async function createDeckFromImport(data: unknown): Promise<ActionRespons
   if (!validation.success) {
     return { success: false, error: "Invalid deck format." };
   }
-  
+
   const { name, cards: importedCards } = validation.data;
-  
+
   try {
     await db.transaction(async (tx) => {
       const [newDeck] = await tx.insert(decks).values({ name }).returning();
@@ -148,7 +154,7 @@ export async function createDeckFromImport(data: unknown): Promise<ActionRespons
         );
       }
     });
-    
+
     revalidatePath('/');
     return { success: true };
   } catch (error) {
@@ -181,11 +187,11 @@ export async function reviewCard({ cardId, deckId, rating }: { cardId: string, d
     }
 
     const card: CardType = {
-        ...cardData,
-        dueDate: cardData.dueDate.toISOString(),
-        createdAt: cardData.createdAt.toISOString()
+      ...cardData,
+      dueDate: cardData.dueDate.toISOString(),
+      createdAt: cardData.createdAt.toISOString()
     };
-    
+
     const updatedCard = calculateNextReview(card, rating);
 
     await db.update(cards).set({
@@ -193,7 +199,7 @@ export async function reviewCard({ cardId, deckId, rating }: { cardId: string, d
       interval: updatedCard.interval,
       dueDate: new Date(updatedCard.dueDate),
     }).where(eq(cards.id, cardId));
-    
+
     return { success: true };
   } catch (error) {
     console.error(error);
@@ -250,7 +256,7 @@ export async function createDeckFromAi(data: { topic: string }): Promise<ActionR
     if (!aiResult.cards || aiResult.cards.length === 0) {
       return { success: false, error: "The AI could not generate any cards for the provided topic." };
     }
-    
+
     await db.transaction(async (tx) => {
       const [newDeck] = await tx.insert(decks).values({ name: data.topic }).returning();
       if (aiResult.cards.length > 0) {
@@ -299,25 +305,11 @@ export async function resetDeckProgress(deckId: string): Promise<ActionResponse>
         dueDate: new Date(),
       })
       .where(eq(cards.deckId, deckId));
-      
+
     revalidatePath('/');
     return { success: true };
   } catch (error) {
     console.error(error);
     return { success: false, error: "Failed to reset deck progress." };
   }
-}
-
-export async function getTestData(): Promise<any> {
-    const db = getDb();
-    try {
-        const data = await db.select().from(testTable);
-        return { data };
-    } catch (error) {
-        console.error("Error fetching test data:", error);
-        if (error instanceof Error && error.message.includes('relation "test" does not exist')) {
-            return { error: 'The "test" table was not found in the database. Please ensure it has been created and you have run `npm run db:push`.' };
-        }
-        return { error: 'An error occurred while fetching test data.' };
-    }
 }

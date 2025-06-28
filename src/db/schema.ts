@@ -1,14 +1,12 @@
-import {
-  pgTable,
-  text,
-  timestamp,
-  integer,
-  real,
-  primaryKey,
-  serial,
-} from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
-import { randomUUID } from 'crypto';
+import {
+  integer,
+  pgTable,
+  real,
+  text,
+  timestamp
+} from 'drizzle-orm/pg-core';
+import { randomUUID } from 'node:crypto';
 
 export const decks = pgTable('decks', {
   id: text('id')
@@ -47,8 +45,3 @@ export const cardsRelations = relations(cards, ({ one }) => ({
     references: [decks.id],
   }),
 }));
-
-export const testTable = pgTable('test', {
-    id: serial('id').primaryKey(),
-    name: text('name'),
-});
