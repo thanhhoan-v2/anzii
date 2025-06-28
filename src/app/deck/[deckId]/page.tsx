@@ -25,6 +25,7 @@ import {
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { getDeck, updateDeckName, addCard, updateCard, deleteCard } from '@/lib/actions';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 export default function DeckManagerPage() {
   const router = useRouter();
@@ -135,7 +136,10 @@ export default function DeckManagerPage() {
           <Button variant="outline" asChild>
             <Link href="/"><ArrowLeft className="mr-2" /> Back to Decks</Link>
           </Button>
-          <h1 className="text-2xl font-bold font-headline tracking-tight">Manage Deck</h1>
+          <div className="flex items-center gap-4">
+            <h1 className="text-2xl font-bold font-headline tracking-tight">Manage Deck</h1>
+            <ThemeToggle />
+          </div>
         </div>
       </header>
 

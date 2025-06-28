@@ -23,6 +23,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { getDecksWithCounts, getDeck, deleteDeck, reviewCard, createDeckFromImport } from '@/lib/actions';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 
 const WelcomeScreen = ({ onImport, onAiCreate }: { onImport: () => void; onAiCreate: () => void; }) => (
@@ -193,12 +194,15 @@ export default function Home() {
             <BrainCircuit className="h-8 w-8 text-primary" />
             <h1 className="text-2xl font-bold font-headline tracking-tight">FlashSync</h1>
           </Link>
-          {decks.length > 0 && !sessionInProgress && (
-            <div className="flex gap-2">
-              <Button onClick={handleImportClick} variant="outline"><Upload /> Import</Button>
-              <Button onClick={() => setIsAiDeckGeneratorOpen(true)}><PlusCircle /> Create Deck</Button>
-            </div>
-          )}
+          <div className="flex items-center gap-4">
+            {decks.length > 0 && !sessionInProgress && (
+              <div className="flex gap-2">
+                <Button onClick={handleImportClick} variant="outline"><Upload /> Import</Button>
+                <Button onClick={() => setIsAiDeckGeneratorOpen(true)}><PlusCircle /> Create Deck</Button>
+              </div>
+            )}
+            <ThemeToggle />
+          </div>
         </div>
       </header>
       
