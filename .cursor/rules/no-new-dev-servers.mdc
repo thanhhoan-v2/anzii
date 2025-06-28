@@ -1,6 +1,0 @@
----
-description: 
-globs: 
-alwaysApply: true
----
-Do not create new dev servers, like "npm run dev" or "pnpm dev".
