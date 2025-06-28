@@ -8,7 +8,7 @@ import { Card as ShadCard, CardContent, CardHeader, CardTitle, CardDescription, 
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import Flashcard from '@/components/Flashcard';
-import MarkdownImporter from '@/components/MarkdownImporter';
+import AiDeckGenerator from '@/components/AiDeckGenerator';
 import type { Card as CardType, Deck, Rating, DeckListItem } from '@/types';
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -25,14 +25,14 @@ import {
 import { getDecksWithCounts, getDeck, deleteDeck, reviewCard, createDeckFromImport } from '@/lib/actions';
 
 
-const WelcomeScreen = ({ onImport, onMarkdownImport }: { onImport: () => void; onMarkdownImport: () => void; }) => (
+const WelcomeScreen = ({ onImport, onAiCreate }: { onImport: () => void; onAiCreate: () => void; }) => (
   <div className="text-center py-16">
     <BookOpen className="mx-auto h-16 w-16 text-primary" />
     <h2 className="mt-4 text-3xl font-bold tracking-tight text-foreground">Create Your First Deck</h2>
-    <p className="mt-2 text-lg text-muted-foreground">Import from a file or use AI to generate cards from your notes.</p>
+    <p className="mt-2 text-lg text-muted-foreground">Import from a file or use AI to generate cards from a topic.</p>
     <div className="mt-8 flex flex-wrap justify-center gap-4">
       <Button onClick={onImport} size="lg"><Upload className="mr-2" /> Import from File</Button>
-      <Button onClick={onMarkdownImport} size="lg"><FileText className="mr-2" /> Create with AI</Button>
+      <Button onClick={onAiCreate} size="lg"><FileText className="mr-2" /> Create with AI</Button>
     </div>
   </div>
 );
@@ -45,7 +45,7 @@ export default function Home() {
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [sessionInProgress, setSessionInProgress] = useState(false);
-  const [isMarkdownImporterOpen, setIsMarkdownImporterOpen] = useState(false);
+  const [isAiDeckGeneratorOpen, setIsAiDeckGeneratorOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   const router = useRouter();
@@ -136,7 +136,7 @@ export default function Home() {
   }, [toast]);
 
   const handleDeckCreated = () => {
-    setIsMarkdownImporterOpen(false);
+    setIsAiDeckGeneratorOpen(false);
     toast({
       title: "Deck Generated!",
       description: `Your new deck has been created.`,
@@ -196,7 +196,7 @@ export default function Home() {
           {decks.length > 0 && !sessionInProgress && (
             <div className="flex gap-2">
               <Button onClick={handleImportClick} variant="outline"><Upload /> Import</Button>
-              <Button onClick={() => setIsMarkdownImporterOpen(true)}><PlusCircle /> Create Deck</Button>
+              <Button onClick={() => setIsAiDeckGeneratorOpen(true)}><PlusCircle /> Create Deck</Button>
             </div>
           )}
         </div>
@@ -227,7 +227,7 @@ export default function Home() {
             </div>
           </div>
         ) : decks.length === 0 ? (
-          <WelcomeScreen onImport={handleImportClick} onMarkdownImport={() => setIsMarkdownImporterOpen(true)} />
+          <WelcomeScreen onImport={handleImportClick} onAiCreate={() => setIsAiDeckGeneratorOpen(true)} />
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {decks.map(deck => {
@@ -277,9 +277,9 @@ export default function Home() {
         )}
       </main>
       <input type="file" ref={fileInputRef} onChange={handleFileChange} accept=".json" className="hidden" />
-      <MarkdownImporter 
-        isOpen={isMarkdownImporterOpen}
-        onOpenChange={setIsMarkdownImporterOpen}
+      <AiDeckGenerator 
+        isOpen={isAiDeckGeneratorOpen}
+        onOpenChange={setIsAiDeckGeneratorOpen}
         onSuccess={handleDeckCreated}
       />
     </div>

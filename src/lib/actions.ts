@@ -19,6 +19,7 @@ import type { Card as CardType, Rating, DeckListItem } from '@/types';
 import { revalidatePath } from 'next/cache';
 import { calculateNextReview } from '@/lib/srs';
 import { generateCardsFromMarkdown } from '@/ai/flows/generate-cards-from-markdown';
+import { generateDeckFromTopic } from '@/ai/flows/generate-deck-from-topic';
 import { shuffle } from '@/lib/utils';
 import { z } from 'zod';
 
@@ -283,6 +284,48 @@ export async function updateCard({ cardId, deckId, question, answer }: { cardId:
   } catch (error) {
     console.error(error);
     return { success: false, error: "Failed to update card." };
+  }
+}
+
+export async function createDeckFromAi(data: { topic: string }): Promise<ActionResponse> {
+  try {
+    const aiResult = await generateDeckFromTopic(data);
+
+    if (!aiResult.cards || aiResult.cards.length === 0) {
+      return { success: false, error: "The AI could not generate any cards for the provided topic." };
+    }
+    
+    const newDeckRef = await addDoc(collection(db, 'decks'), {
+        name: data.topic,
+        createdAt: Timestamp.now(),
+    });
+
+    const shuffledCards = shuffle(aiResult.cards);
+    
+    // Firestore batch writes have a limit of 500 operations.
+    const BATCH_SIZE = 499;
+    for (let i = 0; i < shuffledCards.length; i += BATCH_SIZE) {
+        const batch = writeBatch(db);
+        const chunk = shuffledCards.slice(i, i + BATCH_SIZE);
+        chunk.forEach(card => {
+            const cardRef = doc(collection(db, 'decks', newDeckRef.id, 'cards'));
+            batch.set(cardRef, {
+                question: card.question,
+                answer: card.answer,
+                interval: 0,
+                easeFactor: 2.5,
+                dueDate: Timestamp.now(),
+                createdAt: Timestamp.now(),
+            });
+        });
+        await batch.commit();
+    }
+
+    revalidatePath('/');
+    return { success: true };
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: "Failed to create AI-generated deck." };
   }
 }
 
