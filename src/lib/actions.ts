@@ -1,7 +1,7 @@
 'use server';
 
 import { getDb } from '@/db';
-import { cards, decks } from '@/db/schema';
+import { cards, decks, testTable } from '@/db/schema';
 import { eq, and, lte, sql, asc, count } from 'drizzle-orm';
 import type { Rating, DeckListItem, Deck as DeckType, Card as CardType } from '@/types';
 import { revalidatePath } from 'next/cache';
@@ -306,4 +306,18 @@ export async function resetDeckProgress(deckId: string): Promise<ActionResponse>
     console.error(error);
     return { success: false, error: "Failed to reset deck progress." };
   }
+}
+
+export async function getTestData(): Promise<any> {
+    const db = getDb();
+    try {
+        const data = await db.select().from(testTable);
+        return { data };
+    } catch (error) {
+        console.error("Error fetching test data:", error);
+        if (error instanceof Error && error.message.includes('relation "test" does not exist')) {
+            return { error: 'The "test" table was not found in the database. Please ensure it has been created and you have run `npm run db:push`.' };
+        }
+        return { error: 'An error occurred while fetching test data.' };
+    }
 }
