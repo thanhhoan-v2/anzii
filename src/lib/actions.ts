@@ -114,23 +114,23 @@ export async function createDeckFromMarkdown(data: {
 			};
 		}
 
-		await db.transaction(async (tx) => {
-			const [newDeck] = await tx
-				.insert(decks)
-				.values({ name: data.topic })
-				.returning();
+		// Create deck first
+		const [newDeck] = await db
+			.insert(decks)
+			.values({ name: data.topic })
+			.returning();
 
-			if (aiResult.cards.length > 0) {
-				const shuffledCards = shuffle(aiResult.cards);
-				await tx.insert(cards).values(
-					shuffledCards.map((card) => ({
-						deckId: newDeck.id,
-						question: card.question,
-						answer: card.answer,
-					})),
-				);
-			}
-		});
+		// Then add cards if any exist
+		if (aiResult.cards.length > 0) {
+			const shuffledCards = shuffle(aiResult.cards);
+			await db.insert(cards).values(
+				shuffledCards.map((card) => ({
+					deckId: newDeck.id,
+					question: card.question,
+					answer: card.answer,
+				})),
+			);
+		}
 
 		revalidatePath("/");
 		return { success: true };
@@ -182,22 +182,22 @@ export async function createDeckFromImport(
 	const { name, cards: importedCards } = validation.data;
 
 	try {
-		await db.transaction(async (tx) => {
-			const [newDeck] = await tx.insert(decks).values({ name }).returning();
+		// Create deck first
+		const [newDeck] = await db.insert(decks).values({ name }).returning();
 
-			if (importedCards.length > 0) {
-				await tx.insert(cards).values(
-					importedCards.map((card) => ({
-						deckId: newDeck.id,
-						question: card.question,
-						answer: card.answer,
-						interval: card.interval ?? 0,
-						easeFactor: card.easeFactor ?? 2.5,
-						dueDate: card.dueDate ? new Date(card.dueDate) : new Date(),
-					})),
-				);
-			}
-		});
+		// Then add cards if any exist
+		if (importedCards.length > 0) {
+			await db.insert(cards).values(
+				importedCards.map((card) => ({
+					deckId: newDeck.id,
+					question: card.question,
+					answer: card.answer,
+					interval: card.interval ?? 0,
+					easeFactor: card.easeFactor ?? 2.5,
+					dueDate: card.dueDate ? new Date(card.dueDate) : new Date(),
+				})),
+			);
+		}
 
 		revalidatePath("/");
 		return { success: true };
@@ -347,22 +347,23 @@ export async function createDeckFromAi(data: {
 			};
 		}
 
-		await db.transaction(async (tx) => {
-			const [newDeck] = await tx
-				.insert(decks)
-				.values({ name: data.topic })
-				.returning();
-			if (aiResult.cards.length > 0) {
-				const shuffledCards = shuffle(aiResult.cards);
-				await tx.insert(cards).values(
-					shuffledCards.map((card) => ({
-						deckId: newDeck.id,
-						question: card.question,
-						answer: card.answer,
-					})),
-				);
-			}
-		});
+		// Create deck first
+		const [newDeck] = await db
+			.insert(decks)
+			.values({ name: data.topic })
+			.returning();
+
+		// Then add cards if any exist
+		if (aiResult.cards.length > 0) {
+			const shuffledCards = shuffle(aiResult.cards);
+			await db.insert(cards).values(
+				shuffledCards.map((card) => ({
+					deckId: newDeck.id,
+					question: card.question,
+					answer: card.answer,
+				})),
+			);
+		}
 
 		revalidatePath("/");
 		return { success: true };
