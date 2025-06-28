@@ -4,6 +4,9 @@
 /.cursor
 .cursorrules
 
+# vscode
+/.vscode
+
 # idx files
 *.idx
 
