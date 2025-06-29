@@ -1,14 +1,14 @@
 "use client";
 
-import AiDeckGenerator from "@/components/features/ai/AiDeckGenerator";
-import DeckList from "@/components/features/deck/DeckList";
-import ReviewSession from "@/components/features/study/ReviewSession";
-import AppHeader from "@/components/layout/AppHeader";
-import WelcomeScreen from "@/components/sections/WelcomeScreen";
+import AiDeckGenerator from "@/components/features/ai/ai-deck-generator";
+import DeckList from "@/components/features/deck/deck-list";
+import ReviewSession from "@/components/features/study/review-session";
+import AppHeader from "@/components/layout/app-header";
+import WelcomeScreen from "@/components/sections/welcome-screen";
+import { useDeckManagement } from "@/hooks/use-deck-management";
+import { useFileImport } from "@/hooks/use-file-import";
+import { useReviewSession } from "@/hooks/use-review-session";
 import { useToast } from "@/hooks/use-toast";
-import { useDeckManagement } from "@/hooks/useDeckManagement";
-import { useFileImport } from "@/hooks/useFileImport";
-import { useReviewSession } from "@/hooks/useReviewSession";
 import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 

@@ -289,59 +289,48 @@ const newInterval = rating >= 3 ? Math.ceil(card.interval * newEaseFactor) : 1; 
 
 ### Component Architecture
 
-Anzii follows a clean, feature-driven component organization that promotes maintainability and scalability:
+The component system follows a clean architecture pattern with strict adherence to coding standards:
+
+#### Clean Code Principles
+- **Size Limit**: Components do not exceed 50 lines of code
+- **Props Limit**: Components have maximum 3 props for simplicity  
+- **Nesting Limit**: JSX nesting does not exceed 3 levels deep
+- **State Management**: Multiple useState calls use custom hooks or useReducer
+
+#### Component Organization
+- **UI Components** (`/ui`): Base shadcn/ui components for consistent design
+- **Layout Components** (`/layout`): Navigation, headers, and page structure
+- **Section Components** (`/sections`): Large page sections like landing pages
+- **Feature Components** (`/features`): Grouped by domain (AI, deck management, study)
+- **Common Components** (`/common`): Shared utilities across features
+
+#### Landing Page Architecture
+
+The landing page has been refactored into modular components for maintainability:
 
 ```
-src/components/
-├── ui/              # Base UI components (Shadcn/UI)
-├── layout/          # Page structure components
-│   ├── AppHeader.tsx
-│   └── AppLogo.tsx
-├── sections/        # Page-specific composite components
-│   ├── LandingPage.tsx
-│   └── WelcomeScreen.tsx
-├── features/        # Business logic components grouped by domain
-│   ├── ai/         # AI-powered functionality
-│   │   ├── AiDeckGenerator.tsx
-│   │   └── AiQuestionSuggester.tsx
-│   ├── deck/       # Deck management
-│   │   ├── DeckCard.tsx
-│   │   ├── DeckDeleteDialog.tsx
-│   │   ├── DeckList.tsx
-│   │   └── DeckResetDialog.tsx
-│   ├── study/      # Learning and review functionality
-│   │   ├── CardEditor.tsx
-│   │   ├── Flashcard.tsx
-│   │   └── ReviewSession.tsx
-│   └── import/     # Content import features
-│       └── MarkdownImporter.tsx
-└── common/         # Widely shared components
-    ├── ColorSchemeSelector.tsx
-    └── DeleteAlertDialog.tsx
+src/components/sections/landing/
+├── hero-section.tsx          # Hero with CTA
+├── stats-section.tsx         # Trust indicators
+├── services-section.tsx      # Feature highlights
+├── cta-section.tsx          # Call-to-action
+├── process-section.tsx      # How it works
+├── team-section.tsx         # Team showcase
+├── testimonials-section.tsx # Social proof
+├── contact-section.tsx      # Contact form
+├── footer-section.tsx       # Footer links
+└── index.ts                 # Barrel exports
 ```
 
-**Architecture Principles:**
+**Supporting Files:**
+- `src/data/landing-data.ts` - Static data extraction
+- `src/hooks/useLandingPageState.ts` - State management hook
 
-- **React Server Components First**: Components default to server-side rendering for optimal performance
-- **Single Responsibility**: Each component has one clear, focused purpose
-- **Composition over Configuration**: Components use children and composition patterns instead of complex prop interfaces
-- **Mobile-First Design**: All components are designed for mobile screens first, then adapted for larger displays
-- **Feature Boundaries**: Related functionality is grouped together, making the codebase easier to navigate and maintain
-
-**Component Guidelines:**
-
-- **File Naming**: Uses kebab-case for `.tsx` files (e.g., `deck-card.tsx`)
-- **Component Naming**: Uses PascalCase for components (e.g., `DeckCard`)
-- **Size Limits**: Components exceeding 50 lines are decomposed into smaller, focused units
-- **Import Strategy**: Leverages Shadcn/UI for base components, custom components for business logic
-
-**Theme Integration:**
-
-- **next-themes Provider**: Manages light/dark mode with system preference detection
-- **Stack Auth Theming**: Automatically applies appropriate theme to authentication components
-- **Color Scheme Provider**: Manages custom color schemes (17 curated options)
-- **Dynamic Theme Switching**: Instant updates across entire application including auth flows
-- **Theme Components**: `ThemeToggle` for quick switching, `ColorSchemeSelector` for full customization
+This modular approach enables:
+- **Reusability**: Components can be used across different pages
+- **Testability**: Individual sections can be tested in isolation
+- **Maintainability**: Easy to update specific sections
+- **Performance**: Better code splitting and loading
 
 ---
 
@@ -459,3 +448,116 @@ MIT License - Feel free to learn, modify, and contribute to the advancement of e
 ---
 
 _Built with 🧠 for learners who believe that knowledge, properly organized, can change the world._
+
+## 🏗️ Architecture
+
+### Project Structure
+
+```
+anzii/
+├── src/
+│   ├── app/                          # Next.js 13+ App Router
+│   │   ├── (auth)/                   # Auth group routes
+│   │   │   ├── sign-in/              # Sign in page
+│   │   │   └── sign-up/              # Sign up page
+│   │   ├── about-us/                 # About us page
+│   │   ├── contact/                  # Contact page  
+│   │   ├── create/                   # Deck creation page
+│   │   ├── dashboard/                # Main dashboard (auth required)
+│   │   ├── deck/[deckId]/           # Individual deck study page
+│   │   ├── features/                 # Features page
+│   │   ├── pricing/                  # Pricing page
+│   │   ├── handler/[...stack]/      # Stack Auth handler
+│   │   ├── page.tsx                 # Landing page (home)
+│   │   ├── layout.tsx               # Root layout with providers
+│   │   └── globals.css              # Global styles
+│   ├── components/                   # React components
+│   │   ├── ui/                      # shadcn/ui components
+│   │   ├── layout/                  # Layout components (header, logo)
+│   │   ├── sections/                # Page sections (landing, welcome)
+│   │   ├── features/                # Feature-specific components
+│   │   │   ├── ai/                  # AI-related components
+│   │   │   ├── deck/                # Deck management components
+│   │   │   ├── study/               # Study session components
+│   │   │   └── import/              # Import functionality
+│   │   └── common/                  # Shared/utility components
+│   ├── lib/                         # Utility functions and configurations
+│   ├── hooks/                       # Custom React hooks
+│   ├── db/                          # Database schema and utilities
+│   ├── ai/                          # AI/ML related code
+│   └── types/                       # TypeScript type definitions
+├── drizzle/                         # Database migrations
+└── docs/                           # Documentation
+```
+
+### Component Architecture
+
+The component system follows a clean architecture pattern with strict adherence to coding standards:
+
+#### Clean Code Principles
+- **Size Limit**: Components do not exceed 50 lines of code
+- **Props Limit**: Components have maximum 3 props for simplicity  
+- **Nesting Limit**: JSX nesting does not exceed 3 levels deep
+- **State Management**: Multiple useState calls use custom hooks or useReducer
+
+#### Component Organization
+- **UI Components** (`/ui`): Base shadcn/ui components for consistent design
+- **Layout Components** (`/layout`): Navigation, headers, and page structure
+- **Section Components** (`/sections`): Large page sections like landing pages
+- **Feature Components** (`/features`): Grouped by domain (AI, deck management, study)
+- **Common Components** (`/common`): Shared utilities across features
+
+#### Landing Page Architecture
+
+The landing page has been refactored into modular components for maintainability:
+
+```
+src/components/sections/landing/
+├── hero-section.tsx          # Hero with CTA
+├── stats-section.tsx         # Trust indicators
+├── services-section.tsx      # Feature highlights
+├── cta-section.tsx          # Call-to-action
+├── process-section.tsx      # How it works
+├── team-section.tsx         # Team showcase
+├── testimonials-section.tsx # Social proof
+├── contact-section.tsx      # Contact form
+├── footer-section.tsx       # Footer links
+└── index.ts                 # Barrel exports
+```
+
+**Supporting Files:**
+- `src/data/landing-data.ts` - Static data extraction
+- `src/hooks/useLandingPageState.ts` - State management hook
+
+This modular approach enables:
+- **Reusability**: Components can be used across different pages
+- **Testability**: Individual sections can be tested in isolation
+- **Maintainability**: Easy to update specific sections
+- **Performance**: Better code splitting and loading
+
+### Routing Structure
+
+The application uses Next.js 13+ App Router with the following routes:
+
+- `/` - Landing page with marketing content
+- `/dashboard` - Main application dashboard (requires authentication)
+- `/about-us` - Company information, team, mission, and values
+- `/features` - Detailed feature descriptions and comparisons
+- `/pricing` - Pricing plans with annual/monthly toggle
+- `/contact` - Contact form and company information
+- `/create` - Deck creation interface
+- `/deck/[deckId]` - Study session for specific deck
+- `/sign-in` - Authentication sign in
+- `/sign-up` - Authentication sign up
+
+### Theme System
+
+The application features a unified design system with:
+
+- **Color Scheme**: Black background with lime green (`#a3e635`) accents
+- **Typography**: Responsive text sizing with mobile-first approach
+- **Components**: Consistent card styling with rounded corners and shadow effects
+- **Theme Integration**: Next-themes integration with Stack Auth theming
+- **Responsive Design**: Mobile-first breakpoints (sm, md, lg, xl)
+
+All pages follow the same design language for a cohesive user experience.

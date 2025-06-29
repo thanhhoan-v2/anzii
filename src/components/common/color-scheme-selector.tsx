@@ -8,7 +8,7 @@ import {
 	SheetTitle,
 	SheetTrigger,
 } from "@/components/ui/sheet";
-import { useColorScheme } from "@/hooks/useColorScheme";
+import { useColorScheme } from "@/hooks/use-color-scheme";
 import { Check, Monitor, Moon, Palette, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useMemo, useState } from "react";
@@ -42,9 +42,9 @@ export function ColorSchemeSelector() {
 	}, [availableSchemes, colorScheme]);
 
 	const themeOptions = [
-		{ id: 'light', label: 'Light', icon: Sun },
-		{ id: 'dark', label: 'Dark', icon: Moon },
-		{ id: 'system', label: 'System', icon: Monitor },
+		{ id: "light", label: "Light", icon: Sun },
+		{ id: "dark", label: "Dark", icon: Moon },
+		{ id: "system", label: "System", icon: Monitor },
 	];
 
 	return (
@@ -108,10 +108,11 @@ export function ColorSchemeSelector() {
 										key={scheme.id}
 										type="button"
 										onClick={() => handleSchemeSelect(scheme.id)}
-										className={`w-full p-4 rounded-lg border transition-all text-left group ${isSelected
-											? "border-primary bg-primary/5 shadow-sm"
-											: "border-border hover:bg-muted/50 hover:border-primary/50"
-											}`}
+										className={`w-full p-4 rounded-lg border transition-all text-left group ${
+											isSelected
+												? "border-primary bg-primary/5 shadow-sm"
+												: "border-border hover:bg-muted/50 hover:border-primary/50"
+										}`}
 									>
 										<div className="flex items-center gap-4">
 											{/* Large Color Preview */}
@@ -161,10 +162,11 @@ export function ColorSchemeSelector() {
 											{/* Scheme Info */}
 											<div className="flex-1 min-w-0">
 												<div
-													className={`font-semibold text-base mb-1 transition-colors ${isSelected
-														? "text-primary"
-														: "group-hover:text-primary"
-														}`}
+													className={`font-semibold text-base mb-1 transition-colors ${
+														isSelected
+															? "text-primary"
+															: "group-hover:text-primary"
+													}`}
 												>
 													{scheme.name}
 												</div>

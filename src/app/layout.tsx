@@ -1,5 +1,5 @@
 import { Toaster } from "@/components/ui/toaster";
-import { ColorSchemeProvider } from "@/hooks/useColorScheme";
+import { ColorSchemeProvider } from "@/hooks/use-color-scheme";
 import { StackProvider } from "@stackframe/stack";
 import type { Metadata } from "next";
 import { Inter, Moirai_One, Space_Grotesk } from "next/font/google";
@@ -31,7 +31,9 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en" suppressHydrationWarning>
-			<body className={`${spaceGrotesk.variable} font-space-grotesk antialiased`}>
+			<body
+				className={`${spaceGrotesk.variable} font-space-grotesk antialiased`}
+			>
 				<ColorSchemeProvider>
 					<StackProvider app={stackServerApp}>
 						{children}

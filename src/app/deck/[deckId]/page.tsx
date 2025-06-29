@@ -1,7 +1,7 @@
 "use client";
 
-import CardEditor from "@/components/features/study/CardEditor";
-import AppHeader from "@/components/layout/AppHeader";
+import CardEditor from "@/components/features/study/card-editor";
+import AppHeader from "@/components/layout/app-header";
 import {
 	AlertDialog,
 	AlertDialogAction,

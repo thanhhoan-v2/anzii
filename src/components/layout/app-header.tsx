@@ -1,41 +1,52 @@
 "use client";
 
-import { ColorSchemeSelector } from "@/components/common/ColorSchemeSelector";
+import { ColorSchemeSelector } from "@/components/common/color-scheme-selector";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { Menu, PlusIcon, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import AppLogo from "./AppLogo";
+import AppLogo from "./app-logo";
 
 export default function AppHeader() {
 	const pathname = usePathname();
-	const isHome = pathname === "/";
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+	const isNotDashboard =
+		pathname === "/" ||
+		pathname === "/about-us" ||
+		pathname === "/features" ||
+		pathname === "/pricing" ||
+		pathname === "/contact";
+
 	const navLinks = [
-		{ href: "#about", label: "About us" },
-		{ href: "#features", label: "Features" },
-		{ href: "#pricing", label: "Pricing" },
-		{ href: "#contact", label: "Contact" },
+		{ href: "about-us", label: "About us" },
+		{ href: "features", label: "Features" },
+		{ href: "pricing", label: "Pricing" },
+		{ href: "contact", label: "Contact" },
 	];
 
 	const closeMobileMenu = () => setIsMobileMenuOpen(false);
 
 	return (
 		<header className="top-0 z-50 sticky bg-black p-4 border-zinc-800 border-b">
-			<div className="flex justify-between items-center mx-auto container">
+			<div className="flex justify-between items-center">
 				{/* Logo */}
 				<AppLogo
 					svgClassName="text-lime-400"
 					textClassName="text-white"
 					showText={true}
 				/>
-
 				{/* Desktop Navigation */}
 				<div className="hidden md:flex items-center gap-6">
-					{!isHome && (
+					{!isNotDashboard && (
 						<div className="flex items-center gap-4">
 							<Button
 								asChild
@@ -50,7 +61,7 @@ export default function AppHeader() {
 						</div>
 					)}
 
-					{isHome && (
+					{isNotDashboard && (
 						<nav className="flex items-center gap-2">
 							{navLinks.map((link) => (
 								<Button
@@ -66,9 +77,8 @@ export default function AppHeader() {
 						</nav>
 					)}
 				</div>
-
 				{/* Desktop Auth Buttons (for home page) */}
-				{isHome && (
+				{isNotDashboard && (
 					<div className="hidden md:flex items-center gap-2">
 						<Button
 							asChild
@@ -87,7 +97,6 @@ export default function AppHeader() {
 						</Button>
 					</div>
 				)}
-
 				{/* Mobile Menu */}
 				<div className="md:hidden">
 					<Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
@@ -101,8 +110,11 @@ export default function AppHeader() {
 								<span className="sr-only">Open menu</span>
 							</Button>
 						</SheetTrigger>
+						<VisuallyHidden>
+							<SheetTitle className="sr-only" />
+						</VisuallyHidden>
 						<SheetContent
-							side="right"
+							side="top"
 							className="bg-black m-0 p-0 border-0 w-full max-w-none h-full"
 						>
 							<div className="flex flex-col h-full min-h-screen">
@@ -126,7 +138,7 @@ export default function AppHeader() {
 
 								{/* Navigation Content */}
 								<div className="flex-1 p-6 pt-12 overflow-y-auto">
-									{isHome ? (
+									{isNotDashboard ? (
 										<div className="space-y-10 mx-auto max-w-md">
 											{/* Product Section */}
 											<div className="space-y-6">

@@ -1,6 +1,6 @@
 "use client";
 
-import AppHeader from "@/components/layout/AppHeader";
+import AppHeader from "@/components/layout/app-header";
 import { Button } from "@/components/ui/button";
 import {
 	Card,
