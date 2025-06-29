@@ -41,10 +41,47 @@
    ```
 
 4. **Launch Application**
+
    ```bash
    pnpm build
    pnpm start
    ```
+
+5. **Access the Application**
+   - **Main App**: http://localhost:3000 (Full learning application)
+   - **Landing Page**: http://localhost:3000/landing (Marketing/showcase page)
+
+---
+
+## 🎨 Landing Page
+
+Anzii features a modern, conversion-focused landing page designed to showcase the power of AI-enhanced spaced repetition learning. The landing page demonstrates the application's key features and benefits through an engaging, interactive experience.
+
+### Key Features
+
+- **Responsive Design**: Mobile-first approach with seamless adaptation across all device sizes
+- **Interactive Components**: Scroll-triggered animations and parallax effects for engaging user experience
+- **Modern UI/UX**: Built with shadcn/ui components following current design trends
+- **Conversion Optimized**: Multiple CTAs, social proof, and trust signals strategically placed
+- **Performance Focused**: Optimized animations using CSS transforms and Intersection Observer API
+
+### Landing Page Sections
+
+1. **Hero Section**: Compelling headline with animated background and clear value proposition
+2. **Problem/Solution**: Visual comparison between traditional learning and AI-powered spaced repetition
+3. **How It Works**: Interactive 4-step process using tabs to explain the learning journey
+4. **Features Showcase**: Grid of feature cards with hover animations and benefit highlights
+5. **Proven Results**: Animated statistics showing learning improvements and user satisfaction
+6. **Testimonials**: Real user feedback with star ratings and professional credentials
+7. **Final CTA**: Email capture form with trial benefits and trust indicators
+
+### Technical Implementation
+
+- **Animations**: Custom scroll-triggered animations with Intersection Observer
+- **Parallax Effects**: Smooth parallax scrolling for enhanced visual depth
+- **Component Architecture**: Modular design with reusable animated components
+- **Performance**: GPU-accelerated animations using `transform3d()` and `will-change`
+- **Accessibility**: Respects `prefers-reduced-motion` for users who prefer less animation
 
 ---
 
@@ -222,6 +259,54 @@ const newInterval = rating >= 3 ? Math.ceil(card.interval * newEaseFactor) : 1; 
 - **Parallel Processing**: Batch API requests for optimal sync performance
 - **Debounced Updates**: 1-second delay prevents excessive server calls
 - **Optimistic Updates**: Zero-latency user feedback during reviews
+
+### Component Architecture
+
+Anzii follows a clean, feature-driven component organization that promotes maintainability and scalability:
+
+```
+src/components/
+├── ui/              # Base UI components (Shadcn/UI)
+├── layout/          # Page structure components
+│   ├── AppHeader.tsx
+│   └── AppLogo.tsx
+├── sections/        # Page-specific composite components
+│   ├── LandingPage.tsx
+│   └── WelcomeScreen.tsx
+├── features/        # Business logic components grouped by domain
+│   ├── ai/         # AI-powered functionality
+│   │   ├── AiDeckGenerator.tsx
+│   │   └── AiQuestionSuggester.tsx
+│   ├── deck/       # Deck management
+│   │   ├── DeckCard.tsx
+│   │   ├── DeckDeleteDialog.tsx
+│   │   ├── DeckList.tsx
+│   │   └── DeckResetDialog.tsx
+│   ├── study/      # Learning and review functionality
+│   │   ├── CardEditor.tsx
+│   │   ├── Flashcard.tsx
+│   │   └── ReviewSession.tsx
+│   └── import/     # Content import features
+│       └── MarkdownImporter.tsx
+└── common/         # Widely shared components
+    ├── ColorSchemeSelector.tsx
+    └── DeleteAlertDialog.tsx
+```
+
+**Architecture Principles:**
+
+- **React Server Components First**: Components default to server-side rendering for optimal performance
+- **Single Responsibility**: Each component has one clear, focused purpose
+- **Composition over Configuration**: Components use children and composition patterns instead of complex prop interfaces
+- **Mobile-First Design**: All components are designed for mobile screens first, then adapted for larger displays
+- **Feature Boundaries**: Related functionality is grouped together, making the codebase easier to navigate and maintain
+
+**Component Guidelines:**
+
+- **File Naming**: Uses kebab-case for `.tsx` files (e.g., `deck-card.tsx`)
+- **Component Naming**: Uses PascalCase for components (e.g., `DeckCard`)
+- **Size Limits**: Components exceeding 50 lines are decomposed into smaller, focused units
+- **Import Strategy**: Leverages Shadcn/UI for base components, custom components for business logic
 
 ---
 

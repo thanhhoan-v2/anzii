@@ -1,4 +1,4 @@
-import { ColorSchemeSelector } from "@/components/ColorSchemeSelector";
+import { ColorSchemeSelector } from "@/components/common/ColorSchemeSelector";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 import Link from "next/link";

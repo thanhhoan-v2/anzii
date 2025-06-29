@@ -1,4 +1,4 @@
-import Flashcard from "@/components/Flashcard";
+import Flashcard from "@/components/features/study/Flashcard";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import type { Card as CardType, Deck, Rating } from "@/types";

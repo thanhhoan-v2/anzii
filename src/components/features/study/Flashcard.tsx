@@ -1,11 +1,11 @@
 "use client";
 
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 import { Card, CardContent } from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import type { Card as CardType } from "@/types";
-import { ScrollArea } from "./ui/scroll-area";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 interface FlashcardProps {
 	card: CardType;
@@ -24,9 +24,9 @@ export default function Flashcard({ card, isFlipped }: FlashcardProps) {
 			>
 				{/* Front of Card */}
 				<Card className="absolute inset-0 [backface-visibility:hidden]">
-					<CardContent className="flex h-full flex-col items-center justify-center p-6">
+					<CardContent className="flex flex-col justify-center items-center p-6 h-full">
 						<ScrollArea className="w-full h-full">
-							<div className="prose dark:prose-invert max-w-none p-4 text-xl md:text-2xl font-semibold">
+							<div className="dark:prose-invert p-4 max-w-none font-semibold text-xl md:text-2xl prose">
 								<ReactMarkdown remarkPlugins={[remarkGfm]}>
 									{card.question}
 								</ReactMarkdown>
@@ -37,9 +37,9 @@ export default function Flashcard({ card, isFlipped }: FlashcardProps) {
 
 				{/* Back of Card */}
 				<Card className="absolute inset-0 [transform:rotateY(180deg)] [backface-visibility:hidden]">
-					<CardContent className="flex h-full flex-col items-center justify-center p-6">
+					<CardContent className="flex flex-col justify-center items-center p-6 h-full">
 						<ScrollArea className="w-full h-full">
-							<div className="prose dark:prose-invert max-w-none p-4 text-lg md:text-xl text-muted-foreground">
+							<div className="dark:prose-invert p-4 max-w-none text-muted-foreground text-lg md:text-xl prose">
 								<ReactMarkdown remarkPlugins={[remarkGfm]}>
 									{card.answer}
 								</ReactMarkdown>

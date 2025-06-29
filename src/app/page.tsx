@@ -1,10 +1,10 @@
 "use client";
 
-import AiDeckGenerator from "@/components/AiDeckGenerator";
-import AppHeader from "@/components/AppHeader";
-import DeckList from "@/components/DeckList";
-import ReviewSession from "@/components/ReviewSession";
-import WelcomeScreen from "@/components/WelcomeScreen";
+import AiDeckGenerator from "@/components/features/ai/AiDeckGenerator";
+import DeckList from "@/components/features/deck/DeckList";
+import ReviewSession from "@/components/features/study/ReviewSession";
+import AppHeader from "@/components/layout/AppHeader";
+import WelcomeScreen from "@/components/sections/WelcomeScreen";
 import { useToast } from "@/hooks/use-toast";
 import { useDeckManagement } from "@/hooks/useDeckManagement";
 import { useFileImport } from "@/hooks/useFileImport";
