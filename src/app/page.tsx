@@ -48,17 +48,10 @@ export default function Home() {
 
 	return (
 		<div className="bg-background min-h-screen font-sans text-foreground">
-			<AppHeader
-				hasDecks={deckManagement.decks.length > 0}
-				sessionInProgress={reviewSession.sessionInProgress}
-				onImportClick={fileImport.handleImportClick}
-				onCreateDeck={() => setIsAiDeckGeneratorOpen(true)}
-			/>
+			<AppHeader />
 
 			<main className="mx-auto p-4 md:p-8 container">
-				{reviewSession.sessionInProgress &&
-				reviewSession.currentCard &&
-				reviewSession.activeDeck ? (
+				{reviewSession.sessionInProgress && reviewSession.activeDeck ? (
 					<ReviewSession
 						activeDeck={reviewSession.activeDeck}
 						currentCard={reviewSession.currentCard}
@@ -80,6 +73,7 @@ export default function Home() {
 				) : (
 					<DeckList
 						decks={deckManagement.decks}
+						resetLoadingDeckId={deckManagement.resetLoadingDeckId}
 						onStartReview={reviewSession.startReviewSession}
 						onDeleteDeck={deckManagement.handleDeleteDeck}
 						onResetDeck={deckManagement.handleResetDeck}

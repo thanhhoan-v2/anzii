@@ -239,11 +239,96 @@ const newInterval = rating >= 3 ? Math.ceil(card.interval * newEaseFactor) : 1; 
 - **Intelligent Scheduling**: Only due cards appear for review
 - **Instant Feedback**: Immediate UI response to user interactions
 - **Progress Tracking**: Visual indicators show learning momentum
+- **Manual Session Control**: Users remain on completion screen and manually choose when to return to dashboard
 
 ### Customization
 
 - **Theme Selection**: Choose from 17 carefully crafted color schemes
 - **Deck Management**: Organize, rename, and reset progress as needed
+
+---
+
+## 🔧 Troubleshooting
+
+### Common Issues
+
+#### Radix UI CreateSlot Export Error
+
+**Error Message:**
+
+```
+Export 'createSlot' doesn't exist in target module
+```
+
+**Cause:** Version mismatch between different Radix UI packages can cause compatibility issues where newer packages expect exports that don't exist in older versions.
+
+**Solution:** Add package overrides to ensure compatible versions:
+
+```json
+{
+	"overrides": {
+		"@radix-ui/react-slot": "^1.1.0"
+	}
+}
+```
+
+Then clean and reinstall dependencies:
+
+```bash
+rm -rf node_modules pnpm-lock.yaml
+pnpm install
+```
+
+**Prevention:** This issue typically occurs when mixing different versions of Radix UI packages. Using a consistent version range across all `@radix-ui/*` packages helps prevent these conflicts.
+
+#### Deck Reset Loading State
+
+**Feature:** When users restart deck learning progress, a loading indicator is shown on the restart button to provide immediate feedback.
+
+**Implementation Details:**
+
+- The restart button shows a spinning loader icon and "Restarting..." text during the reset operation
+- The button is disabled only during the reset process to prevent multiple operations
+- Loading state is tracked per-deck, allowing users to interact with other decks while one is being reset
+- Toast notifications confirm successful reset or display error messages
+- **Fixed Issue**: Restart button now works correctly when all cards are due for review (e.g., 16/16 cards due)
+- Simplified logic ensures restart button is only disabled during active reset operations
+
+**User Experience:**
+
+1. User clicks "Restart" button on a deck
+2. Confirmation dialog appears asking to confirm the reset
+3. Upon confirmation, button shows loading spinner and "Restarting..." text
+4. Button is disabled until the operation completes
+5. Success/error toast message appears
+6. Button returns to normal state and deck list refreshes
+
+**Process Flow:**
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant DeckList as "DeckList Component"
+    participant Hook as "useDeckManagement Hook"
+    participant Action as "resetDeckProgress Action"
+    participant Database
+
+    User->>DeckList: Click "Restart" button
+    DeckList->>User: Show confirmation dialog
+    User->>DeckList: Confirm reset
+    DeckList->>Hook: Call handleResetDeck(deckId)
+    Hook->>Hook: Set resetLoadingDeckId = deckId
+    Hook->>DeckList: Update loading state
+    DeckList->>User: Show "Restarting..." with spinner
+    Hook->>Action: Call resetDeckProgress(deckId)
+    Action->>Database: Reset all cards in deck
+    Database->>Action: Return success/error result
+    Action->>Hook: Return result
+    Hook->>Hook: Set resetLoadingDeckId = null
+    Hook->>DeckList: Clear loading state
+    Hook->>User: Show toast notification
+    DeckList->>User: Button returns to normal state
+```
 
 ---
 

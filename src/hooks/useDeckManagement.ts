@@ -10,6 +10,7 @@ import { useCallback, useEffect, useState } from "react";
 interface UseDeckManagementReturn {
     decks: DeckListItem[];
     isLoading: boolean;
+    resetLoadingDeckId: string | null;
     fetchDecks: (showLoading?: boolean) => Promise<void>;
     handleDeleteDeck: (deckId: string) => Promise<void>;
     handleResetDeck: (deckId: string) => Promise<void>;
@@ -19,6 +20,7 @@ interface UseDeckManagementReturn {
 export function useDeckManagement(): UseDeckManagementReturn {
     const [decks, setDecks] = useState<DeckListItem[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [resetLoadingDeckId, setResetLoadingDeckId] = useState<string | null>(null);
     const { toast } = useToast();
 
     const fetchDecks = useCallback(
@@ -71,19 +73,25 @@ export function useDeckManagement(): UseDeckManagementReturn {
 
     const handleResetDeck = useCallback(
         async (deckId: string) => {
-            const result = await resetDeckProgress(deckId);
-            if (result.success) {
-                toast({
-                    title: "Deck Reset",
-                    description: "All cards are now due for review.",
-                });
-                await fetchDecks();
-            } else {
-                toast({
-                    variant: "destructive",
-                    title: "Error",
-                    description: result.error || "Failed to reset deck.",
-                });
+            setResetLoadingDeckId(deckId);
+
+            try {
+                const result = await resetDeckProgress(deckId);
+                if (result.success) {
+                    toast({
+                        title: "Deck Reset",
+                        description: "All cards are now due for review.",
+                    });
+                    await fetchDecks();
+                } else {
+                    toast({
+                        variant: "destructive",
+                        title: "Error",
+                        description: result.error || "Failed to reset deck.",
+                    });
+                }
+            } finally {
+                setResetLoadingDeckId(null);
             }
         },
         [toast, fetchDecks],
@@ -96,6 +104,7 @@ export function useDeckManagement(): UseDeckManagementReturn {
     return {
         decks,
         isLoading,
+        resetLoadingDeckId,
         fetchDecks,
         handleDeleteDeck,
         handleResetDeck,

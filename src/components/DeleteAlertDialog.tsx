@@ -27,17 +27,19 @@ export default function DeleteAlertDialog({
 					<Trash2 />
 				</Button>
 			</AlertDialogTrigger>
-			<AlertDialogContent>
+			<AlertDialogContent className="rounded-lg w-[350px]">
 				<AlertDialogHeader>
-					<AlertDialogTitle>Are you sure?</AlertDialogTitle>
+					<AlertDialogTitle>Delete deck</AlertDialogTitle>
 					<AlertDialogDescription>
-						This action cannot be undone. This will permanently delete the "
-						{deck.name}" deck and all its cards.
+						This will permanently delete the <span className="font-bold">{deck.name}</span> deck and all its cards.
 					</AlertDialogDescription>
 				</AlertDialogHeader>
-				<AlertDialogFooter>
-					<AlertDialogCancel>Cancel</AlertDialogCancel>
-					<AlertDialogAction onClick={() => onDeleteDeck(deck.id)}>
+				<AlertDialogFooter className="flex flex-row justify-center items-center gap-2">
+					<AlertDialogCancel className="my-auto w-full">Cancel</AlertDialogCancel>
+					<AlertDialogAction
+						className="bg-destructive hover:bg-destructive/90 rounded-lg w-full text-destructive-foreground"
+						onClick={() => onDeleteDeck(deck.id)}
+					>
 						Delete
 					</AlertDialogAction>
 				</AlertDialogFooter>

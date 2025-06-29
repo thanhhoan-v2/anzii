@@ -159,10 +159,10 @@ export function useReviewSession(): UseReviewSessionReturn {
         setActiveDeck(null);
         setReviewQueue([]);
         setCurrentCardIndex(0);
-        toast({
-            title: "Session Paused",
-            description: "You've returned to the dashboard.",
-        });
+        // toast({
+        //     title: "Session Paused",
+        //     description: "You've returned to the dashboard.",
+        // });
         onSessionCompleteRef.current();
     }, [toast]);
 
@@ -191,12 +191,15 @@ export function useReviewSession(): UseReviewSessionReturn {
                 setCurrentCardIndex((prev) => prev + 1);
                 setIsFlipped(false);
             } else {
-                setSessionInProgress(false);
-                setActiveDeck(null);
+                // Last card completed - don't end session automatically
+                // Just move to the "session complete" state by advancing the index
+                setCurrentCardIndex((prev) => prev + 1);
+                setIsFlipped(false);
                 toast({
                     title: "Session Complete!",
                     description: `You've reviewed ${reviewQueue.length} cards. Great job!`,
                 });
+                // Session remains active, user stays on completion screen
                 // onSessionComplete will be called after pending reviews are processed
             }
         },

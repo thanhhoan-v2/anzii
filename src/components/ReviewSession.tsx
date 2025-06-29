@@ -2,11 +2,11 @@ import Flashcard from "@/components/Flashcard";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import type { Card as CardType, Deck, Rating } from "@/types";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { ArrowLeft, CheckCircle, Loader2 } from "lucide-react";
 
 interface ReviewSessionProps {
 	activeDeck: Deck;
-	currentCard: CardType;
+	currentCard: CardType | null;
 	currentCardIndex: number;
 	reviewQueueLength: number;
 	progressValue: number;
@@ -31,6 +31,50 @@ export default function ReviewSession({
 	onRate,
 	onEndSession,
 }: ReviewSessionProps) {
+	// Check if we're done with all cards
+	const isSessionComplete = currentCard === null || currentCardIndex >= reviewQueueLength;
+	const hasPendingSync = pendingReviewsCount > 0 || isProcessingReviews;
+
+	// If session is complete, show syncing status or completion
+	if (isSessionComplete) {
+		return (
+			<div className="flex flex-col justify-center items-center w-full h-full">
+				<div className="space-y-6 text-center">
+					{hasPendingSync ? (
+						<div className="flex flex-col justify-center items-center gap-5 space-y-4 h-[70vh]">
+							<div className="flex flex-col items-center space-y-4">
+								<Loader2 className="w-12 h-12 text-primary animate-spin" />
+								<div className="space-y-2">
+									<h2 className="font-semibold text-2xl">Syncing Progress...</h2>
+									<p className="text-muted-foreground">
+										Saving your review progress ({pendingReviewsCount} pending)
+									</p>
+								</div>
+							</div>
+						</div>
+					) : (
+						<div className="flex flex-col justify-center items-center gap-5 space-y-4 h-[70vh]">
+							<div className="flex flex-col items-center space-y-4">
+								<CheckCircle className="w-12 h-12 text-success" />
+								<div className="space-y-2 text-center">
+									<h2 className="font-semibold text-2xl">Session Complete</h2>
+									<p className="text-muted-foreground">
+										You've completed all <span className="font-bold">{reviewQueueLength} cards</span> in <span className="font-bold">{activeDeck.name}</span>
+									</p>
+								</div>
+							</div>
+							<Button onClick={onEndSession} size="lg" className="mt-4">
+								<ArrowLeft className="mr-2 w-4 h-4" />
+								Back to your decks
+							</Button>
+						</div>
+					)}
+				</div>
+			</div>
+		);
+	}
+
+	// Normal review interface
 	return (
 		<div className="flex flex-col items-center w-full h-full">
 			<div className="mb-4 w-full max-w-2xl">
@@ -39,17 +83,13 @@ export default function ReviewSession({
 						<p className="text-muted-foreground text-sm">
 							{`Reviewing "${activeDeck.name}" | Card ${currentCardIndex + 1} of ${reviewQueueLength}`}
 						</p>
-						{(pendingReviewsCount > 0 || isProcessingReviews) && (
+						{hasPendingSync && (
 							<div className="flex items-center gap-1 text-muted-foreground text-xs">
 								<Loader2 className="w-3 h-3 animate-spin" />
 								<span>Syncing...</span>
 							</div>
 						)}
 					</div>
-					<Button variant="outline" size="sm" onClick={onEndSession}>
-						<ArrowLeft className="mr-2 w-4 h-4" />
-						Back to Decks
-					</Button>
 				</div>
 				<Progress value={progressValue} className="mt-1 w-full h-2" />
 			</div>
