@@ -24,12 +24,12 @@ export default function AppHeader() {
 	const closeMobileMenu = () => setIsMobileMenuOpen(false);
 
 	return (
-		<header className="top-0 z-50 sticky bg-white p-4 border-b">
+		<header className="top-0 z-50 sticky bg-black p-4 border-zinc-800 border-b">
 			<div className="flex justify-between items-center mx-auto container">
 				{/* Logo */}
 				<AppLogo
-					svgClassName="text-black"
-					textClassName="text-black"
+					svgClassName="text-lime-400"
+					textClassName="text-white"
 					showText={true}
 				/>
 
@@ -37,7 +37,11 @@ export default function AppHeader() {
 				<div className="hidden md:flex items-center gap-6">
 					{!isHome && (
 						<div className="flex items-center gap-4">
-							<Button asChild size="sm">
+							<Button
+								asChild
+								size="sm"
+								className="bg-lime-400 hover:bg-lime-500 text-black"
+							>
 								<Link href="/create">
 									<PlusIcon className="w-4 h-4" /> Create
 								</Link>
@@ -49,7 +53,13 @@ export default function AppHeader() {
 					{isHome && (
 						<nav className="flex items-center gap-2">
 							{navLinks.map((link) => (
-								<Button key={link.href} asChild variant="ghost" size="sm">
+								<Button
+									key={link.href}
+									asChild
+									variant="ghost"
+									size="sm"
+									className="hover:bg-zinc-950 text-white hover:text-lime-400"
+								>
 									<Link href={link.href}>{link.label}</Link>
 								</Button>
 							))}
@@ -60,10 +70,19 @@ export default function AppHeader() {
 				{/* Desktop Auth Buttons (for home page) */}
 				{isHome && (
 					<div className="hidden md:flex items-center gap-2">
-						<Button asChild variant="ghost" size="sm">
+						<Button
+							asChild
+							variant="ghost"
+							size="sm"
+							className="hover:bg-zinc-950 text-white hover:text-lime-400"
+						>
 							<Link href="/sign-in">Log in</Link>
 						</Button>
-						<Button asChild size="sm">
+						<Button
+							asChild
+							size="sm"
+							className="bg-lime-400 hover:bg-lime-500 text-black"
+						>
 							<Link href="/sign-up">Sign up</Link>
 						</Button>
 					</div>
@@ -73,28 +92,33 @@ export default function AppHeader() {
 				<div className="md:hidden">
 					<Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
 						<SheetTrigger asChild>
-							<Button variant="ghost" size="sm" className="p-2">
+							<Button
+								variant="ghost"
+								size="sm"
+								className="hover:bg-zinc-950 p-2 text-white hover:text-lime-400"
+							>
 								<Menu className="w-5 h-5" />
 								<span className="sr-only">Open menu</span>
 							</Button>
 						</SheetTrigger>
 						<SheetContent
 							side="right"
-							className="bg-white m-0 p-0 border-0 w-full max-w-none h-full"
+							className="bg-black m-0 p-0 border-0 w-full max-w-none h-full"
 						>
 							<div className="flex flex-col h-full min-h-screen">
 								{/* Header */}
-								<div className="flex justify-between items-center bg-white p-6 border-b">
+								<div className="flex justify-between items-center bg-black p-6 border-zinc-800 border-b">
 									<AppLogo
-										svgClassName="text-black"
-										textClassName="text-black"
+										svgClassName="text-lime-400"
+										textClassName="text-white"
 										showText={true}
 									/>
 									<Button
 										variant="ghost"
 										size="sm"
 										onClick={closeMobileMenu}
-										className="p-3"
+										className="hover:bg-zinc-950 p-3 text-white hover:text-lime-400"
+										type="button"
 									>
 										<X className="w-6 h-6" />
 									</Button>
@@ -106,16 +130,16 @@ export default function AppHeader() {
 										<div className="space-y-10 mx-auto max-w-md">
 											{/* Product Section */}
 											<div className="space-y-6">
-												<h3 className="font-medium text-gray-500 text-sm uppercase tracking-wider">
+												<h3 className="font-medium text-gray-400 text-sm uppercase tracking-wider">
 													Product
 												</h3>
 												<nav className="space-y-2">
 													{navLinks.map((link) => (
 														<Link
-															key={link.href}
+															key={`mobile-nav-${link.href}`}
 															href={link.href}
 															onClick={closeMobileMenu}
-															className="block hover:bg-gray-50 px-4 py-4 border border-gray-100 rounded-lg font-medium text-gray-900 text-lg transition-colors"
+															className="block hover:bg-zinc-950 px-4 py-4 border border-zinc-800 hover:border-lime-400 rounded-lg font-medium text-white hover:text-lime-400 text-lg transition-colors"
 														>
 															{link.label}
 														</Link>
@@ -124,23 +148,25 @@ export default function AppHeader() {
 											</div>
 
 											{/* Auth Buttons */}
-											<div className="space-y-4 pt-8 border-t">
+											<div className="space-y-4 pt-8 border-zinc-800 border-t">
 												<Button
 													asChild
 													variant="outline"
 													size="lg"
-													className="justify-center w-full h-12 text-base"
-													onClick={closeMobileMenu}
+													className="justify-center bg-transparent hover:bg-zinc-950 border-zinc-800 hover:border-lime-400 w-full h-12 text-white hover:text-lime-400 text-base"
 												>
-													<Link href="/sign-in">Log in</Link>
+													<Link href="/sign-in" onClick={closeMobileMenu}>
+														Log in
+													</Link>
 												</Button>
 												<Button
 													asChild
 													size="lg"
-													className="w-full h-12 text-base"
-													onClick={closeMobileMenu}
+													className="bg-lime-400 hover:bg-lime-500 w-full h-12 text-black text-base"
 												>
-													<Link href="/sign-up">Sign up</Link>
+													<Link href="/sign-up" onClick={closeMobileMenu}>
+														Sign up
+													</Link>
 												</Button>
 											</div>
 										</div>
@@ -148,21 +174,21 @@ export default function AppHeader() {
 										<div className="space-y-10 mx-auto max-w-md">
 											{/* App Navigation */}
 											<div className="space-y-6">
-												<h3 className="font-medium text-gray-500 text-sm uppercase tracking-wider">
+												<h3 className="font-medium text-gray-400 text-sm uppercase tracking-wider">
 													Navigation
 												</h3>
 												<nav className="space-y-2">
 													<Link
 														href="/dashboard"
 														onClick={closeMobileMenu}
-														className="block hover:bg-gray-50 px-4 py-4 border border-gray-100 rounded-lg font-medium text-gray-900 text-lg transition-colors"
+														className="block hover:bg-zinc-950 px-4 py-4 border border-zinc-800 hover:border-lime-400 rounded-lg font-medium text-white hover:text-lime-400 text-lg transition-colors"
 													>
 														Dashboard
 													</Link>
 													<Link
 														href="/create"
 														onClick={closeMobileMenu}
-														className="flex items-center gap-3 hover:bg-gray-50 px-4 py-4 border border-gray-100 rounded-lg font-medium text-gray-900 text-lg transition-colors"
+														className="flex items-center gap-3 hover:bg-zinc-950 px-4 py-4 border border-zinc-800 hover:border-lime-400 rounded-lg font-medium text-white hover:text-lime-400 text-lg transition-colors"
 													>
 														<PlusIcon className="w-5 h-5" />
 														Create Deck
@@ -171,13 +197,13 @@ export default function AppHeader() {
 											</div>
 
 											{/* Settings */}
-											<div className="pt-8 border-t">
+											<div className="pt-8 border-zinc-800 border-t">
 												<div className="space-y-4">
-													<h3 className="font-medium text-gray-500 text-sm uppercase tracking-wider">
+													<h3 className="font-medium text-gray-400 text-sm uppercase tracking-wider">
 														Settings
 													</h3>
-													<div className="px-4 py-4 border border-gray-100 rounded-lg">
-														<p className="mb-4 font-medium text-gray-700 text-base">
+													<div className="bg-zinc-950 px-4 py-4 border border-zinc-800 rounded-lg">
+														<p className="mb-4 font-medium text-gray-300 text-base">
 															Theme
 														</p>
 														<ColorSchemeSelector />
@@ -189,12 +215,12 @@ export default function AppHeader() {
 								</div>
 
 								{/* Footer */}
-								<div className="bg-gray-50 p-6 border-t">
-									<div className="flex justify-between items-center mx-auto max-w-md text-gray-500 text-sm">
+								<div className="bg-zinc-950 p-6 border-zinc-800 border-t">
+									<div className="flex justify-between items-center mx-auto max-w-md text-gray-400 text-sm">
 										<span>© 2024 Anzii</span>
 										<Link
 											href="#"
-											className="hover:text-gray-700 transition-colors"
+											className="hover:text-lime-400 transition-colors"
 										>
 											Privacy
 										</Link>
