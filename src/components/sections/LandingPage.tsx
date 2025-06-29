@@ -1,700 +1,691 @@
 "use client";
 
+import landing_01SVG from "@/assets/landing_01.svg";
+import Heading from "@/components/common/heading";
+import AppHeader from "@/components/layout/AppHeader";
 import AppLogo from "@/components/layout/AppLogo";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Progress } from "@/components/ui/progress";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
 import {
     ArrowRight,
-    BarChart3,
     BookOpen,
-    Brain,
-    CheckCircle,
     ChevronDown,
-    Clock,
-    Globe,
-    Smartphone,
-    Sparkles,
+    ChevronUp,
+    Linkedin,
     Star,
     Target,
-    TrendingUp,
     Users,
-    Zap
 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
-
-interface AnimatedCounterProps {
-    end: number;
-    duration?: number;
-    suffix?: string;
-}
-
-function AnimatedCounter({ end, duration = 2000, suffix = "" }: AnimatedCounterProps) {
-    const [count, setCount] = useState(0);
-    const [isVisible, setIsVisible] = useState(false);
-    const ref = useRef<HTMLSpanElement>(null);
-
-    useEffect(() => {
-        const observer = new IntersectionObserver(
-            ([entry]) => {
-                if (entry.isIntersecting && !isVisible) {
-                    setIsVisible(true);
-                }
-            },
-            { threshold: 0.5 }
-        );
-
-        if (ref.current) {
-            observer.observe(ref.current);
-        }
-
-        return () => observer.disconnect();
-    }, [isVisible]);
-
-    useEffect(() => {
-        if (!isVisible) return;
-
-        const increment = end / (duration / 16);
-        const timer = setInterval(() => {
-            setCount((prev) => {
-                const next = prev + increment;
-                if (next >= end) {
-                    clearInterval(timer);
-                    return end;
-                }
-                return next;
-            });
-        }, 16);
-
-        return () => clearInterval(timer);
-    }, [isVisible, end, duration]);
-
-    return <span ref={ref}>{Math.floor(count)}{suffix}</span>;
-}
-
-interface ParallaxSectionProps {
-    children: React.ReactNode;
-    className?: string;
-    offset?: number;
-}
-
-function ParallaxSection({ children, className = "", offset = 0.5 }: ParallaxSectionProps) {
-    const [scrollY, setScrollY] = useState(0);
-    const ref = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        const handleScroll = () => {
-            if (ref.current) {
-                const rect = ref.current.getBoundingClientRect();
-                const parallax = (window.innerHeight - rect.top) * offset;
-                setScrollY(parallax);
-            }
-        };
-
-        window.addEventListener("scroll", handleScroll, { passive: true });
-        return () => window.removeEventListener("scroll", handleScroll);
-    }, [offset]);
-
-    return (
-        <div ref={ref} className={className}>
-            <div style={{ transform: `translateY(${scrollY * 0.1}px)` }}>
-                {children}
-            </div>
-        </div>
-    );
-}
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function LandingPage() {
-    const [progress, setProgress] = useState(0);
-    const [email, setEmail] = useState("");
-    const [isScrolled, setIsScrolled] = useState(false);
+	const [activeProcess, setActiveProcess] = useState(0);
+	const [email, setEmail] = useState("");
+	const [name, setName] = useState("");
+	const [message, setMessage] = useState("");
+	const [contactType, setContactType] = useState("demo");
+	const router = useRouter();
 
-    useEffect(() => {
-        const handleScroll = () => {
-            setIsScrolled(window.scrollY > 50);
-        };
+	const handleGetStarted = () => {
+		router.push("/dashboard");
+	};
 
-        window.addEventListener("scroll", handleScroll, { passive: true });
-        return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
+	const handleEmailSubmit = (e: React.FormEvent) => {
+		e.preventDefault();
+		console.log("Email signup:", email);
+		router.push("/dashboard");
+	};
 
-    useEffect(() => {
-        const timer = setTimeout(() => setProgress(89), 1000);
-        return () => clearTimeout(timer);
-    }, []);
+	const handleContactSubmit = (e: React.FormEvent) => {
+		e.preventDefault();
+		console.log("Contact form:", { name, email, message, contactType });
+		router.push("/dashboard");
+	};
 
-    const scrollToNextSection = () => {
-        window.scrollTo({
-            top: window.innerHeight,
-            behavior: "smooth"
-        });
-    };
+	const services = [
+		{
+			title: ["AI-Powered", "Flashcards"],
+			description:
+				"Generate personalized study materials from any content using advanced AI technology",
+			bgColor: "bg-gray-100",
+			textColor: "text-black",
+			linkColor: "text-black",
+			illustration: "🤖",
+		},
+		{
+			title: ["Spaced", "Repetition"],
+			description:
+				"Scientifically proven learning intervals that maximize retention and minimize study time",
+			bgColor: "bg-green-400",
+			textColor: "text-black",
+			linkColor: "text-black",
+			illustration: "🧠",
+		},
+		{
+			title: ["Smart", "Scheduling"],
+			description:
+				"Adaptive algorithms that optimize your study sessions based on performance and retention",
+			bgColor: "bg-black",
+			textColor: "text-white",
+			linkColor: "text-white",
+			illustration: "📅",
+		},
+		{
+			title: ["Progress", "Analytics"],
+			description:
+				"Detailed insights into your learning progress with visual charts and statistics",
+			bgColor: "bg-gray-100",
+			textColor: "text-black",
+			linkColor: "text-black",
+			illustration: "📊",
+		},
+		{
+			title: ["Multi-Format", "Import"],
+			description:
+				"Support for text, PDFs, images, and more to create comprehensive study materials",
+			bgColor: "bg-green-400",
+			textColor: "text-black",
+			linkColor: "text-black",
+			illustration: "📚",
+		},
+		{
+			title: ["Cross-Platform", "Sync"],
+			description:
+				"Access your study materials anywhere with seamless synchronization across devices",
+			bgColor: "bg-black",
+			textColor: "text-white",
+			linkColor: "text-white",
+			illustration: "🔄",
+		},
+	];
 
-    const handleEmailSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        // Handle email signup
-        console.log("Email signup:", email);
-    };
+	const processSteps = [
+		{
+			number: "01",
+			title: "Upload Content",
+			description:
+				"Import your study materials from various sources including text, PDFs, or direct input. Our system supports multiple formats to make content creation effortless.",
+		},
+		{
+			number: "02",
+			title: "AI Processing",
+			description:
+				"Advanced AI analyzes your content and generates optimized flashcards with questions and answers tailored to enhance learning and retention.",
+		},
+		{
+			number: "03",
+			title: "Smart Review",
+			description:
+				"Begin studying with our spaced repetition algorithm that schedules reviews at optimal intervals for maximum memory retention.",
+		},
+		{
+			number: "04",
+			title: "Track Progress",
+			description:
+				"Monitor your learning journey with detailed analytics, performance metrics, and insights to optimize your study sessions.",
+		},
+		{
+			number: "05",
+			title: "Achieve Mastery",
+			description:
+				"Continue learning with personalized recommendations and adaptive difficulty to ensure long-term knowledge retention.",
+		},
+	];
 
-    return (
-        <div className="bg-background min-h-screen overflow-x-hidden text-foreground">
-            {/* Navigation Header */}
-            <header className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled ? "bg-background/80 backdrop-blur-md border-b" : "bg-transparent"
-                }`}>
-                <div className="flex justify-between items-center mx-auto px-4 py-4 container">
-                    <AppLogo />
-                    <nav className="hidden md:flex items-center gap-6">
-                        <a href="#features" className="hover:text-blue-600 transition-colors">Features</a>
-                        <a href="#how-it-works" className="hover:text-blue-600 transition-colors">How It Works</a>
-                        <a href="#testimonials" className="hover:text-blue-600 transition-colors">Reviews</a>
-                        <Button variant="outline" size="sm">Sign In</Button>
-                        <Button size="sm">Get Started</Button>
-                    </nav>
-                </div>
-            </header>
+	const testimonials = [
+		{
+			text: "Anzii completely transformed my study routine. I went from struggling with medical terminology to acing my exams. The AI-generated flashcards are incredibly accurate and save me hours of prep time.",
+			author: "Sarah Chen",
+			role: "Medical Student",
+		},
+		{
+			text: "As a language learner, I needed something more effective than traditional methods. Anzii's spaced repetition helped me master 2000+ vocabulary words in just 3 months. Absolutely game-changing!",
+			author: "Marcus Rodriguez",
+			role: "Software Engineer",
+		},
+		{
+			text: "The analytics feature is what sold me. Being able to see exactly which concepts I struggle with and when to review them has improved my retention rate by over 80%. This is the future of learning.",
+			author: "Dr. Emily Watson",
+			role: "University Professor",
+		},
+	];
 
-            {/* Hero Section */}
-            <section className="relative flex flex-col justify-center items-center px-4 min-h-screen overflow-hidden">
-                {/* Animated Background */}
-                <div className="absolute inset-0 opacity-20">
-                    <div className="top-20 left-10 absolute bg-blue-500 blur-xl rounded-full w-72 h-72 animate-pulse mix-blend-multiply filter"></div>
-                    <div className="right-10 bottom-20 absolute bg-green-500 blur-xl rounded-full w-72 h-72 animate-pulse animation-delay-2000 mix-blend-multiply filter"></div>
-                    <div className="top-1/2 left-1/2 absolute bg-orange-500 blur-xl rounded-full w-72 h-72 animate-pulse animation-delay-4000 mix-blend-multiply filter"></div>
-                </div>
+	const teamMembers = [
+		{
+			name: "Alex Thompson",
+			role: "CEO & Founder",
+			description:
+				"10+ years in EdTech. Former ML engineer at Google with a passion for democratizing education through AI.",
+			image: "👨‍💼",
+		},
+		{
+			name: "Priya Patel",
+			role: "Head of AI",
+			description:
+				"PhD in Machine Learning from Stanford. Expert in natural language processing and educational AI systems.",
+			image: "👩‍💻",
+		},
+		{
+			name: "Jordan Kim",
+			role: "UX Director",
+			description:
+				"Award-winning designer with 8+ years creating intuitive learning experiences for millions of users.",
+			image: "👨‍🎨",
+		},
+	];
 
-                <div className="z-10 relative mx-auto max-w-4xl text-center">
-                    <Badge className="bg-blue-100 mb-6 border-blue-200 text-blue-800 text-sm">
-                        <Sparkles className="mr-1 w-4 h-4" />
-                        AI-Powered Learning Revolution
-                    </Badge>
+	return (
+		<div className="bg-black min-h-screen">
+			{/* Navigation */}
+			<AppHeader />
 
-                    <h1 className="bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-green-600 mb-6 font-bold text-transparent text-4xl md:text-6xl lg:text-7xl">
-                        Anzii
-                    </h1>
+			{/* Hero Section */}
+			<section className="px-4 md:px-24 py-8 md:py-16">
+				<div className="flex lg:flex-row flex-col items-center gap-6 md:gap-12">
+					<div className="flex-1 space-y-4 md:space-y-8">
+						<h1 className="font-bold text-gray-100 text-2xl sm:text-3xl md:text-4xl lg:text-6xl leading-tight">
+							Master anything with AI-powered learning
+						</h1>
+						<p className="max-w-lg text-gray-400 text-base md:text-lg">
+							Transform your study materials into smart flashcards using AI,
+							then learn faster with spaced repetition. Join thousands of
+							learners achieving better results in less time.
+						</p>
+						<Button
+							size="lg"
+							className="bg-lime-400 hover:bg-lime-500 px-6 md:px-8 py-3 md:py-4 rounded-xl w-full sm:w-auto font-semibold text-black text-base md:text-lg"
+							onClick={handleGetStarted}
+						>
+							Start Learning for Free
+						</Button>
+					</div>
+					<Image
+						src={landing_01SVG}
+						alt="landing_01"
+						className="opacity-90 w-full lg:w-[600px] max-w-[300px] md:max-w-[400px] h-auto"
+					/>
+				</div>
+			</section>
 
-                    <p className="mx-auto mb-8 max-w-2xl text-muted-foreground text-xl md:text-2xl">
-                        Harness the power of AI and spaced repetition to transform your learning.
-                        Study smarter, remember longer, achieve more.
-                    </p>
+			{/* Trusted By Section */}
+			<section className="px-4 md:px-24 py-4 md:py-8">
+				<div className="flex flex-wrap justify-center items-center gap-4 md:gap-8 opacity-60 text-gray-500 text-sm md:text-lg">
+					<div className="flex items-center gap-2">
+						<Users className="w-4 md:w-5 h-4 md:h-5" />
+						<span>50,000+ learners</span>
+					</div>
+					<div className="flex items-center gap-2">
+						<BookOpen className="w-4 md:w-5 h-4 md:h-5" />
+						<span>2M+ flashcards</span>
+					</div>
+					<div className="flex items-center gap-2">
+						<Star className="w-4 md:w-5 h-4 md:h-5" />
+						<span>4.9/5 rating</span>
+					</div>
+					<div className="flex items-center gap-2">
+						<Target className="w-4 md:w-5 h-4 md:h-5" />
+						<span>89% retention rate</span>
+					</div>
+				</div>
+			</section>
 
-                    <div className="flex sm:flex-row flex-col justify-center gap-4 mb-12">
-                        <Button size="lg" className="group relative px-8 py-4 overflow-hidden text-lg">
-                            <span className="z-10 relative flex items-center">
-                                Start Learning Smarter
-                                <ArrowRight className="ml-2 w-5 h-5 transition-transform group-hover:translate-x-1" />
-                            </span>
-                            <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300 transform" />
-                        </Button>
-                        <Button variant="outline" size="lg" className="px-8 py-4 text-lg">
-                            Watch Demo
-                        </Button>
-                    </div>
+			{/* Services Section */}
+			<section id="services" className="px-4 md:px-24 py-12 md:py-20">
+				<div className="space-y-8 md:space-y-12">
+					<div className="flex items-center gap-6 md:gap-10">
+						<div className="space-y-2 md:space-y-4">
+							<Heading size="2xl md:3xl">Features</Heading>
+							<p className="max-w-lg text-gray-400 text-base md:text-lg">
+								Powerful AI-driven tools designed to accelerate your learning
+								journey and improve retention.
+							</p>
+						</div>
+					</div>
 
-                    {/* Social Proof */}
-                    <div className="flex flex-wrap justify-center items-center gap-8 text-muted-foreground text-sm">
-                        <div className="flex items-center gap-2">
-                            <Users className="w-4 h-4" />
-                            <span><AnimatedCounter end={50000} />+ learners</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <Brain className="w-4 h-4" />
-                            <span><AnimatedCounter end={2} />M+ cards generated</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <Star className="w-4 h-4 text-yellow-500" />
-                            <span>4.9/5 rating</span>
-                        </div>
-                    </div>
-                </div>
+					<div className="gap-4 md:gap-8 grid grid-cols-1 md:grid-cols-2">
+						{services.map((service, serviceIndex) => (
+							<Card
+								key={`service-${serviceIndex}`}
+								className="bg-zinc-950 shadow-[0_3px_0_0_rgba(163,230,53,0.2)] md:shadow-[0_5px_0_0_rgba(163,230,53,0.2)] hover:shadow-[0_5px_0_0_rgba(163,230,53,0.4)] border border-zinc-800 rounded-[25px] md:rounded-[45px] overflow-hidden transition-all duration-300"
+							>
+								<CardContent className="flex sm:flex-row flex-col justify-between items-start sm:items-center gap-4 p-6 md:p-12">
+									<div className="flex-1 space-y-4 md:space-y-6">
+										<div className="space-y-1 md:space-y-2">
+											{service.title.map((line, lineIndex) => (
+												<Heading
+													key={`title-${serviceIndex}-${lineIndex}`}
+													size="lg md:2xl"
+												>
+													{line}
+												</Heading>
+											))}
+										</div>
+										<div className="flex items-center gap-3">
+											<div className="flex justify-center items-center bg-lime-400 rounded-full w-8 md:w-10 h-8 md:h-10">
+												<ArrowRight className="w-4 md:w-5 h-4 md:h-5 text-black" />
+											</div>
+											<span className="font-medium text-lime-300 text-sm md:text-base">
+												Learn more
+											</span>
+										</div>
+									</div>
+									<div className="opacity-80 text-4xl md:text-6xl">
+										{service.illustration}
+									</div>
+								</CardContent>
+							</Card>
+						))}
+					</div>
+				</div>
+			</section>
 
-                {/* Scroll Indicator */}
-                <button
-                    onClick={scrollToNextSection}
-                    className="bottom-8 absolute hover:scale-110 transition-transform animate-bounce"
-                >
-                    <ChevronDown className="w-8 h-8 text-muted-foreground" />
-                </button>
-            </section>
+			{/* CTA Section */}
+			<section className="px-4 md:px-24 py-12 md:py-20">
+				<Card className="bg-zinc-950 border border-zinc-800 rounded-[25px] md:rounded-[45px] overflow-hidden">
+					<CardContent className="flex lg:flex-row flex-col items-center gap-8 md:gap-12 p-8 md:p-16">
+						<div className="flex-1 space-y-4 md:space-y-6 lg:text-left text-center">
+							<h2 className="font-bold text-gray-100 text-2xl md:text-4xl">
+								Ready to revolutionize your learning?
+							</h2>
+							<p className="text-gray-400 text-base md:text-lg">
+								Join thousands of learners who are already using AI to study
+								smarter, not harder. Start your journey to better grades and
+								deeper understanding today.
+							</p>
+							<Button
+								size="lg"
+								className="bg-lime-400 hover:bg-lime-500 px-6 md:px-8 py-3 md:py-4 rounded-xl w-full sm:w-auto font-semibold text-black text-base md:text-lg"
+								onClick={handleGetStarted}
+							>
+								Get Your Free Account
+							</Button>
+						</div>
+						<div className="flex flex-1 justify-center">
+							<div className="text-6xl md:text-8xl">🚀</div>
+						</div>
+					</CardContent>
+				</Card>
+			</section>
 
-            {/* Problem/Solution Section */}
-            <ParallaxSection className="px-4 py-20">
-                <div className="mx-auto max-w-6xl container">
-                    <div className="items-center gap-12 grid lg:grid-cols-2">
-                        <div>
-                            <Badge className="bg-red-100 mb-4 border-red-200 text-red-800">
-                                The Problem
-                            </Badge>
-                            <h2 className="mb-6 font-bold text-3xl md:text-4xl">
-                                Traditional Learning Is <span className="text-red-600">Broken</span>
-                            </h2>
-                            <div className="space-y-4 text-muted-foreground text-lg">
-                                <div className="flex items-start gap-3">
-                                    <div className="flex-shrink-0 bg-red-500 mt-3 rounded-full w-2 h-2" />
-                                    <p>You spend hours studying but forget everything within days</p>
-                                </div>
-                                <div className="flex items-start gap-3">
-                                    <div className="flex-shrink-0 bg-red-500 mt-3 rounded-full w-2 h-2" />
-                                    <p>Creating effective study materials is time-consuming and difficult</p>
-                                </div>
-                                <div className="flex items-start gap-3">
-                                    <div className="flex-shrink-0 bg-red-500 mt-3 rounded-full w-2 h-2" />
-                                    <p>One-size-fits-all approaches ignore your unique learning patterns</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div>
-                            <Badge className="bg-green-100 mb-4 border-green-200 text-green-800">
-                                Our Solution
-                            </Badge>
-                            <h2 className="mb-6 font-bold text-3xl md:text-4xl">
-                                AI-Powered <span className="text-green-600">Spaced Repetition</span>
-                            </h2>
-                            <div className="space-y-4 text-muted-foreground text-lg">
-                                <div className="flex items-start gap-3">
-                                    <CheckCircle className="flex-shrink-0 mt-1 w-6 h-6 text-green-500" />
-                                    <p>AI generates optimized flashcards from any content instantly</p>
-                                </div>
-                                <div className="flex items-start gap-3">
-                                    <CheckCircle className="flex-shrink-0 mt-1 w-6 h-6 text-green-500" />
-                                    <p>Smart scheduling ensures you review at the perfect moment</p>
-                                </div>
-                                <div className="flex items-start gap-3">
-                                    <CheckCircle className="flex-shrink-0 mt-1 w-6 h-6 text-green-500" />
-                                    <p>Adapts to your learning speed and retention patterns</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </ParallaxSection>
+			{/* Working Process Section */}
+			<section id="process" className="px-4 md:px-24 py-12 md:py-20">
+				<div className="space-y-8 md:space-y-12">
+					<div className="flex items-center gap-6 md:gap-10">
+						<div className="space-y-2 md:space-y-4">
+							<Heading size="2xl md:3xl">How it Works</Heading>
+							<p className="max-w-lg text-gray-400 text-base md:text-lg">
+								Simple steps to transform your learning experience with
+								AI-powered tools.
+							</p>
+						</div>
+					</div>
 
-            {/* How It Works Section */}
-            <section id="how-it-works" className="bg-muted/30 px-4 py-20">
-                <div className="mx-auto max-w-6xl container">
-                    <div className="mb-16 text-center">
-                        <Badge className="bg-blue-100 mb-4 border-blue-200 text-blue-800">
-                            How It Works
-                        </Badge>
-                        <h2 className="mb-6 font-bold text-3xl md:text-4xl">
-                            Four Steps to <span className="text-blue-600">Learning Mastery</span>
-                        </h2>
-                        <p className="mx-auto max-w-2xl text-muted-foreground text-xl">
-                            From content to mastery in minutes, not months
-                        </p>
-                    </div>
+					<div className="space-y-4 md:space-y-6">
+						{processSteps.map((step, stepIndex) => (
+							<Card
+								key={`process-${stepIndex}`}
+								className={`${stepIndex === activeProcess ? "bg-lime-400" : "bg-zinc-950"} border-zinc-800 border rounded-[25px] md:rounded-[45px] shadow-[0_3px_0_0_rgba(163,230,53,0.2)] md:shadow-[0_5px_0_0_rgba(163,230,53,0.2)] overflow-hidden transition-all duration-300`}
+							>
+								<CardContent className="p-6 md:p-8">
+									<button
+										type="button"
+										className="flex justify-between items-center w-full text-left cursor-pointer"
+										onClick={() =>
+											setActiveProcess(
+												activeProcess === stepIndex ? -1 : stepIndex,
+											)
+										}
+										onKeyDown={(e) => {
+											if (e.key === "Enter" || e.key === " ") {
+												e.preventDefault();
+												setActiveProcess(
+													activeProcess === stepIndex ? -1 : stepIndex,
+												);
+											}
+										}}
+										aria-expanded={activeProcess === stepIndex}
+										aria-controls={`process-content-${stepIndex}`}
+									>
+										<div className="flex items-center gap-3 md:gap-6">
+											<span
+												className={`font-bold text-2xl md:text-4xl ${stepIndex === activeProcess ? "text-black" : "text-gray-100"}`}
+											>
+												{step.number}
+											</span>
+											<h3
+												className={`font-bold text-lg md:text-2xl ${stepIndex === activeProcess ? "text-black" : "text-gray-100"}`}
+											>
+												{step.title}
+											</h3>
+										</div>
+										<div
+											className={`flex justify-center items-center border rounded-full w-10 md:w-12 h-10 md:h-12 ${stepIndex === activeProcess ? "bg-zinc-950 border-black" : "bg-zinc-900 border-zinc-700"}`}
+										>
+											{activeProcess === stepIndex ? (
+												<ChevronUp className="w-5 md:w-6 h-5 md:h-6 text-lime-400" />
+											) : (
+												<ChevronDown className="w-5 md:w-6 h-5 md:h-6 text-gray-400" />
+											)}
+										</div>
+									</button>
+									{activeProcess === stepIndex && (
+										<div
+											id={`process-content-${stepIndex}`}
+											className="mt-4 md:mt-6 pt-4 md:pt-6 border-t border-black"
+										>
+											<p className="text-black text-base md:text-lg">
+												{step.description}
+											</p>
+										</div>
+									)}
+								</CardContent>
+							</Card>
+						))}
+					</div>
+				</div>
+			</section>
 
-                    <Tabs defaultValue="input" className="mx-auto w-full max-w-4xl">
-                        <TabsList className="grid grid-cols-4 w-full">
-                            <TabsTrigger value="input">1. Input</TabsTrigger>
-                            <TabsTrigger value="generate">2. Generate</TabsTrigger>
-                            <TabsTrigger value="schedule">3. Schedule</TabsTrigger>
-                            <TabsTrigger value="master">4. Master</TabsTrigger>
-                        </TabsList>
+			{/* Team Section */}
+			<section className="px-4 md:px-24 py-12 md:py-20">
+				<div className="space-y-8 md:space-y-12">
+					<div className="flex items-center gap-6 md:gap-10">
+						<div className="space-y-2 md:space-y-4">
+							<Heading size="2xl md:3xl">Team</Heading>
+							<p className="max-w-lg text-gray-400 text-base md:text-lg">
+								Meet the passionate team building the future of AI-powered
+								learning.
+							</p>
+						</div>
+					</div>
 
-                        <TabsContent value="input" className="mt-8">
-                            <Card className="p-8">
-                                <div className="flex items-center gap-4 mb-6">
-                                    <div className="flex justify-center items-center bg-blue-100 rounded-lg w-12 h-12">
-                                        <BookOpen className="w-6 h-6 text-blue-600" />
-                                    </div>
-                                    <div>
-                                        <CardTitle className="text-xl">Upload Your Content</CardTitle>
-                                        <p className="text-muted-foreground">Paste text, upload PDFs, or import from any source</p>
-                                    </div>
-                                </div>
-                                <div className="bg-muted/50 p-6 rounded-lg">
-                                    <p className="font-mono text-sm">
-                                        "Photosynthesis is the process by which plants convert light energy into chemical energy..."
-                                    </p>
-                                </div>
-                            </Card>
-                        </TabsContent>
+					<div className="gap-4 md:gap-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+						{teamMembers.map((member, memberIndex) => (
+							<Card
+								key={`team-${memberIndex}`}
+								className="bg-zinc-950 shadow-[0_3px_0_0_rgba(163,230,53,0.2)] md:shadow-[0_5px_0_0_rgba(163,230,53,0.2)] hover:shadow-[0_5px_0_0_rgba(163,230,53,0.4)] border border-zinc-800 rounded-[25px] md:rounded-[45px] overflow-hidden transition-all duration-300"
+							>
+								<CardContent className="space-y-4 md:space-y-6 p-6 md:p-8 text-center">
+									<div className="space-y-3 md:space-y-4">
+										<div className="text-4xl md:text-6xl">{member.image}</div>
+										<div>
+											<h3 className="font-bold text-gray-100 text-lg md:text-xl">
+												{member.name}
+											</h3>
+											<p className="text-gray-400 text-sm md:text-base">
+												{member.role}
+											</p>
+										</div>
+										<div className="flex justify-center items-center bg-lime-400 mx-auto rounded-full w-6 md:w-8 h-6 md:h-8">
+											<Linkedin className="w-3 md:w-4 h-3 md:h-4 text-black" />
+										</div>
+									</div>
+									<div className="pt-4 md:pt-6 border-zinc-800 border-t">
+										<p className="text-gray-500 text-xs md:text-sm">
+											{member.description}
+										</p>
+									</div>
+								</CardContent>
+							</Card>
+						))}
+					</div>
+				</div>
+			</section>
 
-                        <TabsContent value="generate" className="mt-8">
-                            <Card className="p-8">
-                                <div className="flex items-center gap-4 mb-6">
-                                    <div className="flex justify-center items-center bg-green-100 rounded-lg w-12 h-12">
-                                        <Sparkles className="w-6 h-6 text-green-600" />
-                                    </div>
-                                    <div>
-                                        <CardTitle className="text-xl">AI Creates Flashcards</CardTitle>
-                                        <p className="text-muted-foreground">Advanced AI generates optimized questions and answers</p>
-                                    </div>
-                                </div>
-                                <div className="space-y-4">
-                                    <Alert>
-                                        <AlertDescription>
-                                            <strong>Q:</strong> What is the primary function of chlorophyll in photosynthesis?
-                                        </AlertDescription>
-                                    </Alert>
-                                    <Alert>
-                                        <AlertDescription>
-                                            <strong>A:</strong> Chlorophyll absorbs light energy and converts it into chemical energy.
-                                        </AlertDescription>
-                                    </Alert>
-                                </div>
-                            </Card>
-                        </TabsContent>
+			{/* Testimonials Section */}
+			<section id="testimonials" className="px-4 md:px-24 py-12 md:py-20">
+				<div className="space-y-8 md:space-y-12">
+					<div className="flex items-center gap-6 md:gap-10">
+						<div className="space-y-2 md:space-y-4">
+							<Heading size="2xl md:3xl">Testimonials</Heading>
+							<p className="max-w-lg text-gray-400 text-base md:text-lg">
+								Hear from learners who transformed their study habits with
+								Anzii.
+							</p>
+						</div>
+					</div>
 
-                        <TabsContent value="schedule" className="mt-8">
-                            <Card className="p-8">
-                                <div className="flex items-center gap-4 mb-6">
-                                    <div className="flex justify-center items-center bg-orange-100 rounded-lg w-12 h-12">
-                                        <Clock className="w-6 h-6 text-orange-600" />
-                                    </div>
-                                    <div>
-                                        <CardTitle className="text-xl">Smart Scheduling</CardTitle>
-                                        <p className="text-muted-foreground">Algorithm determines optimal review timing</p>
-                                    </div>
-                                </div>
-                                <div className="space-y-4">
-                                    <div className="flex justify-between items-center bg-muted/50 p-4 rounded-lg">
-                                        <span>Easy cards</span>
-                                        <Badge>7 days</Badge>
-                                    </div>
-                                    <div className="flex justify-between items-center bg-muted/50 p-4 rounded-lg">
-                                        <span>Medium cards</span>
-                                        <Badge>3 days</Badge>
-                                    </div>
-                                    <div className="flex justify-between items-center bg-muted/50 p-4 rounded-lg">
-                                        <span>Hard cards</span>
-                                        <Badge>1 day</Badge>
-                                    </div>
-                                </div>
-                            </Card>
-                        </TabsContent>
+					<Card className="bg-black border border-zinc-800 rounded-[25px] md:rounded-[45px] overflow-hidden">
+						<CardContent className="p-8 md:p-16">
+							<div className="gap-6 md:gap-8 grid grid-cols-1 lg:grid-cols-3">
+								{testimonials.map((testimonial, testimonialIndex) => (
+									<div
+										key={`testimonial-${testimonialIndex}`}
+										className="space-y-3 md:space-y-4"
+									>
+										<div className="relative bg-zinc-950 p-6 md:p-8 border border-zinc-800 rounded-[20px] md:rounded-[30px]">
+											<p className="text-gray-200 text-sm md:text-base leading-relaxed">
+												"{testimonial.text}"
+											</p>
+											<div className="-bottom-2 left-6 md:left-8 absolute bg-zinc-950 border-zinc-800 border-b border-l w-3 md:w-4 h-3 md:h-4 rotate-45 transform"></div>
+										</div>
+										<p className="font-medium text-gray-100 text-sm md:text-base">
+											{testimonial.author}
+											<br />
+											<span className="text-lime-300">{testimonial.role}</span>
+										</p>
+									</div>
+								))}
+							</div>
+						</CardContent>
+					</Card>
+				</div>
+			</section>
 
-                        <TabsContent value="master" className="mt-8">
-                            <Card className="p-8">
-                                <div className="flex items-center gap-4 mb-6">
-                                    <div className="flex justify-center items-center bg-purple-100 rounded-lg w-12 h-12">
-                                        <Target className="w-6 h-6 text-purple-600" />
-                                    </div>
-                                    <div>
-                                        <CardTitle className="text-xl">Track Progress</CardTitle>
-                                        <p className="text-muted-foreground">Monitor retention and optimize your learning</p>
-                                    </div>
-                                </div>
-                                <div className="space-y-4">
-                                    <div>
-                                        <div className="flex justify-between mb-2">
-                                            <span>Retention Rate</span>
-                                            <span className="font-bold text-green-600">89%</span>
-                                        </div>
-                                        <Progress value={progress} className="h-3" />
-                                    </div>
-                                    <div className="gap-4 grid grid-cols-3 text-center">
-                                        <div>
-                                            <div className="font-bold text-blue-600 text-2xl">127</div>
-                                            <div className="text-muted-foreground text-sm">Cards Mastered</div>
-                                        </div>
-                                        <div>
-                                            <div className="font-bold text-green-600 text-2xl">23</div>
-                                            <div className="text-muted-foreground text-sm">Days Streak</div>
-                                        </div>
-                                        <div>
-                                            <div className="font-bold text-orange-600 text-2xl">45m</div>
-                                            <div className="text-muted-foreground text-sm">Time Saved</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </Card>
-                        </TabsContent>
-                    </Tabs>
-                </div>
-            </section>
+			{/* Contact Section */}
+			<section id="contact" className="px-4 md:px-24 py-12 md:py-20">
+				<div className="space-y-8 md:space-y-12">
+					<div className="flex items-center gap-6 md:gap-10">
+						<div className="space-y-2 md:space-y-4">
+							<Heading size="2xl md:3xl">Contact Us</Heading>
+							<p className="max-w-lg text-gray-400 text-base md:text-lg">
+								Ready to get started? Let's discuss how Anzii can transform your
+								learning journey.
+							</p>
+						</div>
+					</div>
 
-            {/* Features Showcase */}
-            <section id="features" className="px-4 py-20">
-                <div className="mx-auto max-w-6xl container">
-                    <div className="mb-16 text-center">
-                        <Badge className="bg-green-100 mb-4 border-green-200 text-green-800">
-                            Features
-                        </Badge>
-                        <h2 className="mb-6 font-bold text-3xl md:text-4xl">
-                            Everything You Need to <span className="text-green-600">Learn Faster</span>
-                        </h2>
-                    </div>
+					<Card className="bg-zinc-950 border border-zinc-800 rounded-[25px] md:rounded-[45px] overflow-hidden">
+						<CardContent className="flex lg:flex-row flex-col gap-8 md:gap-12 p-8 md:p-16">
+							<div className="flex-1">
+								<form
+									onSubmit={handleContactSubmit}
+									className="space-y-4 md:space-y-6"
+								>
+									<div className="flex sm:flex-row flex-col gap-4 md:gap-8">
+										<label className="flex items-center gap-3 cursor-pointer">
+											<div
+												className={`w-6 h-6 md:w-7 md:h-7 rounded-full border-2 border-zinc-700 flex items-center justify-center ${contactType === "demo" ? "bg-lime-400 border-lime-400" : "bg-zinc-900"}`}
+											>
+												{contactType === "demo" && (
+													<div className="bg-black rounded-full w-2 md:w-3 h-2 md:h-3"></div>
+												)}
+											</div>
+											<span className="text-gray-300 text-sm md:text-base">
+												Book a Demo
+											</span>
+											<input
+												type="radio"
+												name="contactType"
+												value="demo"
+												checked={contactType === "demo"}
+												onChange={(e) => setContactType(e.target.value)}
+												className="hidden"
+											/>
+										</label>
+										<label className="flex items-center gap-3 cursor-pointer">
+											<div
+												className={`w-6 h-6 md:w-7 md:h-7 rounded-full border-2 border-zinc-700 flex items-center justify-center ${contactType === "support" ? "bg-lime-400 border-lime-400" : "bg-zinc-900"}`}
+											>
+												{contactType === "support" && (
+													<div className="bg-black rounded-full w-2 md:w-3 h-2 md:h-3"></div>
+												)}
+											</div>
+											<span className="text-gray-300 text-sm md:text-base">
+												Get Support
+											</span>
+											<input
+												type="radio"
+												name="contactType"
+												value="support"
+												checked={contactType === "support"}
+												onChange={(e) => setContactType(e.target.value)}
+												className="hidden"
+											/>
+										</label>
+									</div>
 
-                    <div className="gap-8 grid md:grid-cols-2 lg:grid-cols-3">
-                        <Card className="group hover:shadow-xl transition-all hover:-translate-y-2 duration-300">
-                            <CardHeader>
-                                <div className="flex justify-center items-center bg-blue-100 mb-4 rounded-lg w-12 h-12">
-                                    <Brain className="w-6 h-6 text-blue-600" />
-                                </div>
-                                <CardTitle className="flex items-center gap-2">
-                                    <Badge variant="secondary">AI Powered</Badge>
-                                </CardTitle>
-                                <CardTitle>Smart Content Generation</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <p className="text-muted-foreground">AI creates personalized flashcards from any material in seconds</p>
-                            </CardContent>
-                        </Card>
+									<div className="space-y-3 md:space-y-4">
+										<div className="space-y-1">
+											<label
+												htmlFor="name-input"
+												className="font-medium text-gray-300 text-sm md:text-base"
+											>
+												Name
+											</label>
+											<Input
+												id="name-input"
+												value={name}
+												onChange={(e) => setName(e.target.value)}
+												placeholder="Your name"
+												className="bg-zinc-900 p-3 md:p-4 border-zinc-800 focus:border-lime-400 rounded-xl focus:ring-lime-400 text-gray-100 placeholder:text-gray-500"
+												required
+											/>
+										</div>
+										<div className="space-y-1">
+											<label
+												htmlFor="email-input"
+												className="font-medium text-gray-300 text-sm md:text-base"
+											>
+												Email*
+											</label>
+											<Input
+												id="email-input"
+												type="email"
+												value={email}
+												onChange={(e) => setEmail(e.target.value)}
+												placeholder="Your email"
+												className="bg-zinc-900 p-3 md:p-4 border-zinc-800 focus:border-lime-400 rounded-xl focus:ring-lime-400 text-gray-100 placeholder:text-gray-500"
+												required
+											/>
+										</div>
+										<div className="space-y-1">
+											<label
+												htmlFor="message-input"
+												className="font-medium text-gray-300 text-sm md:text-base"
+											>
+												Message*
+											</label>
+											<Textarea
+												id="message-input"
+												value={message}
+												onChange={(e) => setMessage(e.target.value)}
+												placeholder="Tell us about your learning goals..."
+												className="bg-zinc-900 p-3 md:p-4 border-zinc-800 focus:border-lime-400 rounded-xl focus:ring-lime-400 min-h-[100px] md:min-h-[120px] text-gray-100 placeholder:text-gray-500"
+												required
+											/>
+										</div>
+									</div>
 
-                        <Card className="group hover:shadow-xl transition-all hover:-translate-y-2 duration-300">
-                            <CardHeader>
-                                <div className="flex justify-center items-center bg-green-100 mb-4 rounded-lg w-12 h-12">
-                                    <TrendingUp className="w-6 h-6 text-green-600" />
-                                </div>
-                                <CardTitle>Adaptive Scheduling</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <p className="text-muted-foreground">Smart algorithm adapts to your learning speed and retention</p>
-                            </CardContent>
-                        </Card>
+									<Button
+										type="submit"
+										size="lg"
+										className="bg-lime-400 hover:bg-lime-500 px-6 md:px-8 py-3 md:py-4 rounded-xl w-full font-semibold text-black text-base md:text-lg"
+									>
+										Send Message
+									</Button>
+								</form>
+							</div>
+							<div className="flex flex-1 justify-center items-center">
+								<div className="text-6xl md:text-8xl">📧</div>
+							</div>
+						</CardContent>
+					</Card>
+				</div>
+			</section>
 
-                        <Card className="group hover:shadow-xl transition-all hover:-translate-y-2 duration-300">
-                            <CardHeader>
-                                <div className="flex justify-center items-center bg-orange-100 mb-4 rounded-lg w-12 h-12">
-                                    <BarChart3 className="w-6 h-6 text-orange-600" />
-                                </div>
-                                <CardTitle>Progress Analytics</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <p className="text-muted-foreground">Detailed insights into your learning progress and retention</p>
-                            </CardContent>
-                        </Card>
-
-                        <Card className="group hover:shadow-xl transition-all hover:-translate-y-2 duration-300">
-                            <CardHeader>
-                                <div className="flex justify-center items-center bg-purple-100 mb-4 rounded-lg w-12 h-12">
-                                    <Globe className="w-6 h-6 text-purple-600" />
-                                </div>
-                                <CardTitle>Multi-Format Support</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <p className="text-muted-foreground">Text, images, audio, video - learn from any content type</p>
-                            </CardContent>
-                        </Card>
-
-                        <Card className="group hover:shadow-xl transition-all hover:-translate-y-2 duration-300">
-                            <CardHeader>
-                                <div className="flex justify-center items-center bg-red-100 mb-4 rounded-lg w-12 h-12">
-                                    <Smartphone className="w-6 h-6 text-red-600" />
-                                </div>
-                                <CardTitle>Cross-Platform Sync</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <p className="text-muted-foreground">Access your decks anywhere - web, mobile, desktop</p>
-                            </CardContent>
-                        </Card>
-
-                        <Card className="group hover:shadow-xl transition-all hover:-translate-y-2 duration-300">
-                            <CardHeader>
-                                <div className="flex justify-center items-center bg-yellow-100 mb-4 rounded-lg w-12 h-12">
-                                    <Zap className="w-6 h-6 text-yellow-600" />
-                                </div>
-                                <CardTitle>Lightning Fast</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <p className="text-muted-foreground">Optimized for speed - no waiting, just learning</p>
-                            </CardContent>
-                        </Card>
-                    </div>
-                </div>
-            </section>
-
-            {/* Benefits Section */}
-            <ParallaxSection className="bg-muted/30 px-4 py-20">
-                <div className="mx-auto max-w-4xl text-center container">
-                    <Badge className="bg-orange-100 mb-4 border-orange-200 text-orange-800">
-                        Proven Results
-                    </Badge>
-                    <h2 className="mb-16 font-bold text-3xl md:text-4xl">
-                        Transform Your Learning <span className="text-orange-600">Today</span>
-                    </h2>
-
-                    <div className="gap-8 grid md:grid-cols-3">
-                        <Alert className="bg-green-50 p-8 border-green-200">
-                            <TrendingUp className="mx-auto mb-4 w-8 h-8 text-green-600" />
-                            <AlertDescription className="text-center">
-                                <div className="mb-2 font-bold text-green-600 text-4xl">
-                                    <AnimatedCounter end={89} suffix="%" />
-                                </div>
-                                <div className="mb-2 font-semibold text-lg">Better Retention</div>
-                                <div className="text-muted-foreground text-sm">
-                                    Compared to traditional study methods
-                                </div>
-                            </AlertDescription>
-                        </Alert>
-
-                        <Alert className="bg-blue-50 p-8 border-blue-200">
-                            <Clock className="mx-auto mb-4 w-8 h-8 text-blue-600" />
-                            <AlertDescription className="text-center">
-                                <div className="mb-2 font-bold text-blue-600 text-4xl">
-                                    3x
-                                </div>
-                                <div className="mb-2 font-semibold text-lg">Faster Learning</div>
-                                <div className="text-muted-foreground text-sm">
-                                    Study more efficiently with AI assistance
-                                </div>
-                            </AlertDescription>
-                        </Alert>
-
-                        <Alert className="bg-purple-50 p-8 border-purple-200">
-                            <Target className="mx-auto mb-4 w-8 h-8 text-purple-600" />
-                            <AlertDescription className="text-center">
-                                <div className="mb-2 font-bold text-purple-600 text-4xl">
-                                    <AnimatedCounter end={95} suffix="%" />
-                                </div>
-                                <div className="mb-2 font-semibold text-lg">User Satisfaction</div>
-                                <div className="text-muted-foreground text-sm">
-                                    Love it or your money back
-                                </div>
-                            </AlertDescription>
-                        </Alert>
-                    </div>
-                </div>
-            </ParallaxSection>
-
-            {/* Testimonials */}
-            <section id="testimonials" className="px-4 py-20">
-                <div className="mx-auto max-w-6xl container">
-                    <div className="mb-16 text-center">
-                        <Badge className="bg-purple-100 mb-4 border-purple-200 text-purple-800">
-                            Testimonials
-                        </Badge>
-                        <h2 className="mb-6 font-bold text-3xl md:text-4xl">
-                            Loved by <span className="text-purple-600">Students & Professionals</span>
-                        </h2>
-                    </div>
-
-                    <div className="gap-8 grid md:grid-cols-2 lg:grid-cols-3">
-                        <Card className="p-6">
-                            <CardContent className="space-y-4">
-                                <div className="flex text-yellow-500">
-                                    {[...Array(5)].map((_, i) => (
-                                        <Star key={i} className="fill-current w-4 h-4" />
-                                    ))}
-                                </div>
-                                <p className="text-muted-foreground">
-                                    "Anzii helped me ace my medical school exams. The AI-generated flashcards were spot-on!"
-                                </p>
-                                <div className="flex items-center gap-3">
-                                    <div className="flex justify-center items-center bg-blue-100 rounded-full w-10 h-10">
-                                        <span className="font-bold text-blue-600 text-sm">SM</span>
-                                    </div>
-                                    <div>
-                                        <p className="font-semibold">Sarah M.</p>
-                                        <p className="text-muted-foreground text-sm">Medical Student</p>
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-
-                        <Card className="p-6">
-                            <CardContent className="space-y-4">
-                                <div className="flex text-yellow-500">
-                                    {[...Array(5)].map((_, i) => (
-                                        <Star key={i} className="fill-current w-4 h-4" />
-                                    ))}
-                                </div>
-                                <p className="text-muted-foreground">
-                                    "I learned Spanish 3x faster than with traditional methods. The spaced repetition actually works!"
-                                </p>
-                                <div className="flex items-center gap-3">
-                                    <div className="flex justify-center items-center bg-green-100 rounded-full w-10 h-10">
-                                        <span className="font-bold text-green-600 text-sm">JD</span>
-                                    </div>
-                                    <div>
-                                        <p className="font-semibold">James D.</p>
-                                        <p className="text-muted-foreground text-sm">Software Engineer</p>
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-
-                        <Card className="p-6">
-                            <CardContent className="space-y-4">
-                                <div className="flex text-yellow-500">
-                                    {[...Array(5)].map((_, i) => (
-                                        <Star key={i} className="fill-current w-4 h-4" />
-                                    ))}
-                                </div>
-                                <p className="text-muted-foreground">
-                                    "Game-changer for professional development. I can finally keep up with industry trends."
-                                </p>
-                                <div className="flex items-center gap-3">
-                                    <div className="flex justify-center items-center bg-orange-100 rounded-full w-10 h-10">
-                                        <span className="font-bold text-orange-600 text-sm">AL</span>
-                                    </div>
-                                    <div>
-                                        <p className="font-semibold">Alex L.</p>
-                                        <p className="text-muted-foreground text-sm">Marketing Director</p>
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    </div>
-                </div>
-            </section>
-
-            {/* Final CTA */}
-            <section className="bg-gradient-to-r from-blue-600 via-purple-600 to-green-600 px-4 py-20 text-white">
-                <div className="mx-auto max-w-4xl text-center container">
-                    <h2 className="mb-6 font-bold text-3xl md:text-4xl">
-                        Ready to Transform Your Learning?
-                    </h2>
-                    <p className="opacity-90 mb-8 text-xl">
-                        Join thousands of learners who've already discovered the power of AI-enhanced spaced repetition
-                    </p>
-
-                    <form onSubmit={handleEmailSubmit} className="flex gap-4 mx-auto mb-8 max-w-md">
-                        <Input
-                            type="email"
-                            placeholder="Enter your email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            className="flex-1 bg-white/10 border-white/20 text-white placeholder:text-white/70"
-                            required
-                        />
-                        <Button type="submit" variant="secondary" className="px-8">
-                            Get Started
-                        </Button>
-                    </form>
-
-                    <div className="flex flex-wrap justify-center gap-4 opacity-80 text-sm">
-                        <Badge variant="secondary" className="bg-white/10 border-white/20 text-white">
-                            <CheckCircle className="mr-1 w-4 h-4" />
-                            Free 14-day trial
-                        </Badge>
-                        <Badge variant="secondary" className="bg-white/10 border-white/20 text-white">
-                            <CheckCircle className="mr-1 w-4 h-4" />
-                            No credit card required
-                        </Badge>
-                        <Badge variant="secondary" className="bg-white/10 border-white/20 text-white">
-                            <CheckCircle className="mr-1 w-4 h-4" />
-                            Cancel anytime
-                        </Badge>
-                    </div>
-                </div>
-            </section>
-
-            {/* Footer */}
-            <footer className="bg-background px-4 py-12 border-t">
-                <div className="mx-auto max-w-6xl container">
-                    <div className="flex md:flex-row flex-col justify-between items-center gap-8">
-                        <div className="flex items-center gap-2">
-                            <Brain className="w-6 h-6 text-blue-600" />
-                            <span className="font-bold text-xl">Anzii</span>
-                        </div>
-                        <nav className="flex flex-wrap justify-center gap-8 text-muted-foreground text-sm">
-                            <a href="#" className="hover:text-foreground transition-colors">Privacy</a>
-                            <a href="#" className="hover:text-foreground transition-colors">Terms</a>
-                            <a href="#" className="hover:text-foreground transition-colors">Support</a>
-                            <a href="#" className="hover:text-foreground transition-colors">Blog</a>
-                        </nav>
-                        <p className="text-muted-foreground text-sm">
-                            © 2024 Anzii. All rights reserved.
-                        </p>
-                    </div>
-                </div>
-            </footer>
-        </div>
-    );
-} 
+			{/* Footer */}
+			<footer className="px-4 md:px-24 py-8 md:py-16">
+				<Card className="bg-black border border-zinc-800 rounded-t-[25px] md:rounded-t-[45px] overflow-hidden">
+					<CardContent className="space-y-8 md:space-y-12 p-8 md:p-16">
+						<div className="flex lg:flex-row flex-col gap-8 md:gap-12">
+							<div className="flex-1 space-y-6 md:space-y-8">
+								<div className="flex md:flex-row flex-col items-start md:items-center gap-6 md:gap-8">
+									<div className="text-white">
+										<AppLogo />
+									</div>
+									<div className="flex flex-wrap gap-4 md:gap-8 text-gray-400 text-sm md:text-base">
+										<a
+											href="#services"
+											className="hover:text-lime-400 transition-colors"
+										>
+											Features
+										</a>
+										<a
+											href="#process"
+											className="hover:text-lime-400 transition-colors"
+										>
+											How it Works
+										</a>
+										<a
+											href="#testimonials"
+											className="hover:text-lime-400 transition-colors"
+										>
+											Reviews
+										</a>
+										<a
+											href="#contact"
+											className="hover:text-lime-400 transition-colors"
+										>
+											Contact
+										</a>
+									</div>
+									<div className="flex gap-4">
+										<div className="flex justify-center items-center bg-lime-400 rounded-full w-6 md:w-8 h-6 md:h-8">
+											<Linkedin className="w-3 md:w-4 h-3 md:h-4 text-black" />
+										</div>
+									</div>
+								</div>
+							</div>
+							<div className="flex-1 space-y-4 md:space-y-6">
+								<div className="space-y-3 md:space-y-4">
+									<Heading size="lg">Contact us:</Heading>
+									<div className="space-y-2 text-gray-400 text-sm md:text-base">
+										<p>Email: hello@anzii.com</p>
+										<p>Phone: 1-800-ANZII-AI</p>
+										<p>
+											Address: 123 AI Street
+											<br />
+											San Francisco, CA 94105
+										</p>
+									</div>
+								</div>
+								<div className="flex sm:flex-row flex-col gap-3 md:gap-4 bg-zinc-950 p-4 md:p-6 border border-zinc-800 rounded-xl">
+									<Input
+										type="email"
+										placeholder="Email"
+										className="flex-1 bg-transparent border-zinc-800 focus:border-lime-400 rounded-xl focus:ring-lime-400 text-gray-100 placeholder:text-gray-500"
+									/>
+									<Button className="bg-lime-400 hover:bg-lime-500 px-4 md:px-6 rounded-xl font-semibold text-black text-sm md:text-base">
+										Subscribe to newsletter
+									</Button>
+								</div>
+							</div>
+						</div>
+						<div className="flex md:flex-row flex-col justify-between items-center gap-4 pt-6 md:pt-8 border-zinc-800 border-t">
+							<p className="text-gray-500 text-sm md:text-base">
+								© 2024 Anzii. All Rights Reserved.
+							</p>
+							<p className="text-gray-500 hover:text-lime-400 text-sm md:text-base transition-colors cursor-pointer">
+								Privacy Policy
+							</p>
+						</div>
+					</CardContent>
+				</Card>
+			</footer>
+		</div>
+	);
+}

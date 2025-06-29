@@ -48,16 +48,36 @@
    ```
 
 5. **Access the Application**
-   - **Main App**: http://localhost:3000 (Full learning application)
-   - **Landing Page**: http://localhost:3000/landing (Marketing/showcase page)
+   - **Landing Page**: http://localhost:3000 (Marketing/showcase page)
+   - **Dashboard**: http://localhost:3000/dashboard (Full learning application for authenticated users)
 
 ---
 
-## 🎨 Landing Page
+## 🎨 Application Architecture
 
-Anzii features a modern, conversion-focused landing page designed to showcase the power of AI-enhanced spaced repetition learning. The landing page demonstrates the application's key features and benefits through an engaging, interactive experience.
+Anzii is structured as a modern web application with clear separation between public marketing content and authenticated user features.
 
-### Key Features
+### Routing Structure
+
+```
+/ (Landing Page)          - Public marketing page showcasing features
+/dashboard               - Authenticated learning dashboard
+/create                  - Deck creation interface
+/deck/[deckId]          - Individual deck management
+```
+
+**Navigation Flow:**
+
+1. **Landing Page** (`/`) - First-time visitors see compelling marketing content
+2. **Call-to-Action** - Multiple CTAs redirect users to the dashboard
+3. **Dashboard** (`/dashboard`) - Main application where users manage decks and study
+4. **Deep Features** - Specialized pages for deck creation and management
+
+### Landing Page
+
+The landing page serves as the primary entry point, featuring a modern, conversion-focused design to showcase the power of AI-enhanced spaced repetition learning.
+
+#### Key Features
 
 - **Responsive Design**: Mobile-first approach with seamless adaptation across all device sizes
 - **Interactive Components**: Scroll-triggered animations and parallax effects for engaging user experience
@@ -65,7 +85,7 @@ Anzii features a modern, conversion-focused landing page designed to showcase th
 - **Conversion Optimized**: Multiple CTAs, social proof, and trust signals strategically placed
 - **Performance Focused**: Optimized animations using CSS transforms and Intersection Observer API
 
-### Landing Page Sections
+#### Landing Page Sections
 
 1. **Hero Section**: Compelling headline with animated background and clear value proposition
 2. **Problem/Solution**: Visual comparison between traditional learning and AI-powered spaced repetition
@@ -75,13 +95,18 @@ Anzii features a modern, conversion-focused landing page designed to showcase th
 6. **Testimonials**: Real user feedback with star ratings and professional credentials
 7. **Final CTA**: Email capture form with trial benefits and trust indicators
 
-### Technical Implementation
+#### Technical Implementation
 
 - **Animations**: Custom scroll-triggered animations with Intersection Observer
 - **Parallax Effects**: Smooth parallax scrolling for enhanced visual depth
 - **Component Architecture**: Modular design with reusable animated components
 - **Performance**: GPU-accelerated animations using `transform3d()` and `will-change`
 - **Accessibility**: Respects `prefers-reduced-motion` for users who prefer less animation
+- **Navigation**: Seamless routing to dashboard using Next.js App Router
+
+### Dashboard
+
+The dashboard provides the core learning experience with deck management, AI-powered content generation, and spaced repetition study sessions. This is where authenticated users spend most of their time, managing their learning materials and tracking progress.
 
 ---
 
@@ -224,6 +249,8 @@ sequenceDiagram
 ### 3. **Adaptive Theme System**
 
 - **17 Curated Themes**: From minimalist designs to vibrant cyberpunk aesthetics
+- **Next.js Themes Integration**: Seamless light/dark mode switching with system preference detection
+- **Stack Auth Theming**: Automatic theme sync between your app and authentication components
 - **CSS Custom Properties**: Dynamic theme switching without page reloads
 - **Accessibility Focus**: High contrast ratios and color-blind friendly palettes
 
@@ -308,6 +335,14 @@ src/components/
 - **Size Limits**: Components exceeding 50 lines are decomposed into smaller, focused units
 - **Import Strategy**: Leverages Shadcn/UI for base components, custom components for business logic
 
+**Theme Integration:**
+
+- **next-themes Provider**: Manages light/dark mode with system preference detection
+- **Stack Auth Theming**: Automatically applies appropriate theme to authentication components
+- **Color Scheme Provider**: Manages custom color schemes (17 curated options)
+- **Dynamic Theme Switching**: Instant updates across entire application including auth flows
+- **Theme Components**: `ThemeToggle` for quick switching, `ColorSchemeSelector` for full customization
+
 ---
 
 ## 📊 Usage Patterns
@@ -337,34 +372,26 @@ src/components/
 
 ### Common Issues
 
-#### Radix UI CreateSlot Export Error
+#### Dependency Override Conflicts
 
 **Error Message:**
 
 ```
-Export 'createSlot' doesn't exist in target module
+npm ERR! code EOVERRIDE
+npm ERR! Override for @radix-ui/react-slot@^X.X.X conflicts with direct dependency
 ```
 
-**Cause:** Version mismatch between different Radix UI packages can cause compatibility issues where newer packages expect exports that don't exist in older versions.
+**Cause:** Package overrides can conflict with direct dependencies when versions don't align.
 
-**Solution:** Add package overrides to ensure compatible versions:
-
-```json
-{
-	"overrides": {
-		"@radix-ui/react-slot": "^1.1.0"
-	}
-}
-```
-
-Then clean and reinstall dependencies:
+**Solution:** Remove conflicting overrides and clean reinstall:
 
 ```bash
-rm -rf node_modules pnpm-lock.yaml
+# Remove the overrides section from package.json if it conflicts
+rm -rf node_modules package-lock.json pnpm-lock.yaml
 pnpm install
 ```
 
-**Prevention:** This issue typically occurs when mixing different versions of Radix UI packages. Using a consistent version range across all `@radix-ui/*` packages helps prevent these conflicts.
+**Prevention:** Only use package overrides when absolutely necessary for compatibility issues. Modern Radix UI packages generally work well together without overrides.
 
 #### Deck Reset Loading State
 

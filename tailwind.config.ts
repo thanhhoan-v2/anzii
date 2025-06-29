@@ -19,6 +19,7 @@ export default {
 		extend: {
 			fontFamily: {
 				sans: ["var(--font-sans)", ...fontFamily.sans],
+				"space-grotesk": ["var(--font-space-grotesk)", ...fontFamily.sans],
 			},
 			colors: {
 				background: "hsl(var(--background))",

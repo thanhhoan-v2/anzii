@@ -1,12 +1,14 @@
 import Link from "next/link";
 
-export default function AppLogo() {
+export default function AppLogo({ svgClassName, textClassName, showText = true }: { svgClassName?: string, textClassName?: string, showText?: boolean }) {
 	return (
 		<Link href="/" className={`flex items-center gap-2`}>
-			<HeatAltSVG className="w-10 h-10 text-primary" />
-			{/* <h1 className="font-bold hover:font-black text-[2rem] tracking-tight">
-				Anzii
-			</h1> */}
+			<HeatAltSVG className={`w-10 h-10 ${svgClassName ?? "text-primary"}`} />
+			{showText && (
+				<h1 className={`font-bold hover:font-black text-[2rem] tracking-tight ${textClassName ?? ""}`}>
+					Anzii
+				</h1>
+			)}
 		</Link>
 	);
 }

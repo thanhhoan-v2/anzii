@@ -5,6 +5,8 @@ import {
 	type ColorScheme,
 	DEFAULT_COLOR_SCHEME,
 } from "@/types/theme";
+import { StackTheme } from "@stackframe/stack";
+import { ThemeProvider, useTheme } from "next-themes";
 import type React from "react";
 import {
 	createContext,
@@ -25,11 +27,70 @@ const ColorSchemeContext = createContext<ColorSchemeContextType | undefined>(
 	undefined,
 );
 
+// Stack theme configuration
+const stackTheme = {
+	light: {
+		background: 'hsl(0, 0%, 100%)',
+		foreground: 'hsl(222.2, 84%, 4.9%)',
+		card: 'hsl(0, 0%, 100%)',
+		cardForeground: 'hsl(222.2, 84%, 4.9%)',
+		popover: 'hsl(0, 0%, 100%)',
+		popoverForeground: 'hsl(222.2, 84%, 4.9%)',
+		primary: 'hsl(222.2, 47.4%, 11.2%)',
+		primaryForeground: 'hsl(210, 40%, 98%)',
+		secondary: 'hsl(210, 40%, 96%)',
+		secondaryForeground: 'hsl(222.2, 84%, 4.9%)',
+		muted: 'hsl(210, 40%, 96%)',
+		mutedForeground: 'hsl(215.4, 16.3%, 46.9%)',
+		accent: 'hsl(210, 40%, 96%)',
+		accentForeground: 'hsl(222.2, 84%, 4.9%)',
+		destructive: 'hsl(0, 84.2%, 60.2%)',
+		destructiveForeground: 'hsl(210, 40%, 98%)',
+		border: 'hsl(214.3, 31.8%, 91.4%)',
+		input: 'hsl(214.3, 31.8%, 91.4%)',
+		ring: 'hsl(222.2, 84%, 4.9%)',
+	},
+	dark: {
+		background: 'hsl(222.2, 84%, 4.9%)',
+		foreground: 'hsl(210, 40%, 98%)',
+		card: 'hsl(222.2, 84%, 4.9%)',
+		cardForeground: 'hsl(210, 40%, 98%)',
+		popover: 'hsl(222.2, 84%, 4.9%)',
+		popoverForeground: 'hsl(210, 40%, 98%)',
+		primary: 'hsl(210, 40%, 98%)',
+		primaryForeground: 'hsl(222.2, 47.4%, 11.2%)',
+		secondary: 'hsl(217.2, 32.6%, 17.5%)',
+		secondaryForeground: 'hsl(210, 40%, 98%)',
+		muted: 'hsl(217.2, 32.6%, 17.5%)',
+		mutedForeground: 'hsl(215, 20.2%, 65.1%)',
+		accent: 'hsl(217.2, 32.6%, 17.5%)',
+		accentForeground: 'hsl(210, 40%, 98%)',
+		destructive: 'hsl(0, 62.8%, 30.6%)',
+		destructiveForeground: 'hsl(210, 40%, 98%)',
+		border: 'hsl(217.2, 32.6%, 17.5%)',
+		input: 'hsl(217.2, 32.6%, 17.5%)',
+		ring: 'hsl(212.7, 26.8%, 83.9%)',
+	},
+	radius: '0.5rem',
+};
+
 interface ColorSchemeProviderProps {
 	children: React.ReactNode;
 }
 
-export function ColorSchemeProvider({ children }: ColorSchemeProviderProps) {
+// Stack Theme Wrapper Component
+function StackThemeWrapper({ children }: { children: React.ReactNode }) {
+	const { theme } = useTheme();
+
+	return (
+		<StackTheme theme={stackTheme}>
+			{children}
+		</StackTheme>
+	);
+}
+
+// Inner ColorScheme Provider that uses next-themes
+function InnerColorSchemeProvider({ children }: ColorSchemeProviderProps) {
 	const [colorScheme, setColorSchemeState] =
 		useState<string>(DEFAULT_COLOR_SCHEME);
 
@@ -123,8 +184,26 @@ export function ColorSchemeProvider({ children }: ColorSchemeProviderProps) {
 				availableSchemes: COLOR_SCHEMES,
 			}}
 		>
-			{children}
+			<StackThemeWrapper>
+				{children}
+			</StackThemeWrapper>
 		</ColorSchemeContext.Provider>
+	);
+}
+
+// Main ColorScheme Provider that wraps next-themes
+export function ColorSchemeProvider({ children }: ColorSchemeProviderProps) {
+	return (
+		<ThemeProvider
+			attribute="class"
+			defaultTheme="system"
+			enableSystem
+			disableTransitionOnChange
+		>
+			<InnerColorSchemeProvider>
+				{children}
+			</InnerColorSchemeProvider>
+		</ThemeProvider>
 	);
 }
 
@@ -135,3 +214,6 @@ export function useColorScheme() {
 	}
 	return context;
 }
+
+// Re-export useTheme from next-themes for convenience
+export { useTheme } from "next-themes";

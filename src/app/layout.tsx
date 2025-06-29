@@ -1,7 +1,9 @@
 import { Toaster } from "@/components/ui/toaster";
 import { ColorSchemeProvider } from "@/hooks/useColorScheme";
+import { StackProvider } from "@stackframe/stack";
 import type { Metadata } from "next";
-import { Inter, Moirai_One } from "next/font/google";
+import { Inter, Moirai_One, Space_Grotesk } from "next/font/google";
+import { stackServerApp } from "../stack";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
@@ -10,8 +12,13 @@ export const moiraiOne = Moirai_One({
 	variable: "--font-serif",
 	weight: "400",
 });
+const spaceGrotesk = Space_Grotesk({
+	subsets: ["latin"],
+	variable: "--font-space-grotesk",
+	weight: ["300", "400", "500", "600", "700"],
+});
 
-const metadata: Metadata = {
+export const metadata: Metadata = {
 	title: "Anzii - Your Modern Flashcard Companion",
 	description:
 		"An Anki-like application for spaced repetition learning, with AI-powered question suggestions.",
@@ -24,10 +31,12 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en" suppressHydrationWarning>
-			<body className={`${inter.variable} font-sans antialiased`}>
+			<body className={`${spaceGrotesk.variable} font-space-grotesk antialiased`}>
 				<ColorSchemeProvider>
-					{children}
-					<Toaster />
+					<StackProvider app={stackServerApp}>
+						{children}
+						<Toaster />
+					</StackProvider>
 				</ColorSchemeProvider>
 			</body>
 		</html>
