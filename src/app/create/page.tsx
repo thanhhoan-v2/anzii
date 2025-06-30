@@ -21,6 +21,7 @@ import {
 	createDeckFromAi,
 	createDeckFromMarkdown,
 } from "@/lib/actions";
+import { ROUTES } from "@/lib/routes";
 import {
 	Bot,
 	FileText,
@@ -130,7 +131,7 @@ export default function CreatePage() {
 				title: "Deck Created!",
 				description: `Successfully created "${deckName}" with ${validCards.length} cards.`,
 			});
-			router.push("/");
+			router.push(ROUTES.HOME);
 		} catch (error) {
 			toast({
 				variant: "destructive",
@@ -160,7 +161,7 @@ export default function CreatePage() {
 					title: "Deck Generated!",
 					description: "Your AI deck has been created.",
 				});
-				router.push("/");
+				router.push(ROUTES.HOME);
 			} else {
 				throw new Error(result.error);
 			}
@@ -196,7 +197,7 @@ export default function CreatePage() {
 					title: "Deck Created!",
 					description: "Your deck has been generated from markdown.",
 				});
-				router.push("/");
+				router.push(ROUTES.HOME);
 			} else {
 				throw new Error(result.error);
 			}
@@ -261,7 +262,7 @@ export default function CreatePage() {
 				title: "Import Successful!",
 				description: `Imported "${data.name}" with ${data.cards.length} cards.`,
 			});
-			router.push("/");
+			router.push(ROUTES.HOME);
 		} catch (error) {
 			toast({
 				variant: "destructive",

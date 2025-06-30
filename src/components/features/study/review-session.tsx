@@ -1,4 +1,4 @@
-import Flashcard from "@/components/features/study/Flashcard";
+import Flashcard from "@/components/features/study/flashcard";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import type { Card as CardType, Deck, Rating } from "@/types";
@@ -32,7 +32,8 @@ export default function ReviewSession({
 	onEndSession,
 }: ReviewSessionProps) {
 	// Check if we're done with all cards
-	const isSessionComplete = currentCard === null || currentCardIndex >= reviewQueueLength;
+	const isSessionComplete =
+		currentCard === null || currentCardIndex >= reviewQueueLength;
 	const hasPendingSync = pendingReviewsCount > 0 || isProcessingReviews;
 
 	// If session is complete, show syncing status or completion
@@ -45,7 +46,9 @@ export default function ReviewSession({
 							<div className="flex flex-col items-center space-y-4">
 								<Loader2 className="w-12 h-12 text-primary animate-spin" />
 								<div className="space-y-2">
-									<h2 className="font-semibold text-2xl">Syncing Progress...</h2>
+									<h2 className="font-semibold text-2xl">
+										Syncing Progress...
+									</h2>
 									<p className="text-muted-foreground">
 										Saving your review progress ({pendingReviewsCount} pending)
 									</p>
@@ -59,7 +62,9 @@ export default function ReviewSession({
 								<div className="space-y-2 text-center">
 									<h2 className="font-semibold text-2xl">Session Complete</h2>
 									<p className="text-muted-foreground">
-										You've completed all <span className="font-bold">{reviewQueueLength} cards</span> in <span className="font-bold">{activeDeck.name}</span>
+										You've completed all{" "}
+										<span className="font-bold">{reviewQueueLength} cards</span>{" "}
+										in <span className="font-bold">{activeDeck.name}</span>
 									</p>
 								</div>
 							</div>

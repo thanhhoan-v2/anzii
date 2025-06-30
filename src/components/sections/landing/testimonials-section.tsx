@@ -6,15 +6,7 @@ export default function TestimonialsSection() {
   return (
     <section id="testimonials" className="px-4 md:px-24 py-12 md:py-20">
       <div className="space-y-8 md:space-y-12">
-        <div className="flex items-center gap-6 md:gap-10">
-          <div className="space-y-2 md:space-y-4">
-            <Heading size="2xl md:3xl">Testimonials</Heading>
-            <p className="max-w-lg text-gray-400 text-base md:text-lg">
-              Hear from learners who transformed their study habits with
-              Anzii.
-            </p>
-          </div>
-        </div>
+        <Heading title="Testimonials" />
 
         <Card className="bg-black border border-zinc-800 rounded-[25px] md:rounded-[45px] overflow-hidden">
           <CardContent className="p-8 md:p-16">

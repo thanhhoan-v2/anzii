@@ -30,14 +30,12 @@ export default function ContactSection({
   return (
     <section id="contact" className="px-4 md:px-24 py-12 md:py-20">
       <div className="space-y-8 md:space-y-12">
-        <div className="flex items-center gap-6 md:gap-10">
-          <div className="space-y-2 md:space-y-4">
-            <Heading size="2xl md:3xl">Contact Us</Heading>
-            <p className="max-w-lg text-gray-400 text-base md:text-lg">
-              Ready to get started? Let's discuss how Anzii can transform your
-              learning journey.
-            </p>
-          </div>
+        <div className="space-y-2 md:space-y-4">
+          <Heading title="Contact Us" />
+          <p className="mx-auto max-w-lg text-gray-400 text-base md:text-lg text-center">
+            Ready to get started? Let's discuss how Anzii can transform your
+            learning journey.
+          </p>
         </div>
 
         <Card className="bg-zinc-950 border border-zinc-800 rounded-[25px] md:rounded-[45px] overflow-hidden">

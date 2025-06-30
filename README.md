@@ -73,6 +73,55 @@ Anzii is structured as a modern web application with clear separation between pu
 3. **Dashboard** (`/dashboard`) - Main application where users manage decks and study
 4. **Deep Features** - Specialized pages for deck creation and management
 
+### Route Configuration
+
+To ensure maintainability and consistency, all application routes are centralized in `src/lib/routes.ts`:
+
+```typescript
+// Centralized route definitions
+export const ROUTES = {
+  // Public routes
+  HOME: "/",
+  ABOUT_US: "/about-us",
+  FEATURES: "/features", 
+  PRICING: "/pricing",
+  ROADMAP: "/roadmap",
+
+  // Auth routes
+  SIGN_IN: "/sign-in",
+  SIGN_UP: "/sign-up",
+  SETTINGS: "/settings",
+
+  // Authenticated routes
+  DASHBOARD: "/dashboard",
+  CREATE: "/create",
+  
+  // Dynamic routes
+  DECK: (deckId: string) => `/deck/${deckId}`,
+} as const;
+```
+
+**Benefits:**
+- **Single Source of Truth**: All routes defined in one place
+- **Type Safety**: TypeScript ensures route consistency
+- **Easy Refactoring**: Change routes globally by updating the configuration
+- **Developer Experience**: Autocomplete and IDE support for all routes
+
+**Usage Examples:**
+```typescript
+// In components
+<Link href={ROUTES.DASHBOARD}>Dashboard</Link>
+
+// In navigation
+router.push(ROUTES.CREATE);
+
+// Dynamic routes
+const deckUrl = ROUTES.DECK(deckId);
+
+// Server actions
+revalidatePath(ROUTES.HOME);
+```
+
 ### Landing Page
 
 The landing page serves as the primary entry point, featuring a modern, conversion-focused design to showcase the power of AI-enhanced spaced repetition learning.
@@ -317,8 +366,6 @@ src/components/sections/landing/
 ├── process-section.tsx      # How it works
 ├── team-section.tsx         # Team showcase
 ├── testimonials-section.tsx # Social proof
-├── contact-section.tsx      # Contact form
-├── footer-section.tsx       # Footer links
 └── index.ts                 # Barrel exports
 ```
 
@@ -461,7 +508,7 @@ anzii/
 │   │   │   ├── sign-in/              # Sign in page
 │   │   │   └── sign-up/              # Sign up page
 │   │   ├── about-us/                 # About us page
-│   │   ├── contact/                  # Contact page  
+│   │   ├── roadmap/                  # Product roadmap page  
 │   │   ├── create/                   # Deck creation page
 │   │   ├── dashboard/                # Main dashboard (auth required)
 │   │   ├── deck/[deckId]/           # Individual deck study page
@@ -520,8 +567,6 @@ src/components/sections/landing/
 ├── process-section.tsx      # How it works
 ├── team-section.tsx         # Team showcase
 ├── testimonials-section.tsx # Social proof
-├── contact-section.tsx      # Contact form
-├── footer-section.tsx       # Footer links
 └── index.ts                 # Barrel exports
 ```
 
@@ -544,7 +589,7 @@ The application uses Next.js 13+ App Router with the following routes:
 - `/about-us` - Company information, team, mission, and values
 - `/features` - Detailed feature descriptions and comparisons
 - `/pricing` - Pricing plans with annual/monthly toggle
-- `/contact` - Contact form and company information
+- `/roadmap` - Product development roadmap and upcoming features
 - `/create` - Deck creation interface
 - `/deck/[deckId]` - Study session for specific deck
 - `/sign-in` - Authentication sign in

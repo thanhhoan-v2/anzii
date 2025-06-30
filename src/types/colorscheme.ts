@@ -1,4 +1,4 @@
-export interface ColorScheme {
+export interface IColorScheme {
 	id: string;
 	name: string;
 	description: string;
@@ -29,7 +29,7 @@ export interface ColorScheme {
 	};
 }
 
-export const COLOR_SCHEMES: ColorScheme[] = [
+export const COLOR_SCHEMES: IColorScheme[] = [
 	{
 		id: "blue-dark",
 		name: "Ocean Blue Dark",

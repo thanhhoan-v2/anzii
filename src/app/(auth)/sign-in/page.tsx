@@ -1,4 +1,4 @@
-import AppLogo from "@/components/layout/app-logo";
+import AppLogo from "@/components/common/app-logo";
 import { SignIn } from "@stackframe/stack";
 
 export default function SignInPage() {

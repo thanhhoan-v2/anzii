@@ -2,9 +2,9 @@
 
 import {
 	COLOR_SCHEMES,
-	type ColorScheme,
 	DEFAULT_COLOR_SCHEME,
-} from "@/types/theme";
+	type IColorScheme,
+} from "@/types/colorscheme";
 import { StackTheme } from "@stackframe/stack";
 import { ThemeProvider, useTheme } from "next-themes";
 import type React from "react";
@@ -18,9 +18,9 @@ import {
 
 interface ColorSchemeContextType {
 	colorScheme: string;
-	colorSchemeData: ColorScheme;
+	colorSchemeData: IColorScheme;
 	setColorScheme: (scheme: string) => void;
-	availableSchemes: ColorScheme[];
+	availableSchemes: IColorScheme[];
 }
 
 const ColorSchemeContext = createContext<ColorSchemeContextType | undefined>(
@@ -30,48 +30,48 @@ const ColorSchemeContext = createContext<ColorSchemeContextType | undefined>(
 // Stack theme configuration
 const stackTheme = {
 	light: {
-		background: 'hsl(0, 0%, 100%)',
-		foreground: 'hsl(222.2, 84%, 4.9%)',
-		card: 'hsl(0, 0%, 100%)',
-		cardForeground: 'hsl(222.2, 84%, 4.9%)',
-		popover: 'hsl(0, 0%, 100%)',
-		popoverForeground: 'hsl(222.2, 84%, 4.9%)',
-		primary: 'hsl(222.2, 47.4%, 11.2%)',
-		primaryForeground: 'hsl(210, 40%, 98%)',
-		secondary: 'hsl(210, 40%, 96%)',
-		secondaryForeground: 'hsl(222.2, 84%, 4.9%)',
-		muted: 'hsl(210, 40%, 96%)',
-		mutedForeground: 'hsl(215.4, 16.3%, 46.9%)',
-		accent: 'hsl(210, 40%, 96%)',
-		accentForeground: 'hsl(222.2, 84%, 4.9%)',
-		destructive: 'hsl(0, 84.2%, 60.2%)',
-		destructiveForeground: 'hsl(210, 40%, 98%)',
-		border: 'hsl(214.3, 31.8%, 91.4%)',
-		input: 'hsl(214.3, 31.8%, 91.4%)',
-		ring: 'hsl(222.2, 84%, 4.9%)',
+		background: "hsl(0, 0%, 100%)",
+		foreground: "hsl(0, 0%, 0%)",
+		card: "hsl(0, 0%, 100%)",
+		cardForeground: "hsl(0, 0%, 0%)",
+		popover: "hsl(0, 0%, 100%)",
+		popoverForeground: "hsl(0, 0%, 0%)",
+		primary: "hsl(83, 76%, 56%)", // lime-400 (#a3e635)
+		primaryForeground: "hsl(0, 0%, 0%)", // black text on lime
+		secondary: "hsl(210, 40%, 96%)",
+		secondaryForeground: "hsl(0, 0%, 0%)",
+		muted: "hsl(210, 40%, 96%)",
+		mutedForeground: "hsl(215.4, 16.3%, 46.9%)",
+		accent: "hsl(83, 76%, 56%)", // lime-400
+		accentForeground: "hsl(0, 0%, 0%)",
+		destructive: "hsl(0, 84.2%, 60.2%)",
+		destructiveForeground: "hsl(0, 0%, 100%)",
+		border: "hsl(214.3, 31.8%, 91.4%)",
+		input: "hsl(0, 0%, 100%)",
+		ring: "hsl(83, 76%, 56%)", // lime-400
 	},
 	dark: {
-		background: 'hsl(222.2, 84%, 4.9%)',
-		foreground: 'hsl(210, 40%, 98%)',
-		card: 'hsl(222.2, 84%, 4.9%)',
-		cardForeground: 'hsl(210, 40%, 98%)',
-		popover: 'hsl(222.2, 84%, 4.9%)',
-		popoverForeground: 'hsl(210, 40%, 98%)',
-		primary: 'hsl(210, 40%, 98%)',
-		primaryForeground: 'hsl(222.2, 47.4%, 11.2%)',
-		secondary: 'hsl(217.2, 32.6%, 17.5%)',
-		secondaryForeground: 'hsl(210, 40%, 98%)',
-		muted: 'hsl(217.2, 32.6%, 17.5%)',
-		mutedForeground: 'hsl(215, 20.2%, 65.1%)',
-		accent: 'hsl(217.2, 32.6%, 17.5%)',
-		accentForeground: 'hsl(210, 40%, 98%)',
-		destructive: 'hsl(0, 62.8%, 30.6%)',
-		destructiveForeground: 'hsl(210, 40%, 98%)',
-		border: 'hsl(217.2, 32.6%, 17.5%)',
-		input: 'hsl(217.2, 32.6%, 17.5%)',
-		ring: 'hsl(212.7, 26.8%, 83.9%)',
+		background: "hsl(0, 0%, 0%)", // black background
+		foreground: "hsl(0, 0%, 100%)", // white text
+		card: "hsl(0, 0%, 0%)",
+		cardForeground: "hsl(0, 0%, 100%)",
+		popover: "hsl(0, 0%, 0%)",
+		popoverForeground: "hsl(0, 0%, 100%)",
+		primary: "hsl(83, 76%, 56%)", // lime-400 (#a3e635)
+		primaryForeground: "hsl(0, 0%, 0%)", // black text on lime
+		secondary: "hsl(240, 5%, 11%)", // zinc-900
+		secondaryForeground: "hsl(0, 0%, 100%)",
+		muted: "hsl(240, 5%, 11%)", // zinc-900
+		mutedForeground: "hsl(240, 5%, 65%)", // zinc-400
+		accent: "hsl(83, 76%, 56%)", // lime-400
+		accentForeground: "hsl(0, 0%, 0%)",
+		destructive: "hsl(0, 62.8%, 30.6%)",
+		destructiveForeground: "hsl(0, 0%, 100%)",
+		border: "hsl(240, 4%, 16%)", // zinc-800
+		input: "hsl(240, 5%, 11%)", // zinc-900
+		ring: "hsl(83, 76%, 56%)", // lime-400
 	},
-	radius: '0.5rem',
+	radius: "0.75rem", // 12px to match rounded-xl
 };
 
 interface ColorSchemeProviderProps {
@@ -82,11 +82,7 @@ interface ColorSchemeProviderProps {
 function StackThemeWrapper({ children }: { children: React.ReactNode }) {
 	const { theme } = useTheme();
 
-	return (
-		<StackTheme theme={stackTheme}>
-			{children}
-		</StackTheme>
-	);
+	return <StackTheme theme={stackTheme}>{children}</StackTheme>;
 }
 
 // Inner ColorScheme Provider that uses next-themes
@@ -100,7 +96,7 @@ function InnerColorSchemeProvider({ children }: ColorSchemeProviderProps) {
 		COLOR_SCHEMES[0];
 
 	// Apply color scheme to CSS custom properties
-	const applyColorScheme = useCallback((scheme: ColorScheme) => {
+	const applyColorScheme = useCallback((scheme: IColorScheme) => {
 		const root = document.documentElement;
 
 		// Apply all CSS custom properties
@@ -184,9 +180,7 @@ function InnerColorSchemeProvider({ children }: ColorSchemeProviderProps) {
 				availableSchemes: COLOR_SCHEMES,
 			}}
 		>
-			<StackThemeWrapper>
-				{children}
-			</StackThemeWrapper>
+			<StackThemeWrapper>{children}</StackThemeWrapper>
 		</ColorSchemeContext.Provider>
 	);
 }
@@ -200,9 +194,7 @@ export function ColorSchemeProvider({ children }: ColorSchemeProviderProps) {
 			enableSystem
 			disableTransitionOnChange
 		>
-			<InnerColorSchemeProvider>
-				{children}
-			</InnerColorSchemeProvider>
+			<InnerColorSchemeProvider>{children}</InnerColorSchemeProvider>
 		</ThemeProvider>
 	);
 }

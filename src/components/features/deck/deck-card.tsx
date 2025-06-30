@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button, ButtonWithLink } from "@/components/ui/button";
 import {
 	CardContent,
 	CardDescription,
@@ -7,9 +7,9 @@ import {
 	CardTitle,
 	Card as ShadCard,
 } from "@/components/ui/card";
+import { ROUTES } from "@/lib/routes";
 import type { DeckListItem } from "@/types";
 import { Settings } from "lucide-react";
-import Link from "next/link";
 import DeckDeleteDialog from "./deck-delete-dialog";
 import DeckResetDialog from "./deck-reset-dialog";
 
@@ -53,11 +53,9 @@ export default function DeckCard({
 			</CardContent>
 			<CardFooter className="flex justify-between gap-2">
 				<div className="flex gap-2">
-					<Button asChild variant="outline" size="icon">
-						<Link href={`/deck/${deck.id}`} passHref>
-							<Settings />
-						</Link>
-					</Button>
+					<ButtonWithLink href={ROUTES.DECK(deck.id)}>
+						<Settings />
+					</ButtonWithLink>
 				</div>
 				<div className="flex items-center gap-2">
 					<DeckResetDialog

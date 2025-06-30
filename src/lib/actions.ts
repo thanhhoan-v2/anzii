@@ -132,7 +132,7 @@ export async function createDeckFromMarkdown(data: {
 			);
 		}
 
-		revalidatePath("/");
+		revalidatePath(ROUTES.HOME);
 		return { success: true };
 	} catch (error) {
 		console.error(error);
@@ -199,7 +199,7 @@ export async function createDeckFromImport(
 			);
 		}
 
-		revalidatePath("/");
+		revalidatePath(ROUTES.HOME);
 		return { success: true };
 	} catch (error) {
 		console.error(error);
@@ -214,7 +214,7 @@ export async function deleteDeck(deckId: string): Promise<ActionResponse> {
 	const db = getDb();
 	try {
 		await db.delete(decks).where(eq(decks.id, deckId));
-		revalidatePath("/");
+		revalidatePath(ROUTES.HOME);
 		return { success: true };
 	} catch (error) {
 		console.error(error);
@@ -275,8 +275,8 @@ export async function updateDeckName({
 	const db = getDb();
 	try {
 		await db.update(decks).set({ name }).where(eq(decks.id, deckId));
-		revalidatePath("/");
-		revalidatePath(`/deck/${deckId}`);
+		revalidatePath(ROUTES.HOME);
+		revalidatePath(ROUTES.DECK(deckId));
 		return { success: true };
 	} catch (error) {
 		console.error(error);
@@ -300,8 +300,8 @@ export async function addCard({
 			question,
 			answer,
 		});
-		revalidatePath(`/deck/${deckId}`);
-		revalidatePath("/");
+		revalidatePath(ROUTES.DECK(deckId));
+		revalidatePath(ROUTES.HOME);
 		return { success: true };
 	} catch (error) {
 		console.error(error);
@@ -326,7 +326,7 @@ export async function updateCard({
 			.update(cards)
 			.set({ question, answer })
 			.where(eq(cards.id, cardId));
-		revalidatePath(`/deck/${deckId}`);
+		revalidatePath(ROUTES.DECK(deckId));
 		return { success: true };
 	} catch (error) {
 		console.error(error);
@@ -365,7 +365,7 @@ export async function createDeckFromAi(data: {
 			);
 		}
 
-		revalidatePath("/");
+		revalidatePath(ROUTES.HOME);
 		return { success: true };
 	} catch (error) {
 		console.error(error);
@@ -399,8 +399,8 @@ export async function deleteCard({
 	const db = getDb();
 	try {
 		await db.delete(cards).where(eq(cards.id, cardId));
-		revalidatePath(`/deck/${deckId}`);
-		revalidatePath("/");
+		revalidatePath(ROUTES.DECK(deckId));
+		revalidatePath(ROUTES.HOME);
 		return { success: true };
 	} catch (error) {
 		console.error(error);
@@ -422,7 +422,7 @@ export async function resetDeckProgress(
 			})
 			.where(eq(cards.deckId, deckId));
 
-		revalidatePath("/");
+		revalidatePath(ROUTES.HOME);
 		return { success: true };
 	} catch (error) {
 		console.error(error);
@@ -440,7 +440,7 @@ export async function createDeck(data: {
 			.values({ name: data.name })
 			.returning();
 
-		revalidatePath("/");
+		revalidatePath(ROUTES.HOME);
 		return { success: true, deckId: newDeck.id };
 	} catch (error) {
 		console.error(error);

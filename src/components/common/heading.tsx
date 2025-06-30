@@ -1,7 +1,11 @@
-export default function Heading({ children, size = "lg" }: { children: React.ReactNode, size?: string }) {
+import { useIsMobile } from '@/hooks/use-mobile';
+import { cn } from '@/lib/utils';
+
+export default function Heading({ title }: { title: string }) {
+    const isMobile = useIsMobile();
     return (
-        <p className={`bg-[#B9FF66] p-1 rounded-md w-fit font-[700] text-black text-${size}`}>
-            {children}
-        </p>
+        <h1 className={cn("bg-brand-lime p-1 rounded-md w-fit mx-auto font-bold text-black text-[2.5rem]", isMobile && "text-center")}>
+            {title}
+        </h1>
     );
 }

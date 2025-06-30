@@ -1,10 +1,11 @@
 "use client";
 
+import AppLogo from "@/components/common/app-logo";
 import Heading from "@/components/common/heading";
 import AppHeader from "@/components/layout/app-header";
-import AppLogo from "@/components/layout/app-logo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { ROUTES } from "@/lib/routes";
 import {
     BarChart3,
     Brain,
@@ -21,7 +22,7 @@ export default function FeaturesPage() {
 	const [activeFeature, setActiveFeature] = useState(0);
 
 	const handleGetStarted = () => {
-		router.push("/dashboard");
+		router.push(ROUTES.DASHBOARD);
 	};
 
 	const features = [
@@ -91,8 +92,8 @@ export default function FeaturesPage() {
 			<AppHeader />
 
 			{/* Hero Section */}
-			<section className="px-4 md:px-24 py-12 md:py-20">
-				<div className="space-y-8 md:space-y-12 text-center">
+			<section className="px-4 md:px-24 py-5 md:py-10">
+				<div className="space-y-5 md:space-y-12 text-center">
 					<div className="space-y-4 md:space-y-6">
 						<h1 className="font-bold text-gray-100 text-3xl md:text-5xl lg:text-6xl leading-tight">
 							Powerful Features for Accelerated Learning
@@ -102,32 +103,18 @@ export default function FeaturesPage() {
 							the most effective learning platform.
 						</p>
 					</div>
-					<Button
-						size="lg"
-						className="bg-lime-400 hover:bg-lime-500 px-6 md:px-8 py-3 md:py-4 rounded-xl font-semibold text-black text-base md:text-lg"
-						onClick={handleGetStarted}
-					>
-						Try All Features Free
-					</Button>
 				</div>
 			</section>
 
 			{/* Core Features Section */}
 			<section className="px-4 md:px-24 py-12 md:py-20">
 				<div className="space-y-8 md:space-y-12">
-					<div className="space-y-4 text-center">
-						<Heading size="2xl md:3xl">Core Features</Heading>
-						<p className="mx-auto max-w-2xl text-gray-400 text-base md:text-lg">
-							The fundamental tools that power your learning experience and
-							drive results.
-						</p>
-					</div>
-
+					<Heading title="Core Features" />
 					<div className="gap-4 md:gap-8 grid grid-cols-1 lg:grid-cols-2">
 						{features.map((feature, index) => (
 							<Card
 								key={index}
-								className="bg-zinc-950 shadow-[0_3px_0_0_rgba(163,230,53,0.2)] md:shadow-[0_5px_0_0_rgba(163,230,53,0.2)] hover:shadow-[0_5px_0_0_rgba(163,230,53,0.4)] border border-zinc-800 rounded-[25px] md:rounded-[45px] overflow-hidden transition-all duration-300"
+								className="bg-zinc-950 shadow-brand-sm md:shadow-brand-md hover:shadow-brand-lg border border-zinc-800 rounded-[25px] md:rounded-[45px] overflow-hidden transition-all duration-300"
 							>
 								<CardContent className="space-y-6 md:space-y-8 p-6 md:p-8">
 									<div className="flex items-start gap-4">
@@ -166,13 +153,7 @@ export default function FeaturesPage() {
 				<Card className="bg-zinc-950 border border-zinc-800 rounded-[25px] md:rounded-[45px] overflow-hidden">
 					<CardContent className="p-8 md:p-16">
 						<div className="space-y-8 md:space-y-12">
-							<div className="space-y-4 text-center">
-								<Heading size="2xl md:3xl">See It In Action</Heading>
-								<p className="mx-auto max-w-2xl text-gray-400 text-base md:text-lg">
-									Experience how our features work together to create the
-									ultimate learning experience.
-								</p>
-							</div>
+							<Heading title="See It In Action" />
 
 							<div className="flex lg:flex-row flex-col gap-8 md:gap-12">
 								<div className="space-y-4 lg:w-1/3">
@@ -309,10 +290,10 @@ export default function FeaturesPage() {
 											About
 										</a>
 										<a
-											href="/contact"
+											href="/roadmap"
 											className="hover:text-lime-400 transition-colors"
 										>
-											Contact
+											Roadmap
 										</a>
 									</div>
 								</div>

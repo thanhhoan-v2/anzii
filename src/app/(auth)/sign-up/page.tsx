@@ -1,4 +1,4 @@
-import AppLogo from "@/components/layout/app-logo";
+import AppLogo from "@/components/common/app-logo";
 import { SignUp } from "@stackframe/stack";
 import Link from "next/link";
 

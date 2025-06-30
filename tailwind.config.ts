@@ -24,6 +24,11 @@ export default {
 			colors: {
 				background: "hsl(var(--background))",
 				foreground: "hsl(var(--foreground))",
+				brand: {
+					lime: "#B9FF66",
+					"lime-shadow": "rgba(163, 230, 53, 0.2)",
+					"lime-shadow-hover": "rgba(163, 230, 53, 0.4)",
+				},
 				card: {
 					DEFAULT: "hsl(var(--card))",
 					foreground: "hsl(var(--card-foreground))",
@@ -68,6 +73,12 @@ export default {
 				lg: "var(--radius)",
 				md: "calc(var(--radius) - 2px)",
 				sm: "calc(var(--radius) - 4px)",
+			},
+			boxShadow: {
+				"brand-sm": "0 3px 0 0 rgba(163, 230, 53, 0.2)",
+				"brand-md": "0 5px 0 0 rgba(163, 230, 53, 0.2)",
+				"brand-lg": "0 5px 0 0 rgba(163, 230, 53, 0.4)",
+				"brand-ring": "0 0 0 2px rgb(163 230 53 / 0.4)",
 			},
 			keyframes: {
 				"accordion-down": {

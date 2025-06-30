@@ -8,28 +8,20 @@ interface ProcessSectionProps {
 	onSetActiveProcess: (index: number) => void;
 }
 
-export default function ProcessSection({
+export default function HowItWorksSection({
 	activeProcess,
 	onSetActiveProcess,
 }: ProcessSectionProps) {
 	return (
 		<section id="process" className="px-4 md:px-24 py-12 md:py-20">
 			<div className="space-y-8 md:space-y-12">
-				<div className="flex items-center gap-6 md:gap-10">
-					<div className="space-y-2 md:space-y-4">
-						<Heading size="2xl md:3xl">How it Works</Heading>
-						<p className="max-w-lg text-gray-400 text-base md:text-lg">
-							Simple steps to transform your learning experience with AI-powered
-							tools.
-						</p>
-					</div>
-				</div>
+				<Heading title="How it Works" />
 
 				<div className="space-y-4 md:space-y-6">
 					{processSteps.map((step, stepIndex) => (
 						<Card
 							key={`process-${stepIndex}`}
-							className={`${stepIndex === activeProcess ? "bg-lime-400" : "bg-zinc-950"} border-zinc-800 border rounded-[25px] md:rounded-[45px] shadow-[0_3px_0_0_rgba(163,230,53,0.2)] md:shadow-[0_5px_0_0_rgba(163,230,53,0.2)] overflow-hidden transition-all duration-300`}
+							className={`${stepIndex === activeProcess ? "bg-lime-400" : "bg-zinc-950"} border-zinc-800 border rounded-[25px] md:rounded-[45px] shadow-brand-sm md:shadow-brand-md overflow-hidden transition-all duration-300`}
 						>
 							<CardContent className="p-6 md:p-8">
 								<button
