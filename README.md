@@ -51,6 +51,60 @@
    - **Landing Page**: http://localhost:3000 (Marketing/showcase page)
    - **Dashboard**: http://localhost:3000/dashboard (Full learning application for authenticated users)
 
+## 🛠️ Development Setup
+
+This project uses modern development tools to ensure code quality and consistency across the codebase.
+
+### Code Quality Tools
+
+- **ESLint**: Code linting with Next.js, TypeScript, and React configurations
+- **Prettier**: Code formatting with automatic Tailwind CSS class sorting
+- **Husky**: Git hooks for automated code quality checks
+- **Import Organization**: Automatic import sorting and organization
+
+### Development Scripts
+
+```bash
+# Development
+pnpm dev                 # Start development server with Turbopack
+
+# Code Quality
+pnpm lint               # Run ESLint checks
+pnpm lint:fix          # Fix ESLint issues automatically
+pnpm format            # Format code with Prettier
+pnpm format:check      # Check code formatting
+pnpm organize-imports  # Sort and organize imports
+
+# Database
+pnpm db:generate       # Generate database schema
+pnpm db:migrate        # Run database migrations
+pnpm db:studio         # Open Drizzle Studio
+pnpm db:seed           # Seed database with sample data
+
+# Build & Deploy
+pnpm build             # Build for production
+pnpm start             # Start production server
+```
+
+### IDE Configuration
+
+VS Code settings are included for optimal development experience:
+
+- **Auto-format on save** with Prettier
+- **Auto-fix ESLint issues** on save
+- **Import organization** on save
+- **Tailwind CSS class sorting** automatically applied
+
+### Pre-commit Hooks
+
+Git pre-commit hooks automatically run:
+
+1. **ESLint** with auto-fix for JavaScript/TypeScript files
+2. **Prettier** formatting for all supported files
+3. **Import organization** and sorting
+
+This ensures consistent code quality and prevents commits with linting errors.
+
 ---
 
 ## 🎨 Application Architecture
