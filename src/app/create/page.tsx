@@ -1,14 +1,26 @@
 "use client";
 
+import {
+	Bot,
+	FileText,
+	Loader2,
+	Plus,
+	PlusCircle,
+	Trash2,
+	Upload,
+} from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useRef, useState } from "react";
+
 import BackButton from "@/components/common/back-button";
 import AppHeader from "@/components/layout/app-header";
 import { Button } from "@/components/ui/button";
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,23 +29,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import {
-    addCard,
-    createDeck,
-    createDeckFromAi,
-    createDeckFromMarkdown,
+	addCard,
+	createDeck,
+	createDeckFromAi,
+	createDeckFromMarkdown,
 } from "@/lib/actions";
 import { ROUTES } from "@/lib/routes";
-import {
-    Bot,
-    FileText,
-    Loader2,
-    Plus,
-    PlusCircle,
-    Trash2,
-    Upload,
-} from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
 
 interface ManualCard {
 	id: string;
@@ -79,12 +80,12 @@ export default function CreatePage() {
 	const updateCard = (
 		id: string,
 		field: "question" | "answer",
-		value: string,
+		value: string
 	) => {
 		setManualCards(
 			manualCards.map((card) =>
-				card.id === id ? { ...card, [field]: value } : card,
-			),
+				card.id === id ? { ...card, [field]: value } : card
+			)
 		);
 	};
 
@@ -99,7 +100,7 @@ export default function CreatePage() {
 		}
 
 		const validCards = manualCards.filter(
-			(card) => card.question.trim() && card.answer.trim(),
+			(card) => card.question.trim() && card.answer.trim()
 		);
 
 		if (validCards.length === 0) {
@@ -218,7 +219,7 @@ export default function CreatePage() {
 	};
 
 	const handleFileChange = async (
-		event: React.ChangeEvent<HTMLInputElement>,
+		event: React.ChangeEvent<HTMLInputElement>
 	) => {
 		const file = event.target.files?.[0];
 		if (!file) return;
@@ -280,28 +281,28 @@ export default function CreatePage() {
 	};
 
 	return (
-		<div className="bg-background min-h-screen text-foreground">
+		<div className="min-h-screen bg-background text-foreground">
 			<AppHeader>
-        <BackButton />
-      </AppHeader>
+				<BackButton />
+			</AppHeader>
 
-			<main className="mx-auto p-4 md:p-8 max-w-4xl container">
+			<main className="container mx-auto max-w-4xl p-4 md:p-8">
 				<Tabs defaultValue="manual" className="w-full">
-					<TabsList className="grid grid-cols-4 w-full">
+					<TabsList className="grid w-full grid-cols-4">
 						<TabsTrigger value="manual" className="flex items-center gap-2">
-							<PlusCircle className="w-4 h-4" />
+							<PlusCircle className="h-4 w-4" />
 							Manual
 						</TabsTrigger>
 						<TabsTrigger value="ai" className="flex items-center gap-2">
-							<Bot className="w-4 h-4" />
+							<Bot className="h-4 w-4" />
 							AI Topic
 						</TabsTrigger>
 						<TabsTrigger value="markdown" className="flex items-center gap-2">
-							<FileText className="w-4 h-4" />
+							<FileText className="h-4 w-4" />
 							Markdown
 						</TabsTrigger>
 						<TabsTrigger value="import" className="flex items-center gap-2">
-							<Upload className="w-4 h-4" />
+							<Upload className="h-4 w-4" />
 							Import
 						</TabsTrigger>
 					</TabsList>
@@ -311,7 +312,7 @@ export default function CreatePage() {
 						<Card>
 							<CardHeader>
 								<CardTitle className="flex items-center gap-2">
-									<PlusCircle className="w-5 h-5" />
+									<PlusCircle className="h-5 w-5" />
 									Manual Card Creation
 								</CardTitle>
 								<CardDescription>
@@ -334,10 +335,10 @@ export default function CreatePage() {
 								<Separator />
 
 								<div className="space-y-4">
-									<div className="flex justify-between items-center">
-										<h3 className="font-semibold text-lg">Cards</h3>
+									<div className="flex items-center justify-between">
+										<h3 className="text-lg font-semibold">Cards</h3>
 										<Button onClick={addNewCard} variant="outline" size="sm">
-											<Plus className="mr-2 w-4 h-4" />
+											<Plus className="mr-2 h-4 w-4" />
 											Add Card
 										</Button>
 									</div>
@@ -345,7 +346,7 @@ export default function CreatePage() {
 									{manualCards.map((card, index) => (
 										<Card key={card.id} className="p-4">
 											<div className="space-y-4">
-												<div className="flex justify-between items-center">
+												<div className="flex items-center justify-between">
 													<h4 className="font-medium">Card {index + 1}</h4>
 													{manualCards.length > 1 && (
 														<Button
@@ -354,11 +355,11 @@ export default function CreatePage() {
 															size="sm"
 															className="text-destructive hover:text-destructive"
 														>
-															<Trash2 className="w-4 h-4" />
+															<Trash2 className="h-4 w-4" />
 														</Button>
 													)}
 												</div>
-												<div className="gap-4 grid grid-cols-1 md:grid-cols-2">
+												<div className="grid grid-cols-1 gap-4 md:grid-cols-2">
 													<div>
 														<Label>Question</Label>
 														<Textarea
@@ -394,12 +395,12 @@ export default function CreatePage() {
 								>
 									{isCreatingManual ? (
 										<>
-											<Loader2 className="mr-2 w-4 h-4 animate-spin" />
+											<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 											Creating Deck...
 										</>
 									) : (
 										<>
-											<PlusCircle className="mr-2 w-4 h-4" />
+											<PlusCircle className="mr-2 h-4 w-4" />
 											Create Deck
 										</>
 									)}
@@ -413,7 +414,7 @@ export default function CreatePage() {
 						<Card>
 							<CardHeader>
 								<CardTitle className="flex items-center gap-2">
-									<Bot className="w-5 h-5" />
+									<Bot className="h-5 w-5" />
 									AI Topic Generation
 								</CardTitle>
 								<CardDescription>
@@ -440,12 +441,12 @@ export default function CreatePage() {
 								>
 									{isCreatingAi ? (
 										<>
-											<Loader2 className="mr-2 w-4 h-4 animate-spin" />
+											<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 											Generating Deck...
 										</>
 									) : (
 										<>
-											<Bot className="mr-2 w-4 h-4" />
+											<Bot className="mr-2 h-4 w-4" />
 											Generate with AI
 										</>
 									)}
@@ -459,7 +460,7 @@ export default function CreatePage() {
 						<Card>
 							<CardHeader>
 								<CardTitle className="flex items-center gap-2">
-									<FileText className="w-5 h-5" />
+									<FileText className="h-5 w-5" />
 									Markdown to Cards
 								</CardTitle>
 								<CardDescription>
@@ -497,12 +498,12 @@ export default function CreatePage() {
 								>
 									{isCreatingMarkdown ? (
 										<>
-											<Loader2 className="mr-2 w-4 h-4 animate-spin" />
+											<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 											Processing Markdown...
 										</>
 									) : (
 										<>
-											<FileText className="mr-2 w-4 h-4" />
+											<FileText className="mr-2 h-4 w-4" />
 											Generate from Markdown
 										</>
 									)}
@@ -516,7 +517,7 @@ export default function CreatePage() {
 						<Card>
 							<CardHeader>
 								<CardTitle className="flex items-center gap-2">
-									<Upload className="w-5 h-5" />
+									<Upload className="h-5 w-5" />
 									Import from File
 								</CardTitle>
 								<CardDescription>
@@ -524,8 +525,8 @@ export default function CreatePage() {
 								</CardDescription>
 							</CardHeader>
 							<CardContent className="space-y-6">
-								<div className="bg-muted p-4 rounded-lg">
-									<pre className="text-muted-foreground [&_*]:text-muted-foreground text-sm">
+								<div className="rounded-lg bg-muted p-4">
+									<pre className="text-sm text-muted-foreground [&_*]:text-muted-foreground">
 										{`{
   "name": "My Deck",
   "cards": [
@@ -549,12 +550,12 @@ export default function CreatePage() {
 								>
 									{isImporting ? (
 										<>
-											<Loader2 className="mr-2 w-4 h-4 animate-spin" />
+											<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 											Importing...
 										</>
 									) : (
 										<>
-											<Upload className="mr-2 w-4 h-4" />
+											<Upload className="mr-2 h-4 w-4" />
 											Select JSON File
 										</>
 									)}

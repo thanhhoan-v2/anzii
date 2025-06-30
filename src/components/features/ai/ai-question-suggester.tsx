@@ -1,5 +1,11 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2, Sparkles } from "lucide-react";
+import * as React from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+
 import { suggestQuestions } from "@/ai/flows/suggest-questions";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,11 +26,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, Sparkles } from "lucide-react";
-import * as React from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 
 const FormSchema = z.object({
 	topic: z.string().min(3, {
@@ -89,7 +90,7 @@ export default function AiQuestionSuggester() {
 						<Button type="submit" disabled={isLoading} className="w-full">
 							{isLoading ? (
 								<>
-									<Loader2 className="mr-2 w-4 h-4 animate-spin" />
+									<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 									Generating...
 								</>
 							) : (
@@ -101,16 +102,16 @@ export default function AiQuestionSuggester() {
 
 				{(isLoading || suggestions.length > 0) && (
 					<div className="mt-6">
-						<h4 className="mb-2 font-medium text-sm">Suggestions:</h4>
-						<ScrollArea className="p-4 border rounded-md w-full h-48">
+						<h4 className="mb-2 text-sm font-medium">Suggestions:</h4>
+						<ScrollArea className="h-48 w-full rounded-md border p-4">
 							{isLoading ? (
 								<div className="space-y-2">
-									<p className="text-muted-foreground text-sm animate-pulse">
+									<p className="animate-pulse text-sm text-muted-foreground">
 										Thinking of great questions...
 									</p>
 								</div>
 							) : (
-								<ul className="space-y-2 text-sm list-disc list-inside">
+								<ul className="list-inside list-disc space-y-2 text-sm">
 									{suggestions.map((q, i) => (
 										<li key={i}>{q}</li>
 									))}

@@ -1,10 +1,13 @@
-import { Toaster } from "@/components/ui/toaster";
-import { ColorSchemeProvider } from "@/hooks/use-color-scheme";
+import "./globals.css";
+
 import { StackProvider } from "@stackframe/stack";
 import type { Metadata } from "next";
 import { Inter, Moirai_One, Space_Grotesk } from "next/font/google";
+
+import { Toaster } from "@/components/ui/toaster";
+import { ColorSchemeProvider } from "@/hooks/use-color-scheme";
+
 import { stackServerApp } from "../stack";
-import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 export const moiraiOne = Moirai_One({

@@ -1,13 +1,14 @@
 "use client";
 
+import { Check, ChevronDown, ChevronUp } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+
 import AppFooter from "@/components/layout/app-footer";
 import AppHeader from "@/components/layout/app-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ROUTES } from "@/lib/routes";
-import { Check, ChevronDown, ChevronUp } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
 
 export default function PricingPage() {
 	const router = useRouter();
@@ -97,18 +98,18 @@ export default function PricingPage() {
 	};
 
 	return (
-		<div className="bg-black min-h-screen">
+		<div className="min-h-screen bg-black">
 			{/* Navigation */}
 			<AppHeader />
 
 			{/* Hero Section */}
-			<section className="px-4 md:px-24 py-16 md:py-24">
+			<section className="px-4 py-16 md:px-24 md:py-24">
 				<div className="mx-auto max-w-6xl">
 					<div className="space-y-6 text-center">
-						<h1 className="font-bold text-gray-100 text-4xl md:text-6xl">
+						<h1 className="text-4xl font-bold text-gray-100 md:text-6xl">
 							Pricing
 						</h1>
-						<p className="mx-auto max-w-2xl text-gray-400 text-xl md:text-2xl">
+						<p className="mx-auto max-w-2xl text-xl text-gray-400 md:text-2xl">
 							Elevate Your Learning Experience: Competitive Pricing for
 							Exceptional Results
 						</p>
@@ -117,21 +118,21 @@ export default function PricingPage() {
 			</section>
 
 			{/* Pricing Cards */}
-			<section className="px-4 md:px-24 py-12">
+			<section className="px-4 py-12 md:px-24">
 				<div className="mx-auto max-w-6xl">
-					<div className="gap-6 grid grid-cols-1 md:grid-cols-3">
+					<div className="grid grid-cols-1 gap-6 md:grid-cols-3">
 						{plans.map((plan, index) => (
 							<Card
 								key={index}
-								className={`relative rounded-[25px] md:rounded-[45px] border-2 transition-all duration-300 shadow-brand-sm md:shadow-brand-md hover:shadow-brand-lg ${
+								className={`relative rounded-[25px] border-2 shadow-brand-sm transition-all duration-300 hover:shadow-brand-lg md:rounded-[45px] md:shadow-brand-md ${
 									plan.popular
-										? "bg-lime-400 border-lime-400"
-										: "bg-zinc-950 border-zinc-800"
+										? "border-lime-400 bg-lime-400"
+										: "border-zinc-800 bg-zinc-950"
 								}`}
 							>
 								{plan.popular && (
-									<div className="-top-3 left-1/2 absolute -translate-x-1/2 transform">
-										<span className="bg-black px-4 py-1 border border-lime-400 rounded-full font-semibold text-lime-400 text-sm">
+									<div className="absolute -top-3 left-1/2 -translate-x-1/2 transform">
+										<span className="rounded-full border border-lime-400 bg-black px-4 py-1 text-sm font-semibold text-lime-400">
 											Popular
 										</span>
 									</div>
@@ -149,7 +150,7 @@ export default function PricingPage() {
 										</div>
 
 										<div className="space-y-2 text-center">
-											<div className="flex justify-center items-baseline">
+											<div className="flex items-baseline justify-center">
 												<span
 													className={`text-4xl font-bold ${
 														plan.popular ? "text-black" : "text-gray-100"
@@ -158,7 +159,7 @@ export default function PricingPage() {
 													${plan.price}
 												</span>
 												<span
-													className={`text-lg ml-1 ${
+													className={`ml-1 text-lg ${
 														plan.popular ? "text-gray-800" : "text-gray-400"
 													}`}
 												>
@@ -169,7 +170,7 @@ export default function PricingPage() {
 
 										<div className="space-y-4">
 											<Button
-												className={`w-full py-3 rounded-xl font-semibold ${
+												className={`w-full rounded-xl py-3 font-semibold ${
 													plan.popular
 														? "bg-black text-lime-400 hover:bg-gray-900"
 														: "bg-lime-400 text-black hover:bg-lime-500"
@@ -180,7 +181,7 @@ export default function PricingPage() {
 											</Button>
 											<Button
 												variant="outline"
-												className={`w-full py-3 rounded-xl font-semibold ${
+												className={`w-full rounded-xl py-3 font-semibold ${
 													plan.popular
 														? "border-black bg-lime-400 text-black hover:bg-black hover:text-lime-400"
 														: "border-lime-400 text-lime-400 hover:bg-lime-400 hover:text-black"
@@ -191,7 +192,7 @@ export default function PricingPage() {
 										</div>
 
 										<div
-											className={`pt-4 border-t ${plan.popular ? "border-gray-800" : "border-zinc-800"}`}
+											className={`border-t pt-4 ${plan.popular ? "border-gray-800" : "border-zinc-800"}`}
 										>
 											<ul className="space-y-3">
 												{plan.features.map((feature, featureIndex) => (
@@ -200,7 +201,7 @@ export default function PricingPage() {
 														className="flex items-start gap-3"
 													>
 														<Check
-															className={`w-5 h-5 mt-0.5 flex-shrink-0 ${
+															className={`mt-0.5 h-5 w-5 flex-shrink-0 ${
 																plan.popular ? "text-black" : "text-lime-400"
 															}`}
 														/>
@@ -224,11 +225,11 @@ export default function PricingPage() {
 			</section>
 
 			{/* FAQ Section */}
-			<section className="px-4 md:px-24 py-16">
+			<section className="px-4 py-16 md:px-24">
 				<div className="mx-auto max-w-4xl">
 					<div className="space-y-8">
 						<div className="text-center">
-							<h2 className="inline-block bg-lime-400 px-6 py-2 rounded-lg font-bold text-black text-2xl">
+							<h2 className="inline-block rounded-lg bg-lime-400 px-6 py-2 text-2xl font-bold text-black">
 								Frequently Asked Questions
 							</h2>
 						</div>
@@ -237,28 +238,28 @@ export default function PricingPage() {
 							{faq.map((item, index) => (
 								<Card
 									key={index}
-									className="bg-zinc-950 border-2 border-zinc-800 rounded-[25px] overflow-hidden"
+									className="overflow-hidden rounded-[25px] border-2 border-zinc-800 bg-zinc-950"
 								>
 									<CardContent className="p-0">
 										<button
 											onClick={() => toggleFAQ(index)}
-											className="hover:bg-zinc-900 p-6 w-full text-left transition-colors"
+											className="w-full p-6 text-left transition-colors hover:bg-zinc-900"
 										>
-											<div className="flex justify-between items-center">
-												<span className="pr-4 font-semibold text-gray-100 text-lg">
+											<div className="flex items-center justify-between">
+												<span className="pr-4 text-lg font-semibold text-gray-100">
 													{item.question}
 												</span>
 												{expandedFAQ === index ? (
-													<ChevronUp className="flex-shrink-0 w-6 h-6 text-lime-400" />
+													<ChevronUp className="h-6 w-6 flex-shrink-0 text-lime-400" />
 												) : (
-													<ChevronDown className="flex-shrink-0 w-6 h-6 text-lime-400" />
+													<ChevronDown className="h-6 w-6 flex-shrink-0 text-lime-400" />
 												)}
 											</div>
 										</button>
 										{expandedFAQ === index && (
 											<div className="px-6 pb-6">
-												<div className="pt-4 border-zinc-800 border-t">
-													<p className="text-gray-400 leading-relaxed">
+												<div className="border-t border-zinc-800 pt-4">
+													<p className="leading-relaxed text-gray-400">
 														{item.answer}
 													</p>
 												</div>

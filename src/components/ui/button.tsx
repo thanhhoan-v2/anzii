@@ -31,7 +31,7 @@ const buttonVariants = cva(
 			variant: "default",
 			size: "default",
 		},
-	},
+	}
 );
 
 export interface ButtonProps
@@ -50,7 +50,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 				{...props}
 			/>
 		);
-	},
+	}
 );
 Button.displayName = "Button";
 
@@ -67,8 +67,8 @@ const ButtonWithLink = React.forwardRef<HTMLAnchorElement, ButtonWithLinkProps>(
 				asChild
 				size="icon"
 				className={cn(
-					"bg-lime-400 hover:bg-lime-500 px-8 py-4 rounded-xl w-full font-semibold text-black text-base",
-					className,
+					"w-full rounded-xl bg-lime-400 px-8 py-4 text-base font-semibold text-black hover:bg-lime-500",
+					className
 				)}
 			>
 				<Link href={href} ref={ref} {...props}>
@@ -76,7 +76,7 @@ const ButtonWithLink = React.forwardRef<HTMLAnchorElement, ButtonWithLinkProps>(
 				</Link>
 			</Button>
 		);
-	},
+	}
 );
 ButtonWithLink.displayName = "ButtonWithLink";
 

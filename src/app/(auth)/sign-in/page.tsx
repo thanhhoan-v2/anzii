@@ -1,9 +1,10 @@
-import AppLogo from "@/components/common/app-logo";
 import { SignIn } from "@stackframe/stack";
+
+import AppLogo from "@/components/common/app-logo";
 
 export default function SignInPage() {
 	return (
-		<div className="flex flex-col justify-center items-center gap-4 h-screen">
+		<div className="flex h-screen flex-col items-center justify-center gap-4">
 			<AppLogo />
 			<SignIn />
 		</div>

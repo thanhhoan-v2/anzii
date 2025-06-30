@@ -1,7 +1,8 @@
+import Image from "next/image";
+
 import landing_01SVG from "@/assets/landing_01.svg";
 import { Button, ButtonWithLink } from "@/components/ui/button";
 import { ROUTES } from "@/lib/routes";
-import Image from "next/image";
 
 interface HeroSectionProps {
 	onGetStarted: () => void;
@@ -9,14 +10,14 @@ interface HeroSectionProps {
 
 export default function HeroSection({ onGetStarted }: HeroSectionProps) {
 	return (
-		<section className="flex justify-center items-center -mt-14 md:-mt-16 px-4 md:px-24 min-h-screen">
+		<section className="-mt-14 flex min-h-screen items-center justify-center px-4 md:-mt-16 md:px-24">
 			{/* Mobile Layout - Vertical Stack */}
-			<div className="lg:hidden flex flex-col items-center space-y-6 w-full max-w-4xl text-center">
+			<div className="flex w-full max-w-4xl flex-col items-center space-y-6 text-center lg:hidden">
 				<div className="space-y-4">
-					<h1 className="font-bold text-gray-100 text-3xl leading-tight">
+					<h1 className="text-3xl font-bold leading-tight text-gray-100">
 						Master anything with AI-powered learning
 					</h1>
-					<p className="mx-auto max-w-sm text-gray-400 text-base">
+					<p className="mx-auto max-w-sm text-base text-gray-400">
 						Transform your study materials into smart flashcards using AI, then
 						learn faster with spaced repetition. Join thousands of learners
 						achieving better results in less time.
@@ -28,7 +29,7 @@ export default function HeroSection({ onGetStarted }: HeroSectionProps) {
 						loading="eager"
 						src={landing_01SVG}
 						alt="AI-powered learning illustration"
-						className="opacity-90 mx-auto w-full max-w-[280px] h-auto"
+						className="mx-auto h-auto w-full max-w-[280px] opacity-90"
 					/>
 				</div>
 
@@ -38,19 +39,19 @@ export default function HeroSection({ onGetStarted }: HeroSectionProps) {
 			</div>
 
 			{/* Desktop Layout - Horizontal */}
-			<div className="hidden lg:flex lg:flex-row items-center gap-12 w-full max-w-7xl">
+			<div className="hidden w-full max-w-7xl items-center gap-12 lg:flex lg:flex-row">
 				<div className="flex-1 space-y-8">
-					<h1 className="font-bold text-gray-100 text-4xl xl:text-6xl leading-tight">
+					<h1 className="text-4xl font-bold leading-tight text-gray-100 xl:text-6xl">
 						Master anything with AI-powered learning
 					</h1>
-					<p className="max-w-lg text-gray-400 text-lg">
+					<p className="max-w-lg text-lg text-gray-400">
 						Transform your study materials into smart flashcards using AI, then
 						learn faster with spaced repetition. Join thousands of learners
 						achieving better results in less time.
 					</p>
 					<Button
 						size="lg"
-						className="bg-lime-400 hover:bg-lime-500 px-8 py-4 rounded-xl w-auto font-semibold text-black text-lg"
+						className="w-auto rounded-xl bg-lime-400 px-8 py-4 text-lg font-semibold text-black hover:bg-lime-500"
 						onClick={onGetStarted}
 					>
 						Start Learning for Free
@@ -59,7 +60,7 @@ export default function HeroSection({ onGetStarted }: HeroSectionProps) {
 				<Image
 					src={landing_01SVG}
 					alt="AI-powered learning illustration"
-					className="opacity-90 w-[600px] max-w-[400px] xl:max-w-[600px] h-auto"
+					className="h-auto w-[600px] max-w-[400px] opacity-90 xl:max-w-[600px]"
 				/>
 			</div>
 		</section>

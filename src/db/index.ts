@@ -1,5 +1,6 @@
 import { neon } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
+
 import * as schema from "./schema";
 
 // This file has been modified to fix an issue where DATABASE_URL was not available.

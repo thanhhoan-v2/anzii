@@ -1,23 +1,24 @@
 "use client";
 
+import {
+	BarChart3,
+	Calendar,
+	CheckCircle2,
+	Globe,
+	Rocket,
+	Shield,
+	Sparkles,
+	Users,
+	Zap,
+} from "lucide-react";
+import { useRouter } from "next/navigation";
+
 import Heading from "@/components/common/heading";
 import AppFooter from "@/components/layout/app-footer";
 import AppHeader from "@/components/layout/app-header";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { ROUTES } from "@/lib/routes";
-import {
-    BarChart3,
-    Calendar,
-    CheckCircle2,
-    Globe,
-    Rocket,
-    Shield,
-    Sparkles,
-    Users,
-    Zap,
-} from "lucide-react";
-import { useRouter } from "next/navigation";
 
 export default function RoadmapPage() {
 	const router = useRouter();
@@ -34,19 +35,19 @@ export default function RoadmapPage() {
 				{
 					title: "Core Platform Launch",
 					description: "Basic flashcard creation and spaced repetition system",
-					icon: <CheckCircle2 className="w-6 h-6" />,
+					icon: <CheckCircle2 className="h-6 w-6" />,
 					completed: true,
 				},
 				{
 					title: "AI-Powered Card Generation",
 					description: "Automatic flashcard creation from any content",
-					icon: <CheckCircle2 className="w-6 h-6" />,
+					icon: <CheckCircle2 className="h-6 w-6" />,
 					completed: true,
 				},
 				{
 					title: "Multi-format Import",
 					description: "Support for PDFs, images, and text files",
-					icon: <CheckCircle2 className="w-6 h-6" />,
+					icon: <CheckCircle2 className="h-6 w-6" />,
 					completed: true,
 				},
 			],
@@ -58,19 +59,19 @@ export default function RoadmapPage() {
 				{
 					title: "Advanced Analytics Dashboard",
 					description: "Detailed learning insights and progress tracking",
-					icon: <BarChart3 className="w-6 h-6" />,
+					icon: <BarChart3 className="h-6 w-6" />,
 					completed: false,
 				},
 				{
 					title: "Mobile Applications",
 					description: "Native iOS and Android apps with offline sync",
-					icon: <Rocket className="w-6 h-6" />,
+					icon: <Rocket className="h-6 w-6" />,
 					completed: false,
 				},
 				{
 					title: "Collaborative Study Groups",
 					description: "Share decks and study together with friends",
-					icon: <Users className="w-6 h-6" />,
+					icon: <Users className="h-6 w-6" />,
 					completed: false,
 				},
 			],
@@ -82,19 +83,19 @@ export default function RoadmapPage() {
 				{
 					title: "AI Study Assistant",
 					description: "Personalized study recommendations and coaching",
-					icon: <Sparkles className="w-6 h-6" />,
+					icon: <Sparkles className="h-6 w-6" />,
 					completed: false,
 				},
 				{
 					title: "Gamification System",
 					description: "Achievements, streaks, and competitive learning",
-					icon: <Zap className="w-6 h-6" />,
+					icon: <Zap className="h-6 w-6" />,
 					completed: false,
 				},
 				{
 					title: "Enhanced Security",
 					description: "Advanced privacy controls and data encryption",
-					icon: <Shield className="w-6 h-6" />,
+					icon: <Shield className="h-6 w-6" />,
 					completed: false,
 				},
 			],
@@ -106,19 +107,19 @@ export default function RoadmapPage() {
 				{
 					title: "Global Marketplace",
 					description: "Community-driven deck sharing and discovery",
-					icon: <Globe className="w-6 h-6" />,
+					icon: <Globe className="h-6 w-6" />,
 					completed: false,
 				},
 				{
 					title: "Advanced AI Features",
 					description: "Voice interaction and real-time content analysis",
-					icon: <Rocket className="w-6 h-6" />,
+					icon: <Rocket className="h-6 w-6" />,
 					completed: false,
 				},
 				{
 					title: "Enterprise Solutions",
 					description: "Team management and institutional features",
-					icon: <Users className="w-6 h-6" />,
+					icon: <Users className="h-6 w-6" />,
 					completed: false,
 				},
 			],
@@ -152,18 +153,18 @@ export default function RoadmapPage() {
 	};
 
 	return (
-		<div className="bg-black min-h-screen">
+		<div className="min-h-screen bg-black">
 			{/* Navigation */}
 			<AppHeader />
 
 			{/* Hero Section */}
-			<section className="px-4 md:px-24 py-12 md:py-20">
-				<div className="space-y-8 md:space-y-12 text-center">
+			<section className="px-4 py-12 md:px-24 md:py-20">
+				<div className="space-y-8 text-center md:space-y-12">
 					<div className="space-y-4 md:space-y-6">
-						<h1 className="font-bold text-gray-100 text-3xl md:text-5xl lg:text-6xl leading-tight">
+						<h1 className="text-3xl font-bold leading-tight text-gray-100 md:text-5xl lg:text-6xl">
 							Product Roadmap
 						</h1>
-						<p className="mx-auto max-w-3xl text-gray-400 text-lg md:text-xl">
+						<p className="mx-auto max-w-3xl text-lg text-gray-400 md:text-xl">
 							See what we're building and what's coming next. Our roadmap is
 							driven by your feedback and the future of AI-powered learning.
 						</p>
@@ -172,7 +173,7 @@ export default function RoadmapPage() {
 			</section>
 
 			{/* Timeline Section */}
-			<section className="px-4 md:px-24 py-12 md:py-20">
+			<section className="px-4 py-12 md:px-24 md:py-20">
 				<div className="space-y-8 md:space-y-12">
 					<Heading title="Development Timeline" />
 
@@ -180,34 +181,34 @@ export default function RoadmapPage() {
 						{roadmapItems.map((quarter, quarterIndex) => (
 							<Card
 								key={quarterIndex}
-								className="bg-zinc-950 shadow-brand-sm md:shadow-brand-md border border-zinc-800 rounded-[25px] md:rounded-[45px] overflow-hidden"
+								className="overflow-hidden rounded-[25px] border border-zinc-800 bg-zinc-950 shadow-brand-sm md:rounded-[45px] md:shadow-brand-md"
 							>
 								<CardContent className="p-6 md:p-8">
 									<div className="space-y-6 md:space-y-8">
 										{/* Quarter Header */}
-										<div className="flex justify-between items-center">
+										<div className="flex items-center justify-between">
 											<div className="flex items-center gap-4">
-												<Calendar className="w-6 h-6 text-lime-400" />
-												<h3 className="font-bold text-white text-xl md:text-2xl">
+												<Calendar className="h-6 w-6 text-lime-400" />
+												<h3 className="text-xl font-bold text-white md:text-2xl">
 													{quarter.quarter}
 												</h3>
 											</div>
 											<Badge
 												variant="secondary"
 												className={`${getStatusColor(
-													quarter.status,
-												)} text-black font-semibold`}
+													quarter.status
+												)} font-semibold text-black`}
 											>
 												{getStatusText(quarter.status)}
 											</Badge>
 										</div>
 
 										{/* Quarter Items */}
-										<div className="gap-4 md:gap-6 grid grid-cols-1 lg:grid-cols-3">
+										<div className="grid grid-cols-1 gap-4 md:gap-6 lg:grid-cols-3">
 											{quarter.items.map((item, itemIndex) => (
 												<div
 													key={itemIndex}
-													className="space-y-4 bg-zinc-900 p-4 md:p-6 border border-zinc-800 rounded-xl"
+													className="space-y-4 rounded-xl border border-zinc-800 bg-zinc-900 p-4 md:p-6"
 												>
 													<div className="flex items-start gap-3">
 														<div
@@ -220,10 +221,10 @@ export default function RoadmapPage() {
 															{item.icon}
 														</div>
 														<div className="flex-1 space-y-2">
-															<h4 className="font-semibold text-white text-base md:text-lg">
+															<h4 className="text-base font-semibold text-white md:text-lg">
 																{item.title}
 															</h4>
-															<p className="text-gray-400 text-sm md:text-base">
+															<p className="text-sm text-gray-400 md:text-base">
 																{item.description}
 															</p>
 														</div>

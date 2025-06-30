@@ -1,3 +1,5 @@
+import { Trash2 } from "lucide-react";
+
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -11,7 +13,6 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import type { Deck } from "@/types";
-import { Trash2 } from "lucide-react";
 
 export default function DeleteAlertDialog({
 	deck,
@@ -27,17 +28,21 @@ export default function DeleteAlertDialog({
 					<Trash2 />
 				</Button>
 			</AlertDialogTrigger>
-			<AlertDialogContent className="rounded-lg w-[350px]">
+			<AlertDialogContent className="w-[350px] rounded-lg">
 				<AlertDialogHeader>
 					<AlertDialogTitle>Delete deck</AlertDialogTitle>
 					<AlertDialogDescription>
-						This will permanently delete the <span className="font-bold">{deck.name}</span> deck and all its cards.
+						This will permanently delete the{" "}
+						<span className="font-bold">{deck.name}</span> deck and all its
+						cards.
 					</AlertDialogDescription>
 				</AlertDialogHeader>
-				<AlertDialogFooter className="flex flex-row justify-center items-center gap-2">
-					<AlertDialogCancel className="my-auto w-full">Cancel</AlertDialogCancel>
+				<AlertDialogFooter className="flex flex-row items-center justify-center gap-2">
+					<AlertDialogCancel className="my-auto w-full">
+						Cancel
+					</AlertDialogCancel>
 					<AlertDialogAction
-						className="bg-destructive hover:bg-destructive/90 rounded-lg w-full text-destructive-foreground"
+						className="w-full rounded-lg bg-destructive text-destructive-foreground hover:bg-destructive/90"
 						onClick={() => onDeleteDeck(deck.id)}
 					>
 						Delete

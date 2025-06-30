@@ -4,9 +4,11 @@ import { UserButton, useUser } from "@stackframe/stack";
 import { PlusIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+
 import { ColorSchemeSelector } from "@/components/common/color-scheme-selector";
 import { Button, ButtonWithLink } from "@/components/ui/button";
 import { isLandingPageRoute, NAVIGATION_LINKS, ROUTES } from "@/lib/routes";
+
 import AppLogo from "../common/app-logo";
 import AppHeaderMobile from "./app-header-mobile";
 
@@ -24,8 +26,8 @@ export default function AppHeader({
 	const navLinks = NAVIGATION_LINKS;
 
 	return (
-		<header className="top-0 z-50 sticky bg-black p-4 border-zinc-800 border-b">
-			<div className="flex justify-between items-center">
+		<header className="sticky top-0 z-50 border-b border-zinc-800 bg-black p-4">
+			<div className="flex items-center justify-between">
 				{/* Logo */}
 				{children ?? (
 					<AppLogo
@@ -35,14 +37,14 @@ export default function AppHeader({
 					/>
 				)}
 				{/* Desktop Navigation */}
-				<div className="hidden md:flex items-center gap-6">
+				<div className="hidden items-center gap-6 md:flex">
 					{!isNotDashboard && (
 						<div className="flex items-center gap-4">
-							<ButtonWithLink href={ROUTES.CREATE} className="px-3 h-9 text-sm">
-								<PlusIcon className="w-4 h-4" /> Create
+							<ButtonWithLink href={ROUTES.CREATE} className="h-9 px-3 text-sm">
+								<PlusIcon className="h-4 w-4" /> Create
 							</ButtonWithLink>
 							<ColorSchemeSelector />
-              <UserButton />
+							<UserButton />
 						</div>
 					)}
 
@@ -59,7 +61,7 @@ export default function AppHeader({
 										className={
 											isActive
 												? "bg-lime-400 text-black hover:bg-lime-500"
-												: "hover:bg-zinc-950 text-white hover:text-lime-400"
+												: "text-white hover:bg-zinc-950 hover:text-lime-400"
 										}
 									>
 										<Link href={link.href}>{link.label}</Link>
@@ -71,12 +73,12 @@ export default function AppHeader({
 				</div>
 				{/* Desktop Auth Buttons (for home page) */}
 				{isNotDashboard && (
-					<div className="hidden md:flex items-center gap-2">
+					<div className="hidden items-center gap-2 md:flex">
 						{user ? (
 							<>
 								<ButtonWithLink
 									href={ROUTES.DASHBOARD}
-									className="px-3 h-9 text-sm"
+									className="h-9 px-3 text-sm"
 								>
 									Go to dashboard
 								</ButtonWithLink>
@@ -88,13 +90,13 @@ export default function AppHeader({
 									asChild
 									variant="ghost"
 									size="sm"
-									className="hover:bg-zinc-950 text-white hover:text-lime-400"
+									className="text-white hover:bg-zinc-950 hover:text-lime-400"
 								>
 									<Link href={ROUTES.SIGN_IN}>Log in</Link>
 								</Button>
 								<ButtonWithLink
 									href={ROUTES.SIGN_UP}
-									className="px-3 h-9 text-sm"
+									className="h-9 px-3 text-sm"
 								>
 									Sign up
 								</ButtonWithLink>

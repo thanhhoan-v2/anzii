@@ -1,4 +1,5 @@
 import type { DeckListItem } from "@/types";
+
 import DeckCard from "./deck-card";
 
 interface DeckListProps {

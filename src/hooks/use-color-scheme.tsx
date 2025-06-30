@@ -1,10 +1,5 @@
 "use client";
 
-import {
-	COLOR_SCHEMES,
-	DEFAULT_COLOR_SCHEME,
-	type IColorScheme,
-} from "@/types/colorscheme";
 import { StackTheme } from "@stackframe/stack";
 import { ThemeProvider, useTheme } from "next-themes";
 import type React from "react";
@@ -16,6 +11,12 @@ import {
 	useState,
 } from "react";
 
+import {
+	COLOR_SCHEMES,
+	DEFAULT_COLOR_SCHEME,
+	type IColorScheme,
+} from "@/types/colorscheme";
+
 interface ColorSchemeContextType {
 	colorScheme: string;
 	colorSchemeData: IColorScheme;
@@ -24,7 +25,7 @@ interface ColorSchemeContextType {
 }
 
 const ColorSchemeContext = createContext<ColorSchemeContextType | undefined>(
-	undefined,
+	undefined
 );
 
 // Stack theme configuration
@@ -107,39 +108,39 @@ function InnerColorSchemeProvider({ children }: ColorSchemeProviderProps) {
 		root.style.setProperty("--popover", scheme.colors.popover);
 		root.style.setProperty(
 			"--popover-foreground",
-			scheme.colors.popoverForeground,
+			scheme.colors.popoverForeground
 		);
 		root.style.setProperty("--primary", scheme.colors.primary);
 		root.style.setProperty(
 			"--primary-foreground",
-			scheme.colors.primaryForeground,
+			scheme.colors.primaryForeground
 		);
 		root.style.setProperty("--secondary", scheme.colors.secondary);
 		root.style.setProperty(
 			"--secondary-foreground",
-			scheme.colors.secondaryForeground,
+			scheme.colors.secondaryForeground
 		);
 		root.style.setProperty("--accent", scheme.colors.accent);
 		root.style.setProperty(
 			"--accent-foreground",
-			scheme.colors.accentForeground,
+			scheme.colors.accentForeground
 		);
 		root.style.setProperty("--muted", scheme.colors.muted);
 		root.style.setProperty("--muted-foreground", scheme.colors.mutedForeground);
 		root.style.setProperty("--destructive", scheme.colors.destructive);
 		root.style.setProperty(
 			"--destructive-foreground",
-			scheme.colors.destructiveForeground,
+			scheme.colors.destructiveForeground
 		);
 		root.style.setProperty("--success", scheme.colors.success);
 		root.style.setProperty(
 			"--success-foreground",
-			scheme.colors.successForeground,
+			scheme.colors.successForeground
 		);
 		root.style.setProperty("--warning", scheme.colors.warning);
 		root.style.setProperty(
 			"--warning-foreground",
-			scheme.colors.warningForeground,
+			scheme.colors.warningForeground
 		);
 		root.style.setProperty("--border", scheme.colors.border);
 		root.style.setProperty("--input", scheme.colors.input);

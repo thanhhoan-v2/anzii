@@ -1,4 +1,5 @@
 import "dotenv/config";
+
 import { getDb } from "./index";
 import { cards, decks } from "./schema";
 

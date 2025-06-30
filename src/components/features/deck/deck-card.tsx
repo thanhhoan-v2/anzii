@@ -1,15 +1,17 @@
+import { Settings } from "lucide-react";
+
 import { Button, ButtonWithLink } from "@/components/ui/button";
 import {
+	Card as ShadCard,
 	CardContent,
 	CardDescription,
 	CardFooter,
 	CardHeader,
 	CardTitle,
-	Card as ShadCard,
 } from "@/components/ui/card";
 import { ROUTES } from "@/lib/routes";
 import type { DeckListItem } from "@/types";
-import { Settings } from "lucide-react";
+
 import DeckDeleteDialog from "./deck-delete-dialog";
 import DeckResetDialog from "./deck-reset-dialog";
 
@@ -49,7 +51,7 @@ export default function DeckCard({
 				>
 					{deck.dueCount} due
 				</div>
-				<p className="text-muted-foreground text-sm">for review today</p>
+				<p className="text-sm text-muted-foreground">for review today</p>
 			</CardContent>
 			<CardFooter className="flex justify-between gap-2">
 				<div className="flex gap-2">

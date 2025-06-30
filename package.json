@@ -9,12 +9,17 @@
 		"build": "next build",
 		"start": "next start",
 		"lint": "next lint",
+		"lint:fix": "next lint --fix",
+		"format": "prettier --write .",
+		"format:check": "prettier --check .",
+		"organize-imports": "npx eslint --fix --ext .ts,.tsx,.js,.jsx src/ --rule 'simple-import-sort/imports: error' --rule 'simple-import-sort/exports: error'",
 		"typecheck": "tsc --noEmit",
 		"db:push": "drizzle-kit push",
 		"db:studio": "drizzle-kit studio",
 		"db:seed": "tsx src/db/seed.ts",
 		"db:migrate": "tsx src/db/migrate.ts",
-		"db:generate": "drizzle-kit generate"
+		"db:generate": "drizzle-kit generate",
+		"prepare": "husky install"
 	},
 	"dependencies": {
 		"@genkit-ai/googleai": "^1.13.0",
@@ -71,17 +76,32 @@
 		"zod": "^3.24.2"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^2.0.6",
 		"@tailwindcss/typography": "^0.5.13",
 		"@types/node": "^20",
 		"@types/pg": "^8.11.6",
 		"@types/react": "^18",
 		"@types/react-dom": "^18",
+		"@typescript-eslint/eslint-plugin": "^8.17.0",
+		"@typescript-eslint/parser": "^8.17.0",
 		"drizzle-kit": "^0.21.4",
+		"eslint": "^8.57.1",
+		"eslint-config-next": "^15.3.3",
+		"eslint-config-prettier": "^9.1.0",
+		"eslint-plugin-import": "^2.31.0",
+		"eslint-plugin-simple-import-sort": "^12.1.0",
 		"genkit-cli": "^1.13.0",
+		"husky": "^9.1.7",
+		"lint-staged": "^16.1.2",
 		"postcss": "^8",
+		"prettier": "^3.4.2",
+		"prettier-plugin-organize-imports": "^4.1.0",
+		"prettier-plugin-tailwindcss": "^0.6.9",
 		"tailwindcss": "^3.4.1",
 		"tsx": "^4.20.3",
 		"typescript": "^5"
+	},
+	"lint-staged": {
+		"*.js": "eslint --cache --fix",
+		"*.{js,css,md}": "prettier --write"
 	}
 }

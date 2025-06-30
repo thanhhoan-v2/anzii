@@ -1,10 +1,11 @@
-import AppLogo from "@/components/common/app-logo";
 import { SignUp } from "@stackframe/stack";
 import Link from "next/link";
 
+import AppLogo from "@/components/common/app-logo";
+
 export default function SignUpPage() {
 	return (
-		<div className="flex flex-col justify-center items-center gap-4 h-screen">
+		<div className="flex h-screen flex-col items-center justify-center gap-4">
 			<AppLogo />
 			<SignUp
 				extraInfo={

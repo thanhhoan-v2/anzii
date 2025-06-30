@@ -1,35 +1,36 @@
-import AppLogo from "@/components/common/app-logo";
-import { Card, CardContent } from "@/components/ui/card";
 import { GithubIcon, LinkedinIcon } from "lucide-react";
 import Link from "next/link";
 
+import AppLogo from "@/components/common/app-logo";
+import { Card, CardContent } from "@/components/ui/card";
+
 export default function AppFooter() {
 	return (
-		<footer className="px-4 md:px-24 py-8 md:py-16">
-			<Card className="bg-black border border-zinc-800 rounded-t-[25px] md:rounded-t-[45px] overflow-hidden">
-				<CardContent className="space-y-8 md:space-y-12 p-8 md:p-16">
-					<div className="flex lg:flex-row flex-col gap-8 md:gap-12">
+		<footer className="px-4 py-8 md:px-24 md:py-16">
+			<Card className="overflow-hidden rounded-t-[25px] border border-zinc-800 bg-black md:rounded-t-[45px]">
+				<CardContent className="space-y-8 p-8 md:space-y-12 md:p-16">
+					<div className="flex flex-col gap-8 md:gap-12 lg:flex-row">
 						<div className="flex-1 space-y-6 md:space-y-8">
-							<div className="flex md:flex-row flex-col items-start md:items-center gap-6 md:gap-8">
+							<div className="flex flex-col items-start gap-6 md:flex-row md:items-center md:gap-8">
 								<div className="text-white">
 									<AppLogo />
 								</div>
-								<div className="flex flex-wrap gap-4 md:gap-8 text-gray-400 text-sm md:text-base">
+								<div className="flex flex-wrap gap-4 text-sm text-gray-400 md:gap-8 md:text-base">
 									<Link
 										href="/features"
-										className="hover:text-lime-400 transition-colors"
+										className="transition-colors hover:text-lime-400"
 									>
 										Features
 									</Link>
 									<Link
 										href="/pricing"
-										className="hover:text-lime-400 transition-colors"
+										className="transition-colors hover:text-lime-400"
 									>
 										Pricing
 									</Link>
 									<Link
 										href="/roadmap"
-										className="hover:text-lime-400 transition-colors"
+										className="transition-colors hover:text-lime-400"
 									>
 										Roadmap
 									</Link>
@@ -37,22 +38,22 @@ export default function AppFooter() {
 							</div>
 						</div>
 					</div>
-					<div className="flex justify-between items-center gap-4 pt-6 md:pt-8 border-zinc-800 border-t">
+					<div className="flex items-center justify-between gap-4 border-t border-zinc-800 pt-6 md:pt-8">
 						<div className="flex items-center gap-2">
 							<Link
 								href="https://github.com/thanhhoan-v2/anzii"
 								target="_blank"
 							>
-								<GithubIcon className="w-4 h-4 hover:text-lime-400 transition-colors" />
+								<GithubIcon className="h-4 w-4 transition-colors hover:text-lime-400" />
 							</Link>
 							<Link
 								href="https://www.linkedin.com/in/phan-dinh-thanh-hoan/"
 								target="_blank"
 							>
-								<LinkedinIcon className="w-4 h-4 hover:text-lime-400 transition-colors" />
+								<LinkedinIcon className="h-4 w-4 transition-colors hover:text-lime-400" />
 							</Link>
 						</div>
-						<p className="text-gray-500 text-sm md:text-base">
+						<p className="text-sm text-gray-500 md:text-base">
 							© 2025 Anzii. All Rights Reserved.
 						</p>
 					</div>

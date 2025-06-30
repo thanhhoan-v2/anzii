@@ -1,8 +1,9 @@
+import { ArrowLeft, CheckCircle, Loader2 } from "lucide-react";
+
 import Flashcard from "@/components/features/study/Flashcard";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import type { Card as CardType, Deck, Rating } from "@/types";
-import { ArrowLeft, CheckCircle, Loader2 } from "lucide-react";
 
 interface ReviewSessionProps {
 	activeDeck: Deck;
@@ -39,14 +40,14 @@ export default function ReviewSession({
 	// If session is complete, show syncing status or completion
 	if (isSessionComplete) {
 		return (
-			<div className="flex flex-col justify-center items-center w-full h-full">
+			<div className="flex h-full w-full flex-col items-center justify-center">
 				<div className="space-y-6 text-center">
 					{hasPendingSync ? (
-						<div className="flex flex-col justify-center items-center gap-5 space-y-4 h-[70vh]">
+						<div className="flex h-[70vh] flex-col items-center justify-center gap-5 space-y-4">
 							<div className="flex flex-col items-center space-y-4">
-								<Loader2 className="w-12 h-12 text-primary animate-spin" />
+								<Loader2 className="h-12 w-12 animate-spin text-primary" />
 								<div className="space-y-2">
-									<h2 className="font-semibold text-2xl">
+									<h2 className="text-2xl font-semibold">
 										Syncing Progress...
 									</h2>
 									<p className="text-muted-foreground">
@@ -56,11 +57,11 @@ export default function ReviewSession({
 							</div>
 						</div>
 					) : (
-						<div className="flex flex-col justify-center items-center gap-5 space-y-4 h-[70vh]">
+						<div className="flex h-[70vh] flex-col items-center justify-center gap-5 space-y-4">
 							<div className="flex flex-col items-center space-y-4">
-								<CheckCircle className="w-12 h-12 text-success" />
+								<CheckCircle className="h-12 w-12 text-success" />
 								<div className="space-y-2 text-center">
-									<h2 className="font-semibold text-2xl">Session Complete</h2>
+									<h2 className="text-2xl font-semibold">Session Complete</h2>
 									<p className="text-muted-foreground">
 										You've completed all{" "}
 										<span className="font-bold">{reviewQueueLength} cards</span>{" "}
@@ -69,7 +70,7 @@ export default function ReviewSession({
 								</div>
 							</div>
 							<Button onClick={onEndSession} size="lg" className="mt-4">
-								<ArrowLeft className="mr-2 w-4 h-4" />
+								<ArrowLeft className="mr-2 h-4 w-4" />
 								Back to your decks
 							</Button>
 						</div>
@@ -81,25 +82,25 @@ export default function ReviewSession({
 
 	// Normal review interface
 	return (
-		<div className="flex flex-col items-center w-full h-full">
+		<div className="flex h-full w-full flex-col items-center">
 			<div className="mb-4 w-full max-w-2xl">
-				<div className="flex justify-between items-center mb-2">
+				<div className="mb-2 flex items-center justify-between">
 					<div className="flex items-center gap-2">
-						<p className="text-muted-foreground text-sm">
+						<p className="text-sm text-muted-foreground">
 							{`Reviewing "${activeDeck.name}" | Card ${currentCardIndex + 1} of ${reviewQueueLength}`}
 						</p>
 						{hasPendingSync && (
-							<div className="flex items-center gap-1 text-muted-foreground text-xs">
-								<Loader2 className="w-3 h-3 animate-spin" />
+							<div className="flex items-center gap-1 text-xs text-muted-foreground">
+								<Loader2 className="h-3 w-3 animate-spin" />
 								<span>Syncing...</span>
 							</div>
 						)}
 					</div>
 				</div>
-				<Progress value={progressValue} className="mt-1 w-full h-2" />
+				<Progress value={progressValue} className="mt-1 h-2 w-full" />
 			</div>
 			<Flashcard card={currentCard} isFlipped={isFlipped} onFlip={onFlip} />
-			<div className="flex justify-center gap-4 mt-6 w-full">
+			<div className="mt-6 flex w-full justify-center gap-4">
 				{isFlipped ? (
 					<>
 						<Button
@@ -111,13 +112,13 @@ export default function ReviewSession({
 						</Button>
 						<Button
 							onClick={() => onRate("medium")}
-							className="bg-warning hover:bg-warning/90 w-28 text-warning-foreground"
+							className="w-28 bg-warning text-warning-foreground hover:bg-warning/90"
 						>
 							Medium
 						</Button>
 						<Button
 							onClick={() => onRate("easy")}
-							className="bg-success hover:bg-success/90 w-28 text-success-foreground"
+							className="w-28 bg-success text-success-foreground hover:bg-success/90"
 						>
 							Easy
 						</Button>

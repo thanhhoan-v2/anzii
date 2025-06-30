@@ -9,6 +9,7 @@
  */
 
 import { z } from "genkit";
+
 import { ai } from "@/ai/genkit";
 
 const SuggestQuestionsInputSchema = z.object({

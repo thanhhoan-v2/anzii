@@ -1,7 +1,8 @@
+import { ChevronDown, ChevronUp } from "lucide-react";
+
 import Heading from "@/components/common/heading";
 import { Card, CardContent } from "@/components/ui/card";
 import { processSteps } from "@/data/landing-data";
-import { ChevronDown, ChevronUp } from "lucide-react";
 
 interface ProcessSectionProps {
 	activeProcess: number;
@@ -13,7 +14,7 @@ export default function HowItWorksSection({
 	onSetActiveProcess,
 }: ProcessSectionProps) {
 	return (
-		<section id="process" className="px-4 md:px-24 py-12 md:py-20">
+		<section id="process" className="px-4 py-12 md:px-24 md:py-20">
 			<div className="space-y-8 md:space-y-12">
 				<Heading title="How it Works" />
 
@@ -21,22 +22,22 @@ export default function HowItWorksSection({
 					{processSteps.map((step, stepIndex) => (
 						<Card
 							key={`process-${stepIndex}`}
-							className={`${stepIndex === activeProcess ? "bg-lime-400" : "bg-zinc-950"} border-zinc-800 border rounded-[25px] md:rounded-[45px] shadow-brand-sm md:shadow-brand-md overflow-hidden transition-all duration-300`}
+							className={`${stepIndex === activeProcess ? "bg-lime-400" : "bg-zinc-950"} overflow-hidden rounded-[25px] border border-zinc-800 shadow-brand-sm transition-all duration-300 md:rounded-[45px] md:shadow-brand-md`}
 						>
 							<CardContent className="p-6 md:p-8">
 								<button
 									type="button"
-									className="flex justify-between items-center w-full text-left cursor-pointer"
+									className="flex w-full cursor-pointer items-center justify-between text-left"
 									onClick={() =>
 										onSetActiveProcess(
-											activeProcess === stepIndex ? -1 : stepIndex,
+											activeProcess === stepIndex ? -1 : stepIndex
 										)
 									}
 									onKeyDown={(e) => {
 										if (e.key === "Enter" || e.key === " ") {
 											e.preventDefault();
 											onSetActiveProcess(
-												activeProcess === stepIndex ? -1 : stepIndex,
+												activeProcess === stepIndex ? -1 : stepIndex
 											);
 										}
 									}}
@@ -45,32 +46,32 @@ export default function HowItWorksSection({
 								>
 									<div className="flex items-center gap-3 md:gap-6">
 										<span
-											className={`font-bold text-2xl md:text-4xl ${stepIndex === activeProcess ? "text-black" : "text-gray-100"}`}
+											className={`text-2xl font-bold md:text-4xl ${stepIndex === activeProcess ? "text-black" : "text-gray-100"}`}
 										>
 											{step.number}
 										</span>
 										<h3
-											className={`font-bold text-lg md:text-2xl ${stepIndex === activeProcess ? "text-black" : "text-gray-100"}`}
+											className={`text-lg font-bold md:text-2xl ${stepIndex === activeProcess ? "text-black" : "text-gray-100"}`}
 										>
 											{step.title}
 										</h3>
 									</div>
 									<div
-										className={`flex justify-center items-center border rounded-full w-10 md:w-12 h-10 md:h-12 ${stepIndex === activeProcess ? "bg-zinc-950 border-black" : "bg-zinc-900 border-zinc-700"}`}
+										className={`flex h-10 w-10 items-center justify-center rounded-full border md:h-12 md:w-12 ${stepIndex === activeProcess ? "border-black bg-zinc-950" : "border-zinc-700 bg-zinc-900"}`}
 									>
 										{activeProcess === stepIndex ? (
-											<ChevronUp className="w-5 md:w-6 h-5 md:h-6 text-lime-400" />
+											<ChevronUp className="h-5 w-5 text-lime-400 md:h-6 md:w-6" />
 										) : (
-											<ChevronDown className="w-5 md:w-6 h-5 md:h-6 text-gray-400" />
+											<ChevronDown className="h-5 w-5 text-gray-400 md:h-6 md:w-6" />
 										)}
 									</div>
 								</button>
 								{activeProcess === stepIndex && (
 									<div
 										id={`process-content-${stepIndex}`}
-										className="mt-4 md:mt-6 pt-4 md:pt-6 border-t border-black"
+										className="mt-4 border-t border-black pt-4 md:mt-6 md:pt-6"
 									>
-										<p className="text-black text-base md:text-lg">
+										<p className="text-base text-black md:text-lg">
 											{step.description}
 										</p>
 									</div>

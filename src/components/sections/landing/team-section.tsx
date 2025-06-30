@@ -1,42 +1,43 @@
+import { Linkedin } from "lucide-react";
+
 import Heading from "@/components/common/heading";
 import { Card, CardContent } from "@/components/ui/card";
 import { teamMembers } from "@/data/landing-data";
-import { Linkedin } from "lucide-react";
 
 export default function TeamSection() {
 	return (
-		<section className="px-4 md:px-24 py-12 md:py-20">
+		<section className="px-4 py-12 md:px-24 md:py-20">
 			<div className="space-y-8 md:space-y-12">
 				<div className="space-y-2 md:space-y-4">
 					<Heading title="Team" />
-					<p className="mx-auto max-w-lg text-gray-400 text-base md:text-lg text-center">
+					<p className="mx-auto max-w-lg text-center text-base text-gray-400 md:text-lg">
 						Meet the passionate team building the future of AI-powered learning.
 					</p>
 				</div>
 
-				<div className="gap-4 md:gap-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+				<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8 lg:grid-cols-3">
 					{teamMembers.map((member, memberIndex) => (
 						<Card
 							key={`team-${memberIndex}`}
-							className="bg-zinc-950 shadow-brand-sm md:shadow-brand-md hover:shadow-brand-lg border border-zinc-800 rounded-[25px] md:rounded-[45px] overflow-hidden transition-all duration-300"
+							className="overflow-hidden rounded-[25px] border border-zinc-800 bg-zinc-950 shadow-brand-sm transition-all duration-300 hover:shadow-brand-lg md:rounded-[45px] md:shadow-brand-md"
 						>
-							<CardContent className="space-y-4 md:space-y-6 p-6 md:p-8 text-center">
+							<CardContent className="space-y-4 p-6 text-center md:space-y-6 md:p-8">
 								<div className="space-y-3 md:space-y-4">
 									<div className="text-4xl md:text-6xl">{member.image}</div>
 									<div>
-										<h3 className="font-bold text-gray-100 text-lg md:text-xl">
+										<h3 className="text-lg font-bold text-gray-100 md:text-xl">
 											{member.name}
 										</h3>
-										<p className="text-gray-400 text-sm md:text-base">
+										<p className="text-sm text-gray-400 md:text-base">
 											{member.role}
 										</p>
 									</div>
-									<div className="flex justify-center items-center bg-lime-400 mx-auto rounded-full w-6 md:w-8 h-6 md:h-8">
-										<Linkedin className="w-3 md:w-4 h-3 md:h-4 text-black" />
+									<div className="mx-auto flex h-6 w-6 items-center justify-center rounded-full bg-lime-400 md:h-8 md:w-8">
+										<Linkedin className="h-3 w-3 text-black md:h-4 md:w-4" />
 									</div>
 								</div>
-								<div className="pt-4 md:pt-6 border-zinc-800 border-t">
-									<p className="text-gray-500 text-xs md:text-sm">
+								<div className="border-t border-zinc-800 pt-4 md:pt-6">
+									<p className="text-xs text-gray-500 md:text-sm">
 										{member.description}
 									</p>
 								</div>

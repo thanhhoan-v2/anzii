@@ -1,11 +1,16 @@
-import { useIsMobile } from '@/hooks/use-mobile';
-import { cn } from '@/lib/utils';
+import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
 
 export default function Heading({ title }: { title: string }) {
-    const isMobile = useIsMobile();
-    return (
-        <h1 className={cn("bg-brand-lime p-1 rounded-md w-fit mx-auto font-bold text-black text-[2.5rem]", isMobile && "text-center")}>
-            {title}
-        </h1>
-    );
+	const isMobile = useIsMobile();
+	return (
+		<h1
+			className={cn(
+				"mx-auto w-fit rounded-md bg-brand-lime p-1 text-[2.5rem] font-bold text-black",
+				isMobile && "text-center"
+			)}
+		>
+			{title}
+		</h1>
+	);
 }

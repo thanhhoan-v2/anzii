@@ -1,5 +1,8 @@
 "use client";
 
+import { Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
+
 import AiDeckGenerator from "@/components/features/ai/ai-deck-generator";
 import DeckList from "@/components/features/deck/deck-list";
 import ReviewSession from "@/components/features/study/review-session";
@@ -9,8 +12,6 @@ import { useDeckManagement } from "@/hooks/use-deck-management";
 import { useFileImport } from "@/hooks/use-file-import";
 import { useReviewSession } from "@/hooks/use-review-session";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2 } from "lucide-react";
-import { useEffect, useState } from "react";
 
 export default function Home() {
 	const [isAiDeckGeneratorOpen, setIsAiDeckGeneratorOpen] = useState(false);
@@ -39,18 +40,18 @@ export default function Home() {
 
 	if (deckManagement.isLoading) {
 		return (
-			<div className="flex justify-center items-center h-screen">
-				<Loader2 className="w-8 h-8 animate-spin" />
+			<div className="flex h-screen items-center justify-center">
+				<Loader2 className="h-8 w-8 animate-spin" />
 				<p className="ml-4">Loading decks...</p>
 			</div>
 		);
 	}
 
 	return (
-		<div className="bg-background min-h-screen font-sans text-foreground">
+		<div className="min-h-screen bg-background font-sans text-foreground">
 			<AppHeader />
 
-			<main className="mx-auto p-4 md:p-8 container">
+			<main className="container mx-auto p-4 md:p-8">
 				{reviewSession.sessionInProgress && reviewSession.activeDeck ? (
 					<ReviewSession
 						activeDeck={reviewSession.activeDeck}

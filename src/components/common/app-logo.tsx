@@ -1,11 +1,21 @@
 import Link from "next/link";
 
-export default function AppLogo({ svgClassName, textClassName, showText = true }: { svgClassName?: string, textClassName?: string, showText?: boolean }) {
+export default function AppLogo({
+	svgClassName,
+	textClassName,
+	showText = true,
+}: {
+	svgClassName?: string;
+	textClassName?: string;
+	showText?: boolean;
+}) {
 	return (
 		<Link href="/" className={`flex items-start gap-2`}>
-			<LogoSVG className="w-10 h-10 text-lime-400" />
+			<LogoSVG className="h-10 w-10 text-lime-400" />
 			{showText && (
-				<h1 className={`font-bold hover:font-black text-[2rem] tracking-tight ${textClassName ?? ""}`}>
+				<h1
+					className={`text-[2rem] font-bold tracking-tight hover:font-black ${textClassName ?? ""}`}
+				>
 					Anzii
 				</h1>
 			)}

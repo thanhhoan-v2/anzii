@@ -1,4 +1,5 @@
 import { addDays, startOfToday } from "date-fns";
+
 import type { Card, Rating } from "@/types";
 
 const MIN_EASE_FACTOR = 1.3;

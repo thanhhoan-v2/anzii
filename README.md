@@ -80,34 +80,36 @@ To ensure maintainability and consistency, all application routes are centralize
 ```typescript
 // Centralized route definitions
 export const ROUTES = {
-  // Public routes
-  HOME: "/",
-  ABOUT_US: "/about-us",
-  FEATURES: "/features", 
-  PRICING: "/pricing",
-  ROADMAP: "/roadmap",
+	// Public routes
+	HOME: "/",
+	ABOUT_US: "/about-us",
+	FEATURES: "/features",
+	PRICING: "/pricing",
+	ROADMAP: "/roadmap",
 
-  // Auth routes
-  SIGN_IN: "/sign-in",
-  SIGN_UP: "/sign-up",
-  SETTINGS: "/settings",
+	// Auth routes
+	SIGN_IN: "/sign-in",
+	SIGN_UP: "/sign-up",
+	SETTINGS: "/settings",
 
-  // Authenticated routes
-  DASHBOARD: "/dashboard",
-  CREATE: "/create",
-  
-  // Dynamic routes
-  DECK: (deckId: string) => `/deck/${deckId}`,
+	// Authenticated routes
+	DASHBOARD: "/dashboard",
+	CREATE: "/create",
+
+	// Dynamic routes
+	DECK: (deckId: string) => `/deck/${deckId}`,
 } as const;
 ```
 
 **Benefits:**
+
 - **Single Source of Truth**: All routes defined in one place
 - **Type Safety**: TypeScript ensures route consistency
 - **Easy Refactoring**: Change routes globally by updating the configuration
 - **Developer Experience**: Autocomplete and IDE support for all routes
 
 **Usage Examples:**
+
 ```typescript
 // In components
 <Link href={ROUTES.DASHBOARD}>Dashboard</Link>
@@ -341,12 +343,14 @@ const newInterval = rating >= 3 ? Math.ceil(card.interval * newEaseFactor) : 1; 
 The component system follows a clean architecture pattern with strict adherence to coding standards:
 
 #### Clean Code Principles
+
 - **Size Limit**: Components do not exceed 50 lines of code
-- **Props Limit**: Components have maximum 3 props for simplicity  
+- **Props Limit**: Components have maximum 3 props for simplicity
 - **Nesting Limit**: JSX nesting does not exceed 3 levels deep
 - **State Management**: Multiple useState calls use custom hooks or useReducer
 
 #### Component Organization
+
 - **UI Components** (`/ui`): Base shadcn/ui components for consistent design
 - **Layout Components** (`/layout`): Navigation, headers, and page structure
 - **Section Components** (`/sections`): Large page sections like landing pages
@@ -370,10 +374,12 @@ src/components/sections/landing/
 ```
 
 **Supporting Files:**
+
 - `src/data/landing-data.ts` - Static data extraction
 - `src/hooks/useLandingPageState.ts` - State management hook
 
 This modular approach enables:
+
 - **Reusability**: Components can be used across different pages
 - **Testability**: Individual sections can be tested in isolation
 - **Maintainability**: Easy to update specific sections
@@ -508,7 +514,7 @@ anzii/
 │   │   │   ├── sign-in/              # Sign in page
 │   │   │   └── sign-up/              # Sign up page
 │   │   ├── about-us/                 # About us page
-│   │   ├── roadmap/                  # Product roadmap page  
+│   │   ├── roadmap/                  # Product roadmap page
 │   │   ├── create/                   # Deck creation page
 │   │   ├── dashboard/                # Main dashboard (auth required)
 │   │   ├── deck/[deckId]/           # Individual deck study page
@@ -542,12 +548,14 @@ anzii/
 The component system follows a clean architecture pattern with strict adherence to coding standards:
 
 #### Clean Code Principles
+
 - **Size Limit**: Components do not exceed 50 lines of code
-- **Props Limit**: Components have maximum 3 props for simplicity  
+- **Props Limit**: Components have maximum 3 props for simplicity
 - **Nesting Limit**: JSX nesting does not exceed 3 levels deep
 - **State Management**: Multiple useState calls use custom hooks or useReducer
 
 #### Component Organization
+
 - **UI Components** (`/ui`): Base shadcn/ui components for consistent design
 - **Layout Components** (`/layout`): Navigation, headers, and page structure
 - **Section Components** (`/sections`): Large page sections like landing pages
@@ -571,10 +579,12 @@ src/components/sections/landing/
 ```
 
 **Supporting Files:**
+
 - `src/data/landing-data.ts` - Static data extraction
 - `src/hooks/useLandingPageState.ts` - State management hook
 
 This modular approach enables:
+
 - **Reusability**: Components can be used across different pages
 - **Testability**: Individual sections can be tested in isolation
 - **Maintainability**: Easy to update specific sections

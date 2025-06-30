@@ -1,0 +1,48 @@
+{
+	"extends": ["next/core-web-vitals", "next/typescript", "prettier"],
+	"plugins": ["@typescript-eslint", "import", "simple-import-sort"],
+	"parser": "@typescript-eslint/parser",
+	"parserOptions": {
+		"ecmaVersion": 2022,
+		"sourceType": "module",
+		"ecmaFeatures": {
+			"jsx": true
+		}
+	},
+	"rules": {
+		// Disable rules that were disabled in Biome config
+		"react/no-array-index-key": "off",
+		"@typescript-eslint/no-non-null-assertion": "off",
+
+		// Additional recommended rules
+		"@typescript-eslint/no-unused-vars": [
+			"error",
+			{ "argsIgnorePattern": "^_" }
+		],
+
+		"prefer-const": "off",
+		"no-console": ["warn", { "allow": ["warn", "error"] }],
+		"react-hooks/exhaustive-deps": "warn",
+
+		// Import organization rules
+		"simple-import-sort/imports": "error",
+		"simple-import-sort/exports": "error",
+		"import/first": "error",
+		"import/newline-after-import": "error",
+		"import/no-duplicates": "error",
+
+		// Formatting-related rules (handled by Prettier)
+		"indent": "off",
+		"quotes": "off",
+		"semi": "off",
+		"comma-dangle": "off",
+		"max-len": "off"
+	},
+	"ignorePatterns": [
+		".next/**",
+		"node_modules/**",
+		"dist/**",
+		"build/**",
+		"drizzle/**"
+	]
+}

@@ -1,6 +1,7 @@
-import { Button } from "@/components/ui/button";
 import { FileText, Rocket, Upload, Zap } from "lucide-react";
 import Link from "next/link";
+
+import { Button } from "@/components/ui/button";
 
 interface WelcomeScreenProps {
 	onImport: () => void;
@@ -13,14 +14,14 @@ export default function WelcomeScreen({
 }: WelcomeScreenProps) {
 	return (
 		<div className="px-4 py-16 text-center">
-			<Rocket className="mx-auto w-16 h-16 text-primary" />
-			<h2 className="mt-6 font-bold text-foreground text-3xl sm:text-4xl tracking-tight">
+			<Rocket className="mx-auto h-16 w-16 text-primary" />
+			<h2 className="mt-6 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
 				Welcome to Anzii
 			</h2>
-			<p className="mt-4 text-muted-foreground text-lg">
+			<p className="mt-4 text-lg text-muted-foreground">
 				Your smart flashcard companion. Get started by creating your first deck.
 			</p>
-			<div className="flex flex-wrap justify-center gap-4 mt-8">
+			<div className="mt-8 flex flex-wrap justify-center gap-4">
 				<Button asChild size="lg">
 					<Link href="/create">
 						<Zap className="mr-2" /> Create Cards

@@ -7,4 +7,3 @@ export { default as ServicesSection } from "./services-section";
 export { default as StatsSection } from "./stats-section";
 export { default as TeamSection } from "./team-section";
 export { default as TestimonialsSection } from "./testimonials-section";
-
