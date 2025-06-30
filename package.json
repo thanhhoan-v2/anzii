@@ -19,7 +19,7 @@
 		"db:seed": "tsx src/db/seed.ts",
 		"db:migrate": "tsx src/db/migrate.ts",
 		"db:generate": "drizzle-kit generate",
-		"prepare": "husky install"
+		"prepare": "husky"
 	},
 	"dependencies": {
 		"@genkit-ai/googleai": "^1.13.0",
@@ -101,7 +101,12 @@
 		"typescript": "^5"
 	},
 	"lint-staged": {
-		"*.js": "eslint --cache --fix",
-		"*.{js,css,md}": "prettier --write"
+		"*.{js,jsx,ts,tsx}": [
+			"eslint --cache --fix",
+			"prettier --write"
+		],
+		"*.{json,css,md}": [
+			"prettier --write"
+		]
 	}
 }

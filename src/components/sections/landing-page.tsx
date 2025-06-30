@@ -9,11 +9,8 @@ import TestimonialsSection from "@/components/sections/landing/testimonials-sect
 import { useLandingPageState } from "@/hooks/use-landing-page-state";
 
 export default function LandingPage() {
-	const {
-		activeProcess,
-		setActiveProcess,
-		handleGetStarted,
-	} = useLandingPageState();
+	const { activeProcess, setActiveProcess, handleGetStarted } =
+		useLandingPageState();
 
 	return (
 		<div className="min-h-screen bg-black">

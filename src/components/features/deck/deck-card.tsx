@@ -2,12 +2,12 @@ import { Settings } from "lucide-react";
 
 import { Button, ButtonWithLink } from "@/components/ui/button";
 import {
-	Card as ShadCard,
 	CardContent,
 	CardDescription,
 	CardFooter,
 	CardHeader,
 	CardTitle,
+	Card as ShadCard,
 } from "@/components/ui/card";
 import { ROUTES } from "@/lib/routes";
 import type { DeckListItem } from "@/types";

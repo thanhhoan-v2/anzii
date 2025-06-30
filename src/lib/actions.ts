@@ -12,8 +12,8 @@ import { calculateNextReview } from "@/lib/srs";
 import { shuffle } from "@/lib/utils";
 import type {
 	Card as CardType,
-	Deck as DeckType,
 	DeckListItem,
+	Deck as DeckType,
 	Rating,
 } from "@/types";
 
@@ -227,7 +227,7 @@ export async function deleteDeck(deckId: string): Promise<ActionResponse> {
 
 export async function reviewCard({
 	cardId,
-	deckId,
+	deckId: _deckId,
 	rating,
 }: {
 	cardId: string;
