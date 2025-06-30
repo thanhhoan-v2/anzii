@@ -255,35 +255,6 @@ export default function SettingsPage() {
 									</div>
 								</CardContent>
 							</Card>
-
-							{/* Appearance Settings */}
-							<Card className="bg-zinc-950/80 shadow-xl border-zinc-800">
-								<CardHeader className="pb-4">
-									<CardTitle className="flex items-center gap-3 text-gray-100">
-										<div className="bg-purple-500/10 p-2 rounded-lg">
-											<Palette className="w-5 h-5 text-purple-400" />
-										</div>
-										Appearance
-									</CardTitle>
-									<CardDescription className="text-gray-400">
-										Customize how the application looks and feels
-									</CardDescription>
-								</CardHeader>
-								<CardContent className="space-y-4">
-									<div className="space-y-3">
-										<Label className="font-medium text-gray-300">
-											Color Scheme
-										</Label>
-										<div className="bg-zinc-900/30 p-4 border border-zinc-800 rounded-lg">
-											<ColorSchemeSelector />
-										</div>
-										<p className="text-gray-500 text-xs">
-											Theme changes apply instantly across the entire
-											application
-										</p>
-									</div>
-								</CardContent>
-							</Card>
 						</div>
 
 						{/* Sidebar */}

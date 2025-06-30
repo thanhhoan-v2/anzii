@@ -50,7 +50,7 @@ export function ColorSchemeSelector() {
 	return (
 		<Sheet open={isOpen} onOpenChange={setIsOpen}>
 			<SheetTrigger asChild>
-				<Button variant="outline" size="icon">
+				<Button variant="outline" size="lg" className="p-4 rounded-lg">
 					<Palette className="w-[1.2rem] h-[1.2rem]" />
 					<span className="sr-only">Select color scheme</span>
 				</Button>

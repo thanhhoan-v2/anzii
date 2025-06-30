@@ -1,16 +1,20 @@
 "use client";
 
-import { ColorSchemeSelector } from "@/components/common/color-scheme-selector";
-import { Button, ButtonWithLink } from "@/components/ui/button";
-import { isLandingPageRoute, NAVIGATION_LINKS, ROUTES } from "@/lib/routes";
 import { UserButton, useUser } from "@stackframe/stack";
 import { PlusIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { ColorSchemeSelector } from "@/components/common/color-scheme-selector";
+import { Button, ButtonWithLink } from "@/components/ui/button";
+import { isLandingPageRoute, NAVIGATION_LINKS, ROUTES } from "@/lib/routes";
 import AppLogo from "../common/app-logo";
 import AppHeaderMobile from "./app-header-mobile";
 
-export default function AppHeader() {
+export default function AppHeader({
+	children,
+}: {
+	children?: React.ReactNode;
+}) {
 	const pathname = usePathname();
 	const user = useUser();
 
@@ -23,11 +27,13 @@ export default function AppHeader() {
 		<header className="top-0 z-50 sticky bg-black p-4 border-zinc-800 border-b">
 			<div className="flex justify-between items-center">
 				{/* Logo */}
-				<AppLogo
-					svgClassName="text-lime-400"
-					textClassName="text-white"
-					showText={true}
-				/>
+				{children ?? (
+					<AppLogo
+						svgClassName="text-lime-400"
+						textClassName="text-white"
+						showText={true}
+					/>
+				)}
 				{/* Desktop Navigation */}
 				<div className="hidden md:flex items-center gap-6">
 					{!isNotDashboard && (
@@ -36,6 +42,7 @@ export default function AppHeader() {
 								<PlusIcon className="w-4 h-4" /> Create
 							</ButtonWithLink>
 							<ColorSchemeSelector />
+              <UserButton />
 						</div>
 					)}
 
@@ -66,7 +73,15 @@ export default function AppHeader() {
 				{isNotDashboard && (
 					<div className="hidden md:flex items-center gap-2">
 						{user ? (
-							<UserButton />
+							<>
+								<ButtonWithLink
+									href={ROUTES.DASHBOARD}
+									className="px-3 h-9 text-sm"
+								>
+									Go to dashboard
+								</ButtonWithLink>
+								<UserButton />
+							</>
 						) : (
 							<>
 								<Button

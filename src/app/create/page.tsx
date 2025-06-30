@@ -1,13 +1,14 @@
 "use client";
 
+import BackButton from "@/components/common/back-button";
 import AppHeader from "@/components/layout/app-header";
 import { Button } from "@/components/ui/button";
 import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,20 +17,20 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import {
-	addCard,
-	createDeck,
-	createDeckFromAi,
-	createDeckFromMarkdown,
+    addCard,
+    createDeck,
+    createDeckFromAi,
+    createDeckFromMarkdown,
 } from "@/lib/actions";
 import { ROUTES } from "@/lib/routes";
 import {
-	Bot,
-	FileText,
-	Loader2,
-	Plus,
-	PlusCircle,
-	Trash2,
-	Upload,
+    Bot,
+    FileText,
+    Loader2,
+    Plus,
+    PlusCircle,
+    Trash2,
+    Upload,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
@@ -280,7 +281,9 @@ export default function CreatePage() {
 
 	return (
 		<div className="bg-background min-h-screen text-foreground">
-			<AppHeader />
+			<AppHeader>
+        <BackButton />
+      </AppHeader>
 
 			<main className="mx-auto p-4 md:p-8 max-w-4xl container">
 				<Tabs defaultValue="manual" className="w-full">

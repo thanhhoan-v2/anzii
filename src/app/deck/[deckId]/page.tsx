@@ -1,5 +1,6 @@
 "use client";
 
+import BackButton from "@/components/common/back-button";
 import CardEditor from "@/components/features/study/card-editor";
 import AppHeader from "@/components/layout/app-header";
 import {
@@ -178,7 +179,9 @@ export default function DeckManagerPage() {
 
 	return (
 		<div className="bg-background min-h-screen font-body text-foreground">
-			<AppHeader />
+			<AppHeader>
+        <BackButton />
+      </AppHeader>
 
 			<main className="mx-auto p-4 md:p-8 container">
 				<Card>
