@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Important pages for verification
+Allow: /privacy-policy
+Allow: /terms-of-service
+Allow: /contact
+
+Sitemap: https://anzii.vercel.app/sitemap.xml 

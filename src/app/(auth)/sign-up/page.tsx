@@ -11,8 +11,18 @@ export default function SignUpPage() {
 				extraInfo={
 					<>
 						By signing up, you agree to our{" "}
-						<Link href="/terms" className="hover:underline">
-							Terms
+						<Link
+							href="/terms-of-service"
+							className="text-lime-400 hover:text-lime-300 hover:underline"
+						>
+							Terms of Service
+						</Link>{" "}
+						and{" "}
+						<Link
+							href="/privacy-policy"
+							className="text-lime-400 hover:text-lime-300 hover:underline"
+						>
+							Privacy Policy
 						</Link>
 					</>
 				}

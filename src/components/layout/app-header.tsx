@@ -9,7 +9,7 @@ import { AppLogo } from "@/components/common/app-logo";
 import { ColorSchemeSelector } from "@/components/common/color-scheme-selector";
 import AppHeaderMobile from "@/components/layout/app-header-mobile";
 import { Button, ButtonWithLink } from "@/components/ui/button";
-import { isLandingPageRoute, NAVIGATION_LINKS, ROUTES } from "@/lib/routes";
+import { ROUTES } from "@/lib/routes";
 
 export default function AppHeader({
 	children,
@@ -19,19 +19,37 @@ export default function AppHeader({
 	const pathname = usePathname();
 	const user = useUser();
 
-	const isNotDashboard =
-		pathname === ROUTES.HOME || isLandingPageRoute(pathname);
+	// Pages that show main navigation (Features, Pricing, Roadmap)
+	const publicNavigationPages = [
+		ROUTES.HOME,
+		ROUTES.FEATURES,
+		ROUTES.PRICING,
+		ROUTES.ROADMAP,
+		ROUTES.PRIVACY_POLICY,
+		ROUTES.TERMS_OF_SERVICE,
+	] as const;
 
-	const navLinks = NAVIGATION_LINKS;
+	// Main navigation links to show on public pages
+	const mainNavLinks = [
+		{ href: ROUTES.FEATURES, label: "Features" },
+		{ href: ROUTES.PRICING, label: "Pricing" },
+		{ href: ROUTES.ROADMAP, label: "Roadmap" },
+	];
+
+	const isPublicPage = publicNavigationPages.includes(
+		pathname as (typeof publicNavigationPages)[number]
+	);
 
 	return (
 		<header className="sticky top-0 z-50 border-b border-zinc-800 bg-black p-4">
 			<div className="flex items-center justify-between">
 				{/* Logo */}
 				{children ?? <AppLogo textClassName="text-white" showText={true} />}
+
 				{/* Desktop Navigation */}
 				<div className="hidden items-center gap-6 md:flex">
-					{!isNotDashboard && (
+					{/* Protected/Dashboard Navigation */}
+					{!isPublicPage && (
 						<div className="flex items-center gap-4">
 							<ButtonWithLink href={ROUTES.CREATE} className="h-9 px-3 text-sm">
 								<PlusIcon className="h-4 w-4" /> Create
@@ -41,9 +59,10 @@ export default function AppHeader({
 						</div>
 					)}
 
-					{isNotDashboard && (
+					{/* Public Page Navigation */}
+					{isPublicPage && (
 						<nav className="flex items-center gap-2">
-							{navLinks.map((link) => {
+							{mainNavLinks.map((link) => {
 								const isActive = pathname === link.href;
 								return (
 									<Button
@@ -64,8 +83,9 @@ export default function AppHeader({
 						</nav>
 					)}
 				</div>
-				{/* Desktop Auth Buttons (for home page) */}
-				{isNotDashboard && (
+
+				{/* Desktop Auth Buttons (for public pages only) */}
+				{isPublicPage && (
 					<div className="hidden items-center gap-2 md:flex">
 						{user ? (
 							<>
@@ -97,8 +117,9 @@ export default function AppHeader({
 						)}
 					</div>
 				)}
+
 				{/* Mobile Menu */}
-				<AppHeaderMobile isNotDashboard={isNotDashboard} />
+				<AppHeaderMobile isNotDashboard={isPublicPage} />
 			</div>
 		</header>
 	);

@@ -14,7 +14,7 @@ import {
 	SheetTitle,
 	SheetTrigger,
 } from "@/components/ui/sheet";
-import { NAVIGATION_LINKS, ROUTES } from "@/lib/routes";
+import { ROUTES } from "@/lib/routes";
 
 interface AppHeaderMobileProps {
 	isNotDashboard: boolean;
@@ -24,7 +24,14 @@ export default function AppHeaderMobile({
 	isNotDashboard,
 }: AppHeaderMobileProps) {
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-	const navLinks = NAVIGATION_LINKS;
+
+	// Main navigation links to show on public pages
+	const mainNavLinks = [
+		{ href: ROUTES.FEATURES, label: "Features" },
+		{ href: ROUTES.PRICING, label: "Pricing" },
+		{ href: ROUTES.ROADMAP, label: "Roadmap" },
+	];
+
 	const closeMobileMenu = () => setIsMobileMenuOpen(false);
 
 	return (
@@ -72,7 +79,7 @@ export default function AppHeaderMobile({
 											Product
 										</h3>
 										<nav className="space-y-2">
-											{navLinks.map((link) => (
+											{mainNavLinks.map((link) => (
 												<Link
 													key={`mobile-nav-${link.href}`}
 													href={link.href}

@@ -2,6 +2,22 @@
 
 > _"Memory is the treasury and guardian of all things."_ — Cicero
 
+## 🌐 Official Website
+
+**Live Application**: [https://anzii.vercel.app](https://anzii.vercel.app)
+
+### Legal & Compliance
+
+- **Privacy Policy**: [/privacy-policy](https://anzii.vercel.app/privacy-policy)
+- **Terms of Service**: [/terms-of-service](https://anzii.vercel.app/terms-of-service)
+- **Contact**: [/contact](https://anzii.vercel.app/contact)
+
+### Support
+
+- **Email**: support@anzii.com
+- **Legal**: legal@anzii.com
+- **Privacy**: privacy@anzii.com
+
 ## 🚀 Quick Installation
 
 ### Prerequisites

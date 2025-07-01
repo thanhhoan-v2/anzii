@@ -206,6 +206,35 @@ const PrivacyPolicyPage = () => {
 							changes. Changes to this Privacy Policy are effective when they
 							are posted on this page.
 						</p>
+						<Heading title="Contact Us" />
+						<p>
+							If you have any questions about this Privacy Policy, please
+							contact us:
+						</p>
+						<ul>
+							<li>
+								Email: <a href="mailto:legal@anzii.com">legal@anzii.com</a>
+							</li>
+							<li>
+								Support:{" "}
+								<a href="mailto:support@anzii.com">support@anzii.com</a>
+							</li>
+							<li>
+								Website:{" "}
+								<a href="https://anzii.vercel.app">https://anzii.vercel.app</a>
+							</li>
+							<li>
+								Contact page: <a href="/contact">/contact</a>
+							</li>
+						</ul>
+						<p>
+							<strong>Data Protection Officer:</strong> For questions
+							specifically related to data protection and privacy, please email
+							us at <a href="mailto:privacy@anzii.com">privacy@anzii.com</a>
+						</p>
+						<p className="text-sm text-gray-500">
+							Last updated: January 1, 2025
+						</p>
 					</div>
 				</div>
 			</main>

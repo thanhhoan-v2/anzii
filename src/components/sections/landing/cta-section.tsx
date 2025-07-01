@@ -22,9 +22,27 @@ export default function CTASection({
 							smarter, not harder. Start your journey to better grades and
 							deeper understanding today.
 						</p>
-						<ButtonWithLink href={ROUTES.SIGN_UP} className="w-fit">
-							Get Your Free Account
-						</ButtonWithLink>
+						<div className="space-y-4">
+							<ButtonWithLink href={ROUTES.SIGN_UP} className="w-fit">
+								Get Your Free Account
+							</ButtonWithLink>
+							<p className="text-xs text-gray-500">
+								By signing up, you agree to our{" "}
+								<a
+									href="/terms-of-service"
+									className="text-lime-400 underline hover:text-lime-300"
+								>
+									Terms of Service
+								</a>{" "}
+								and{" "}
+								<a
+									href="/privacy-policy"
+									className="text-lime-400 underline hover:text-lime-300"
+								>
+									Privacy Policy
+								</a>
+							</p>
+						</div>
 					</div>
 					<div className="flex flex-1 justify-center">
 						<div className="text-6xl md:text-8xl">🚀</div>

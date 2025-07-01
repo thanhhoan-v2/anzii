@@ -10,6 +10,8 @@ export const ROUTES = {
 	FEATURES: "/features",
 	PRICING: "/pricing",
 	ROADMAP: "/roadmap",
+	TERMS_OF_SERVICE: "/terms-of-service",
+	PRIVACY_POLICY: "/privacy-policy",
 
 	// Auth routes
 	SIGN_IN: "/sign-in",
@@ -45,14 +47,17 @@ export const NAVIGATION_LINKS = [
 	{ href: ROUTES.FEATURES, label: "Features" },
 	{ href: ROUTES.PRICING, label: "Pricing" },
 	{ href: ROUTES.ROADMAP, label: "Roadmap" },
+	{ href: ROUTES.TERMS_OF_SERVICE, label: "Terms of Service" },
+	{ href: ROUTES.PRIVACY_POLICY, label: "Privacy Policy" },
 ] as const;
 
 // Footer links (can be internal or external)
 export const FOOTER_LINKS = [
-	{ href: "#services", label: "Features" },
-	{ href: "#process", label: "How it Works" },
-	{ href: "#testimonials", label: "Reviews" },
-	{ href: "#roadmap", label: "Roadmap" },
+	{ href: ROUTES.FEATURES, label: "Features" },
+	{ href: ROUTES.PRICING, label: "Pricing" },
+	{ href: ROUTES.ROADMAP, label: "Roadmap" },
+	{ href: ROUTES.TERMS_OF_SERVICE, label: "Terms of Service" },
+	{ href: ROUTES.PRIVACY_POLICY, label: "Privacy Policy" },
 ] as const;
 
 // Landing page specific routes that determine active state
@@ -60,12 +65,16 @@ export const LANDING_PAGE_ROUTES = [
 	ROUTES.FEATURES,
 	ROUTES.PRICING,
 	ROUTES.ROADMAP,
+	ROUTES.TERMS_OF_SERVICE,
+	ROUTES.PRIVACY_POLICY,
 ] as const;
 
 // Helper functions
 export const isLandingPageRoute = (pathname: string): boolean => {
-	return LANDING_PAGE_ROUTES.includes(
-		pathname as (typeof LANDING_PAGE_ROUTES)[number]
+	return (
+		LANDING_PAGE_ROUTES.includes(
+			pathname as (typeof LANDING_PAGE_ROUTES)[number]
+		) || pathname === ROUTES.HOME
 	);
 };
 

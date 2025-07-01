@@ -168,6 +168,30 @@ const TermsOfServicePage = () => {
 							become effective, you agree to be bound by the revised terms. If
 							you do not agree to the new terms, please stop using the Service.
 						</p>
+						<Heading title="Contact Us" />
+						<p>
+							If you have any questions about these Terms of Service, please
+							contact us:
+						</p>
+						<ul>
+							<li>
+								Email: <a href="mailto:legal@anzii.com">legal@anzii.com</a>
+							</li>
+							<li>
+								Support:{" "}
+								<a href="mailto:support@anzii.com">support@anzii.com</a>
+							</li>
+							<li>
+								Website:{" "}
+								<a href="https://anzii.vercel.app">https://anzii.vercel.app</a>
+							</li>
+							<li>
+								Contact page: <a href="/contact">/contact</a>
+							</li>
+						</ul>
+						<p className="text-sm text-gray-500">
+							Last updated: January 1, 2025
+						</p>
 					</div>
 				</div>
 			</main>

@@ -10,8 +10,8 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 
-import { AppLogo } from "@/components/common/app-logo";
 import Heading from "@/components/common/heading";
+import AppFooter from "@/components/layout/app-footer";
 import AppHeader from "@/components/layout/app-header";
 import { ButtonWithLink } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -252,55 +252,7 @@ export default function FeaturesPage() {
 			</section>
 
 			{/* Footer */}
-			<footer className="px-4 py-8 md:px-24 md:py-16">
-				<Card className="overflow-hidden rounded-t-[25px] border border-zinc-800 bg-black md:rounded-t-[45px]">
-					<CardContent className="space-y-8 p-8 md:space-y-12 md:p-16">
-						<div className="flex flex-col gap-8 md:gap-12 lg:flex-row">
-							<div className="flex-1 space-y-6 md:space-y-8">
-								<div className="flex flex-col items-start gap-6 md:flex-row md:items-center md:gap-8">
-									<div className="text-white">
-										<AppLogo />
-									</div>
-									<div className="flex flex-wrap gap-4 text-sm text-gray-400 md:gap-8 md:text-base">
-										<a
-											href="/features"
-											className="transition-colors hover:text-lime-400"
-										>
-											Features
-										</a>
-										<a
-											href="/pricing"
-											className="transition-colors hover:text-lime-400"
-										>
-											Pricing
-										</a>
-										<a
-											href="/about-us"
-											className="transition-colors hover:text-lime-400"
-										>
-											About
-										</a>
-										<a
-											href="/roadmap"
-											className="transition-colors hover:text-lime-400"
-										>
-											Roadmap
-										</a>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div className="flex flex-col items-center justify-between gap-4 border-t border-zinc-800 pt-6 md:flex-row md:pt-8">
-							<p className="text-sm text-gray-500 md:text-base">
-								© 2024 Anzii. All Rights Reserved.
-							</p>
-							<p className="cursor-pointer text-sm text-gray-500 transition-colors hover:text-lime-400 md:text-base">
-								Privacy Policy
-							</p>
-						</div>
-					</CardContent>
-				</Card>
-			</footer>
+			<AppFooter />
 		</div>
 	);
 }
