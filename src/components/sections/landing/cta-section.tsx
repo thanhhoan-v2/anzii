@@ -1,11 +1,14 @@
-import { Button } from "@/components/ui/button";
+import { ButtonWithLink } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { ROUTES } from "@/lib/routes";
 
 interface CTASectionProps {
 	onGetStarted: () => void;
 }
 
-export default function CTASection({ onGetStarted }: CTASectionProps) {
+export default function CTASection({
+	onGetStarted: _onGetStarted,
+}: CTASectionProps) {
 	return (
 		<section className="px-4 py-12 md:px-24 md:py-20">
 			<Card className="overflow-hidden rounded-[25px] border border-zinc-800 bg-zinc-950 md:rounded-[45px]">
@@ -19,13 +22,9 @@ export default function CTASection({ onGetStarted }: CTASectionProps) {
 							smarter, not harder. Start your journey to better grades and
 							deeper understanding today.
 						</p>
-						<Button
-							size="lg"
-							className="w-full rounded-xl bg-lime-400 px-6 py-3 text-base font-semibold text-black hover:bg-lime-500 sm:w-auto md:px-8 md:py-4 md:text-lg"
-							onClick={onGetStarted}
-						>
+						<ButtonWithLink href={ROUTES.SIGN_UP} className="w-fit">
 							Get Your Free Account
-						</Button>
+						</ButtonWithLink>
 					</div>
 					<div className="flex flex-1 justify-center">
 						<div className="text-6xl md:text-8xl">🚀</div>

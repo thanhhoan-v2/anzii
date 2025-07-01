@@ -5,12 +5,11 @@ import { PlusIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { AppLogo } from "@/components/common/app-logo";
 import { ColorSchemeSelector } from "@/components/common/color-scheme-selector";
+import AppHeaderMobile from "@/components/layout/app-header-mobile";
 import { Button, ButtonWithLink } from "@/components/ui/button";
 import { isLandingPageRoute, NAVIGATION_LINKS, ROUTES } from "@/lib/routes";
-
-import AppLogo from "../common/app-logo";
-import AppHeaderMobile from "./app-header-mobile";
 
 export default function AppHeader({
 	children,
@@ -29,13 +28,7 @@ export default function AppHeader({
 		<header className="sticky top-0 z-50 border-b border-zinc-800 bg-black p-4">
 			<div className="flex items-center justify-between">
 				{/* Logo */}
-				{children ?? (
-					<AppLogo
-						svgClassName="text-lime-400"
-						textClassName="text-white"
-						showText={true}
-					/>
-				)}
+				{children ?? <AppLogo textClassName="text-white" showText={true} />}
 				{/* Desktop Navigation */}
 				<div className="hidden items-center gap-6 md:flex">
 					{!isNotDashboard && (

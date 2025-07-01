@@ -5,6 +5,7 @@ import { Menu, PlusIcon, Settings, X } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
+import { AppLogo } from "@/components/common/app-logo";
 import { ColorSchemeSelector } from "@/components/common/color-scheme-selector";
 import { Button, ButtonWithLink } from "@/components/ui/button";
 import {
@@ -14,8 +15,6 @@ import {
 	SheetTrigger,
 } from "@/components/ui/sheet";
 import { NAVIGATION_LINKS, ROUTES } from "@/lib/routes";
-
-import AppLogo from "../common/app-logo";
 
 interface AppHeaderMobileProps {
 	isNotDashboard: boolean;
@@ -51,11 +50,7 @@ export default function AppHeaderMobile({
 					<div className="flex h-full min-h-screen flex-col">
 						{/* Header */}
 						<div className="flex items-center justify-between border-b border-zinc-800 bg-black p-6">
-							<AppLogo
-								svgClassName="text-lime-400"
-								textClassName="text-white"
-								showText={true}
-							/>
+							<AppLogo textClassName="text-white" showText={true} />
 							<Button
 								variant="ghost"
 								size="sm"

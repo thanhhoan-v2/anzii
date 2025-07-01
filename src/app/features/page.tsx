@@ -8,23 +8,17 @@ import {
 	Smartphone,
 	Target,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-import AppLogo from "@/components/common/app-logo";
+import { AppLogo } from "@/components/common/app-logo";
 import Heading from "@/components/common/heading";
 import AppHeader from "@/components/layout/app-header";
-import { Button } from "@/components/ui/button";
+import { ButtonWithLink } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ROUTES } from "@/lib/routes";
 
 export default function FeaturesPage() {
-	const router = useRouter();
 	const [activeFeature, setActiveFeature] = useState(0);
-
-	const handleGetStarted = () => {
-		router.push(ROUTES.DASHBOARD);
-	};
 
 	const features = [
 		{
@@ -246,13 +240,9 @@ export default function FeaturesPage() {
 								features to accelerate their learning and achieve better
 								results.
 							</p>
-							<Button
-								size="lg"
-								className="w-full rounded-xl bg-lime-400 px-6 py-3 text-base font-semibold text-black hover:bg-lime-500 sm:w-auto md:px-8 md:py-4 md:text-lg"
-								onClick={handleGetStarted}
-							>
+							<ButtonWithLink href={ROUTES.SIGN_UP} className="w-fit">
 								Start Using All Features
-							</Button>
+							</ButtonWithLink>
 						</div>
 						<div className="flex flex-1 justify-center">
 							<div className="text-6xl md:text-8xl">⚡</div>

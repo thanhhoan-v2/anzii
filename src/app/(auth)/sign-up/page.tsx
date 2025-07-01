@@ -1,7 +1,7 @@
 import { SignUp } from "@stackframe/stack";
 import Link from "next/link";
 
-import AppLogo from "@/components/common/app-logo";
+import { AppLogo } from "@/components/common/app-logo";
 
 export default function SignUpPage() {
 	return (

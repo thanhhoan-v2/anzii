@@ -63,7 +63,7 @@ export default function ReviewSession({
 								<div className="space-y-2 text-center">
 									<h2 className="text-2xl font-semibold">Session Complete</h2>
 									<p className="text-muted-foreground">
-										You've completed all{" "}
+										You&apos;ve completed all{" "}
 										<span className="font-bold">{reviewQueueLength} cards</span>{" "}
 										in <span className="font-bold">{activeDeck.name}</span>
 									</p>

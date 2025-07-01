@@ -1,5 +1,11 @@
 "use client";
 
+import { Edit, Loader2, PlusCircle, Save, Trash2 } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+
 import BackButton from "@/components/common/back-button";
 import CardEditor from "@/components/features/study/card-editor";
 import AppHeader from "@/components/layout/app-header";
@@ -40,11 +46,6 @@ import {
 	updateDeckName,
 } from "@/lib/actions";
 import type { Card as CardType, Deck } from "@/types";
-import { Edit, Loader2, PlusCircle, Save, Trash2 } from "lucide-react";
-import { useParams, useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 
 export default function DeckManagerPage() {
 	const router = useRouter();
@@ -175,29 +176,29 @@ export default function DeckManagerPage() {
 
 	if (isLoading || !deck) {
 		return (
-			<div className="flex justify-center items-center h-screen">
-				<Loader2 className="w-8 h-8 animate-spin" />
+			<div className="flex h-screen items-center justify-center">
+				<Loader2 className="h-8 w-8 animate-spin" />
 				<p className="ml-4">Loading deck...</p>
 			</div>
 		);
 	}
 
 	return (
-		<div className="bg-background min-h-screen font-body text-foreground">
+		<div className="font-body min-h-screen bg-background text-foreground">
 			<AppHeader>
 				<BackButton />
 			</AppHeader>
 
-			<main className="mx-auto p-4 md:p-8 container">
+			<main className="container mx-auto p-4 md:p-8">
 				<Card>
 					<CardHeader>
-						<div className="flex justify-between items-center">
+						<div className="flex items-center justify-between">
 							{isEditingName ? (
-								<div className="flex items-center gap-2 w-full">
+								<div className="flex w-full items-center gap-2">
 									<Input
 										value={deckName}
 										onChange={(e) => setDeckName(e.target.value)}
-										className="font-semibold text-2xl"
+										className="text-2xl font-semibold"
 									/>
 									<Button size="icon" onClick={handleNameSave}>
 										<Save />
@@ -221,12 +222,12 @@ export default function DeckManagerPage() {
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
-						<div className="flex justify-end mb-4">
+						<div className="mb-4 flex justify-end">
 							<Button onClick={handleAddCardClick}>
 								<PlusCircle className="mr-2" /> Add New Card
 							</Button>
 						</div>
-						<div className="border rounded-lg">
+						<div className="rounded-lg border">
 							<Table>
 								<TableHeader>
 									<TableRow>
@@ -239,14 +240,14 @@ export default function DeckManagerPage() {
 									{deck.cards.map((card) => (
 										<TableRow key={card.id}>
 											<TableCell className="align-top">
-												<div className="max-w-none text-foreground [&_*]:text-foreground prose prose-sm">
+												<div className="prose prose-sm max-w-none text-foreground [&_*]:text-foreground">
 													<ReactMarkdown remarkPlugins={[remarkGfm]}>
 														{card.question}
 													</ReactMarkdown>
 												</div>
 											</TableCell>
 											<TableCell className="align-top">
-												<div className="max-w-none text-muted-foreground [&_*]:text-muted-foreground prose prose-sm">
+												<div className="prose prose-sm max-w-none text-muted-foreground [&_*]:text-muted-foreground">
 													<ReactMarkdown remarkPlugins={[remarkGfm]}>
 														{card.answer}
 													</ReactMarkdown>
@@ -259,7 +260,7 @@ export default function DeckManagerPage() {
 														size="icon"
 														onClick={() => handleEditCardClick(card)}
 													>
-														<Edit className="w-4 h-4" />
+														<Edit className="h-4 w-4" />
 													</Button>
 													<AlertDialog>
 														<AlertDialogTrigger asChild>
@@ -268,7 +269,7 @@ export default function DeckManagerPage() {
 																size="icon"
 																className="text-destructive hover:text-destructive"
 															>
-																<Trash2 className="w-4 h-4" />
+																<Trash2 className="h-4 w-4" />
 															</Button>
 														</AlertDialogTrigger>
 														<AlertDialogContent>
@@ -298,7 +299,7 @@ export default function DeckManagerPage() {
 								</TableBody>
 							</Table>
 							{deck.cards.length === 0 && (
-								<div className="p-8 text-muted-foreground text-center">
+								<div className="p-8 text-center text-muted-foreground">
 									This deck has no cards yet.
 								</div>
 							)}

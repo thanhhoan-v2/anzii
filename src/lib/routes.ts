@@ -64,15 +64,18 @@ export const LANDING_PAGE_ROUTES = [
 
 // Helper functions
 export const isLandingPageRoute = (pathname: string): boolean => {
-	return LANDING_PAGE_ROUTES.includes(pathname as any);
+	return LANDING_PAGE_ROUTES.includes(
+		pathname as (typeof LANDING_PAGE_ROUTES)[number]
+	);
 };
 
 export const isAuthRoute = (pathname: string): boolean => {
-	return AUTH_ROUTES.includes(pathname as any);
+	return AUTH_ROUTES.includes(pathname as (typeof AUTH_ROUTES)[number]);
 };
 
 export const isProtectedRoute = (pathname: string): boolean => {
 	return (
-		PROTECTED_ROUTES.includes(pathname as any) || pathname.startsWith("/deck/")
+		PROTECTED_ROUTES.includes(pathname as (typeof PROTECTED_ROUTES)[number]) ||
+		pathname.startsWith("/deck/")
 	);
 };

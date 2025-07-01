@@ -1,6 +1,6 @@
 import { SignIn } from "@stackframe/stack";
 
-import AppLogo from "@/components/common/app-logo";
+import { AppLogo } from "@/components/common/app-logo";
 
 export default function SignInPage() {
 	return (

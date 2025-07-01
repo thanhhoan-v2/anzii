@@ -1,7 +1,6 @@
 "use client";
 
-import { Check, Monitor, Moon, Palette, Sun } from "lucide-react";
-import { useTheme } from "next-themes";
+import { Check, Palette } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -16,16 +15,11 @@ import { useColorScheme } from "@/hooks/use-color-scheme";
 
 export function ColorSchemeSelector() {
 	const { colorScheme, setColorScheme, availableSchemes } = useColorScheme();
-	const { theme, setTheme } = useTheme();
 	const [isOpen, setIsOpen] = useState(false);
 
 	const handleSchemeSelect = (schemeId: string) => {
 		setColorScheme(schemeId);
 		setIsOpen(false);
-	};
-
-	const handleThemeSelect = (newTheme: string) => {
-		setTheme(newTheme);
 	};
 
 	// Sort schemes to put the selected one at the top
@@ -41,12 +35,6 @@ export function ColorSchemeSelector() {
 			? [selectedScheme, ...otherSchemes]
 			: availableSchemes;
 	}, [availableSchemes, colorScheme]);
-
-	const themeOptions = [
-		{ id: "light", label: "Light", icon: Sun },
-		{ id: "dark", label: "Dark", icon: Moon },
-		{ id: "system", label: "System", icon: Monitor },
-	];
 
 	return (
 		<Sheet open={isOpen} onOpenChange={setIsOpen}>

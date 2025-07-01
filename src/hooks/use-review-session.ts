@@ -76,7 +76,7 @@ export function useReviewSession(): UseReviewSessionReturn {
 			);
 			// Notify parent component to refresh data
 			onSessionCompleteRef.current();
-		} catch (error) {
+		} catch {
 			// If processing fails, add them back to the queue and show error
 			setPendingReviews((prev) => [...prev, ...reviewsToProcess]);
 			toast({
@@ -144,7 +144,7 @@ export function useReviewSession(): UseReviewSessionReturn {
 				}
 
 				startSession(deckToReview as Deck, dueCards);
-			} catch (error) {
+			} catch {
 				toast({
 					variant: "destructive",
 					title: "Error",

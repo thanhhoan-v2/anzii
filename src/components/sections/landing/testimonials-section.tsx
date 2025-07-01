@@ -18,7 +18,7 @@ export default function TestimonialsSection() {
 								>
 									<div className="relative rounded-[20px] border border-zinc-800 bg-zinc-950 p-6 md:rounded-[30px] md:p-8">
 										<p className="text-sm leading-relaxed text-gray-200 md:text-base">
-											"{testimonial.text}"
+											&quot;{testimonial.text}&quot;
 										</p>
 										<div className="absolute -bottom-2 left-6 h-3 w-3 rotate-45 transform border-b border-l border-zinc-800 bg-zinc-950 md:left-8 md:h-4 md:w-4"></div>
 									</div>

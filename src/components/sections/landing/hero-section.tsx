@@ -1,14 +1,16 @@
 import Image from "next/image";
 
-import landing_01SVG from "@/assets/landing_01.svg";
-import { Button, ButtonWithLink } from "@/components/ui/button";
+import landing_01SVG from "@/assets/svg/landing_01.svg";
+import { ButtonWithLink } from "@/components/ui/button";
 import { ROUTES } from "@/lib/routes";
 
 interface HeroSectionProps {
 	onGetStarted: () => void;
 }
 
-export default function HeroSection({ onGetStarted }: HeroSectionProps) {
+export default function HeroSection({
+	onGetStarted: _onGetStarted,
+}: HeroSectionProps) {
 	return (
 		<section className="-mt-14 flex min-h-screen items-center justify-center px-4 md:-mt-16 md:px-24">
 			{/* Mobile Layout - Vertical Stack */}
@@ -49,13 +51,9 @@ export default function HeroSection({ onGetStarted }: HeroSectionProps) {
 						learn faster with spaced repetition. Join thousands of learners
 						achieving better results in less time.
 					</p>
-					<Button
-						size="lg"
-						className="w-auto rounded-xl bg-lime-400 px-8 py-4 text-lg font-semibold text-black hover:bg-lime-500"
-						onClick={onGetStarted}
-					>
+					<ButtonWithLink href={ROUTES.DASHBOARD} className="w-fit">
 						Start Learning for Free
-					</Button>
+					</ButtonWithLink>
 				</div>
 				<Image
 					src={landing_01SVG}

@@ -14,7 +14,7 @@ export default function PricingPage() {
 	const router = useRouter();
 	const [expandedFAQ, setExpandedFAQ] = useState<number | null>(0);
 
-	const handleGetStarted = (plan: string) => {
+	const handleGetStarted = (_plan: string) => {
 		router.push(ROUTES.DASHBOARD);
 	};
 

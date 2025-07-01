@@ -1,14 +1,12 @@
 import Link from "next/link";
 
-export default function AppLogo({
-	svgClassName,
+export const AppLogo = ({
 	textClassName,
 	showText = true,
 }: {
-	svgClassName?: string;
 	textClassName?: string;
 	showText?: boolean;
-}) {
+}) => {
 	return (
 		<Link href="/" className={`flex items-start gap-2`}>
 			<LogoSVG className="h-10 w-10 text-lime-400" />
@@ -21,7 +19,7 @@ export default function AppLogo({
 			)}
 		</Link>
 	);
-}
+};
 
 const LogoSVG = (props: React.SVGProps<SVGSVGElement>) => (
 	<svg

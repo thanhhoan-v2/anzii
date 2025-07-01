@@ -1,5 +1,6 @@
 "use client";
 
+import { useUser } from "@stackframe/stack";
 import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -17,6 +18,8 @@ export default function Home() {
 	const [isAiDeckGeneratorOpen, setIsAiDeckGeneratorOpen] = useState(false);
 	const { toast } = useToast();
 
+	const user = useUser({ or: "redirect" });
+
 	// Custom hooks
 	const deckManagement = useDeckManagement();
 	const reviewSession = useReviewSession();
@@ -27,7 +30,7 @@ export default function Home() {
 		reviewSession.setOnSessionComplete(() => {
 			deckManagement.refreshDecks();
 		});
-	}, [reviewSession.setOnSessionComplete, deckManagement.refreshDecks]);
+	}, [reviewSession, deckManagement]);
 
 	const handleDeckCreated = () => {
 		setIsAiDeckGeneratorOpen(false);
@@ -45,6 +48,10 @@ export default function Home() {
 				<p className="ml-4">Loading decks...</p>
 			</div>
 		);
+	}
+
+	if (!user) {
+		return <h1>You can only see this if you are logged in</h1>;
 	}
 
 	return (

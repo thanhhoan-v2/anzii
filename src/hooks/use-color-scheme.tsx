@@ -1,7 +1,7 @@
 "use client";
 
 import { StackTheme } from "@stackframe/stack";
-import { ThemeProvider, useTheme } from "next-themes";
+import { ThemeProvider } from "next-themes";
 import type React from "react";
 import {
 	createContext,
@@ -81,8 +81,6 @@ interface ColorSchemeProviderProps {
 
 // Stack Theme Wrapper Component
 function StackThemeWrapper({ children }: { children: React.ReactNode }) {
-	const { theme } = useTheme();
-
 	return <StackTheme theme={stackTheme}>{children}</StackTheme>;
 }
 

@@ -33,8 +33,8 @@ export default function ContactSection({
 				<div className="space-y-2 md:space-y-4">
 					<Heading title="Contact Us" />
 					<p className="mx-auto max-w-lg text-center text-base text-gray-400 md:text-lg">
-						Ready to get started? Let's discuss how Anzii can transform your
-						learning journey.
+						Ready to get started? Let&apos;s discuss how Anzii can transform
+						your learning journey.
 					</p>
 				</div>
 

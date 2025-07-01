@@ -1,7 +1,7 @@
 import { GithubIcon, LinkedinIcon } from "lucide-react";
 import Link from "next/link";
 
-import AppLogo from "@/components/common/app-logo";
+import { AppLogo } from "@/components/common/app-logo";
 import { Card, CardContent } from "@/components/ui/card";
 
 export default function AppFooter() {
@@ -33,6 +33,24 @@ export default function AppFooter() {
 										className="transition-colors hover:text-lime-400"
 									>
 										Roadmap
+									</Link>
+									<Link
+										href="/privacy-policy"
+										className="transition-colors hover:text-lime-400"
+									>
+										Privacy Policy
+									</Link>
+									<Link
+										href="/terms-of-service"
+										className="transition-colors hover:text-lime-400"
+									>
+										Terms of Service
+									</Link>
+									<Link
+										href="/contact"
+										className="transition-colors hover:text-lime-400"
+									>
+										Contact
 									</Link>
 								</div>
 							</div>

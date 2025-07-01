@@ -11,22 +11,14 @@ import {
 	Users,
 	Zap,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
 
 import Heading from "@/components/common/heading";
 import AppFooter from "@/components/layout/app-footer";
 import AppHeader from "@/components/layout/app-header";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { ROUTES } from "@/lib/routes";
 
 export default function RoadmapPage() {
-	const router = useRouter();
-
-	const handleGetStarted = () => {
-		router.push(ROUTES.DASHBOARD);
-	};
-
 	const roadmapItems = [
 		{
 			quarter: "Q1 2025",
@@ -165,8 +157,9 @@ export default function RoadmapPage() {
 							Product Roadmap
 						</h1>
 						<p className="mx-auto max-w-3xl text-lg text-gray-400 md:text-xl">
-							See what we're building and what's coming next. Our roadmap is
-							driven by your feedback and the future of AI-powered learning.
+							See what we&apos;re building and what&apos;s coming next. Our
+							roadmap is driven by your feedback and the future of AI-powered
+							learning.
 						</p>
 					</div>
 				</div>

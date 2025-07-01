@@ -20,7 +20,7 @@ export default function ServicesSection() {
 								<div className="flex-1 space-y-4 md:space-y-6">
 									<div className="space-y-1 md:space-y-2">
 										{service.title.map((line, lineIndex) => (
-											<Heading title={line} />
+											<Heading key={lineIndex} title={line} />
 										))}
 									</div>
 									<div className="flex items-center gap-3">

@@ -134,7 +134,7 @@ export default function CreatePage() {
 				description: `Successfully created "${deckName}" with ${validCards.length} cards.`,
 			});
 			router.push(ROUTES.HOME);
-		} catch (error) {
+		} catch {
 			toast({
 				variant: "destructive",
 				title: "Error",
@@ -167,7 +167,7 @@ export default function CreatePage() {
 			} else {
 				throw new Error(result.error);
 			}
-		} catch (error) {
+		} catch {
 			toast({
 				variant: "destructive",
 				title: "AI Error",
@@ -203,7 +203,7 @@ export default function CreatePage() {
 			} else {
 				throw new Error(result.error);
 			}
-		} catch (error) {
+		} catch {
 			toast({
 				variant: "destructive",
 				title: "Error",
@@ -265,7 +265,7 @@ export default function CreatePage() {
 				description: `Imported "${data.name}" with ${data.cards.length} cards.`,
 			});
 			router.push(ROUTES.HOME);
-		} catch (error) {
+		} catch {
 			toast({
 				variant: "destructive",
 				title: "Import Failed",
