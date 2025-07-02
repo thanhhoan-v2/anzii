@@ -71,7 +71,7 @@ export default function AppFooter() {
 								<LinkedinIcon className="h-4 w-4 transition-colors hover:text-lime-400" />
 							</Link>
 						</div>
-						<p className="text-sm text-gray-500 md:text-base">
+						<p className="text-right text-sm text-gray-500 md:text-base">
 							© 2025 Anzii. All Rights Reserved.
 						</p>
 					</div>

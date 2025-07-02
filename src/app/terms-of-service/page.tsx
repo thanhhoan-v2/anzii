@@ -2,7 +2,7 @@
 
 import Heading from "@/components/common/heading";
 import AppHeader from "@/components/layout/app-header";
-import { APP_NAME, APP_URL } from "@/lib/constants";
+import { APP_NAME, APP_URL, SUPPORT_EMAIL } from "@/lib/constants";
 
 const TermsOfServicePage = () => {
 	return (
@@ -34,8 +34,9 @@ const TermsOfServicePage = () => {
 						<p>Last updated: 2025-07-01</p>
 						<p>
 							Please read these Terms of Service (&quot;Terms&quot;, &quot;Terms
-							of Service&quot;) carefully before using the {APP_URL} website
-							(the &quot;Service&quot;) operated by {APP_NAME} (&quot;us&quot;,
+							of Service&quot;) carefully before using the{" "}
+							<span className="text-lime-400">{APP_URL}</span> website (the
+							&quot;Service&quot;) operated by {APP_NAME} (&quot;us&quot;,
 							&quot;we&quot;, or &quot;our&quot;).
 						</p>
 						<p>
@@ -175,18 +176,11 @@ const TermsOfServicePage = () => {
 						</p>
 						<ul>
 							<li>
-								Email: <a href="mailto:legal@anzii.com">legal@anzii.com</a>
-							</li>
-							<li>
-								Support:{" "}
-								<a href="mailto:support@anzii.com">support@anzii.com</a>
+								Support: <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
 							</li>
 							<li>
 								Website:{" "}
 								<a href="https://anzii.vercel.app">https://anzii.vercel.app</a>
-							</li>
-							<li>
-								Contact page: <a href="/contact">/contact</a>
 							</li>
 						</ul>
 						<p className="text-sm text-gray-500">

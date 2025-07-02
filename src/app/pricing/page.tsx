@@ -106,13 +106,9 @@ export default function PricingPage() {
 			<section className="px-4 py-16 md:px-24 md:py-24">
 				<div className="mx-auto max-w-6xl">
 					<div className="space-y-6 text-center">
-						<h1 className="text-4xl font-bold text-gray-100 md:text-6xl">
+						<h1 className="text-5xl font-bold text-gray-100 md:text-6xl">
 							Pricing
 						</h1>
-						<p className="mx-auto max-w-2xl text-xl text-gray-400 md:text-2xl">
-							Elevate Your Learning Experience: Competitive Pricing for
-							Exceptional Results
-						</p>
 					</div>
 				</div>
 			</section>

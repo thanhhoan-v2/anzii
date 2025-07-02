@@ -2,7 +2,7 @@
 
 import Heading from "@/components/common/heading";
 import AppHeader from "@/components/layout/app-header";
-import { APP_NAME } from "@/lib/constants";
+import { APP_NAME, SUPPORT_EMAIL } from "@/lib/constants";
 
 const PrivacyPolicyPage = () => {
 	return (
@@ -213,24 +213,17 @@ const PrivacyPolicyPage = () => {
 						</p>
 						<ul>
 							<li>
-								Email: <a href="mailto:legal@anzii.com">legal@anzii.com</a>
-							</li>
-							<li>
-								Support:{" "}
-								<a href="mailto:support@anzii.com">support@anzii.com</a>
+								Support: <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
 							</li>
 							<li>
 								Website:{" "}
 								<a href="https://anzii.vercel.app">https://anzii.vercel.app</a>
 							</li>
-							<li>
-								Contact page: <a href="/contact">/contact</a>
-							</li>
 						</ul>
 						<p>
 							<strong>Data Protection Officer:</strong> For questions
 							specifically related to data protection and privacy, please email
-							us at <a href="mailto:privacy@anzii.com">privacy@anzii.com</a>
+							us at <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
 						</p>
 						<p className="text-sm text-gray-500">
 							Last updated: January 1, 2025

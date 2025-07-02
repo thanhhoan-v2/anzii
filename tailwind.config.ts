@@ -1,4 +1,6 @@
+import tailwindcssTypography from "@tailwindcss/typography";
 import type { Config } from "tailwindcss";
+import tailwindcssAnimate from "tailwindcss-animate";
 import { fontFamily } from "tailwindcss/defaultTheme";
 
 export default {
@@ -17,6 +19,9 @@ export default {
 			},
 		},
 		extend: {
+			screens: {
+				mobile_s: "320px",
+			},
 			fontFamily: {
 				sans: ["var(--font-sans)", ...fontFamily.sans],
 				"space-grotesk": ["var(--font-space-grotesk)", ...fontFamily.sans],
@@ -104,5 +109,5 @@ export default {
 			},
 		},
 	},
-	plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
+	plugins: [tailwindcssAnimate, tailwindcssTypography],
 } satisfies Config;

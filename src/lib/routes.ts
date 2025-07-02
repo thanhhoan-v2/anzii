@@ -12,12 +12,11 @@ export const ROUTES = {
 	ROADMAP: "/roadmap",
 	TERMS_OF_SERVICE: "/terms-of-service",
 	PRIVACY_POLICY: "/privacy-policy",
-
+	CONTACT: "/contact",
 	// Auth routes
 	SIGN_IN: "/sign-in",
 	SIGN_UP: "/sign-up",
 	SETTINGS: "/settings",
-
 	// Authenticated routes
 	DASHBOARD: "/dashboard",
 	CREATE: "/create",
@@ -58,6 +57,7 @@ export const FOOTER_LINKS = [
 	{ href: ROUTES.ROADMAP, label: "Roadmap" },
 	{ href: ROUTES.TERMS_OF_SERVICE, label: "Terms of Service" },
 	{ href: ROUTES.PRIVACY_POLICY, label: "Privacy Policy" },
+	{ href: ROUTES.CONTACT, label: "Contact" },
 ] as const;
 
 // Landing page specific routes that determine active state
@@ -67,6 +67,7 @@ export const LANDING_PAGE_ROUTES = [
 	ROUTES.ROADMAP,
 	ROUTES.TERMS_OF_SERVICE,
 	ROUTES.PRIVACY_POLICY,
+	ROUTES.CONTACT,
 ] as const;
 
 // Helper functions

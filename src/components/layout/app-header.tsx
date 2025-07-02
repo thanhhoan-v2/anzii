@@ -27,6 +27,7 @@ export default function AppHeader({
 		ROUTES.ROADMAP,
 		ROUTES.PRIVACY_POLICY,
 		ROUTES.TERMS_OF_SERVICE,
+		ROUTES.CONTACT,
 	] as const;
 
 	// Main navigation links to show on public pages

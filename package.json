@@ -53,7 +53,6 @@
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
 		"date-fns": "^3.6.0",
-		"dotenv": "^16.5.0",
 		"drizzle-orm": "^0.30.10",
 		"embla-carousel-react": "^8.6.0",
 		"genkit": "^1.13.0",
@@ -71,6 +70,7 @@
 		"react-markdown": "^9.0.1",
 		"recharts": "^2.15.1",
 		"remark-gfm": "^4.0.0",
+		"resend": "^4.6.0",
 		"tailwind-merge": "^3.0.1",
 		"tailwindcss-animate": "^1.0.7",
 		"zod": "^3.24.2"
@@ -83,6 +83,7 @@
 		"@types/react-dom": "^18",
 		"@typescript-eslint/eslint-plugin": "^8.17.0",
 		"@typescript-eslint/parser": "^8.17.0",
+		"dotenv": "^17.0.1",
 		"drizzle-kit": "^0.21.4",
 		"eslint": "^8.57.1",
 		"eslint-config-next": "^15.3.3",
