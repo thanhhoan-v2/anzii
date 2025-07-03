@@ -1,10 +1,18 @@
-import HeroSection_01_SVG from "@/components/svgs/hero-section-01-svg";
+import dynamic from "next/dynamic";
+
 import { ButtonWithLink } from "@/components/ui/button";
 import { ROUTES } from "@/lib/routes";
 
 interface HeroSectionProps {
 	onGetStarted: () => void;
 }
+
+const HeroSection_01_SVG = dynamic(
+	() => import("@/components/svgs/hero-section-01-svg"),
+	{
+		ssr: true,
+	}
+);
 
 export default function HeroSection({
 	onGetStarted: _onGetStarted,
