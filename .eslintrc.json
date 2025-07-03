@@ -1,6 +1,12 @@
 {
 	"extends": ["next/core-web-vitals", "next/typescript", "prettier"],
-	"plugins": ["@typescript-eslint", "import", "simple-import-sort"],
+	"plugins": [
+		"@typescript-eslint",
+		"import",
+		"simple-import-sort",
+		"eslint-plugin-react",
+		"eslint-plugin-react-hooks"
+	],
 	"parser": "@typescript-eslint/parser",
 	"parserOptions": {
 		"ecmaVersion": 2022,

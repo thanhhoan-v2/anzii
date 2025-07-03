@@ -123,6 +123,66 @@ This ensures consistent code quality and prevents commits with linting errors.
 
 ---
 
+## 🔍 SEO & Social Media Optimization
+
+Anzii implements comprehensive SEO best practices and social media optimization for maximum discoverability and shareability.
+
+### Meta Tags & Open Graph
+
+Complete meta tag implementation for search engines and social platforms:
+
+```typescript
+export const metadata: Metadata = {
+	title: "Anzii - AI-Powered Flashcards for Smarter Learning",
+	description:
+		"Transform your study routine with AI-generated flashcards and scientifically-proven spaced repetition. Boost retention by 89% with personalized learning algorithms.",
+
+	// Open Graph for Facebook/LinkedIn
+	openGraph: {
+		title: "Anzii - AI-Powered Flashcards for Smarter Learning",
+		description: "Transform your study routine with AI-generated flashcards...",
+		url: "https://anzii.vercel.app",
+		siteName: "Anzii",
+		type: "website",
+		images: [
+			{
+				url: "https://anzii.vercel.app/og-image.png",
+				width: 1200,
+				height: 630,
+			},
+		],
+	},
+
+	// Twitter Cards
+	twitter: {
+		card: "summary_large_image",
+		site: "@anzii_app",
+		title: "Anzii - AI-Powered Flashcards for Smarter Learning",
+		description: "Transform your study routine with AI-generated flashcards...",
+		images: ["https://anzii.vercel.app/og-image.png"],
+	},
+};
+```
+
+**SEO Features:**
+
+- ✅ **Structured metadata** with Next.js Metadata API
+- ✅ **Open Graph tags** for Facebook, LinkedIn sharing
+- ✅ **Twitter Card tags** for enhanced Twitter previews
+- ✅ **Schema markup** for rich search results
+- ✅ **Semantic HTML** with proper heading hierarchy
+- ✅ **Mobile-first responsive design**
+- ✅ **Fast loading speeds** optimized for Core Web Vitals
+
+**Social Sharing Optimization:**
+
+- 📱 **Large image previews** on all social platforms
+- 📝 **Compelling descriptions** highlighting key benefits
+- 🎯 **Targeted keywords** for learning and education
+- 🔗 **Canonical URLs** preventing duplicate content issues
+
+---
+
 ## ⚡ Performance Optimizations
 
 Anzii is built with performance as a priority, implementing modern optimization techniques for fast loading and smooth user experience.

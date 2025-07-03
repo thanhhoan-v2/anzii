@@ -12,8 +12,8 @@ import { calculateNextReview } from "@/lib/srs";
 import { shuffle } from "@/lib/utils";
 import type {
 	Card as CardType,
-	DeckListItem,
 	Deck as DeckType,
+	DeckListItem,
 	Rating,
 } from "@/types";
 
