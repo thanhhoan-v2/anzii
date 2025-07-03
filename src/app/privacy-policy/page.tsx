@@ -1,7 +1,31 @@
+import { Metadata } from "next";
+
 import Heading from "@/components/common/heading";
 import AppFooter from "@/components/layout/app-footer";
 import AppHeader from "@/components/layout/app-header";
 import { APP_NAME, SUPPORT_EMAIL } from "@/lib/constants";
+
+export const metadata: Metadata = {
+	title: "Privacy Policy - Anzii",
+	description:
+		"Privacy Policy for Anzii - How we collect, use, and protect your personal information when using our AI-powered flashcard learning platform.",
+	robots: {
+		index: true,
+		follow: true,
+	},
+	openGraph: {
+		title: "Privacy Policy - Anzii",
+		description:
+			"Privacy Policy for Anzii - How we collect, use, and protect your personal information when using our AI-powered flashcard learning platform.",
+		url: "https://anzii.vercel.app/privacy-policy",
+		type: "website",
+	},
+	twitter: {
+		title: "Privacy Policy - Anzii",
+		description:
+			"Privacy Policy for Anzii - How we collect, use, and protect your personal information when using our AI-powered flashcard learning platform.",
+	},
+};
 
 const PrivacyPolicyPage = () => {
 	return (

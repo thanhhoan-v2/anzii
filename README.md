@@ -181,6 +181,31 @@ export const metadata: Metadata = {
 - 🎯 **Targeted keywords** for learning and education
 - 🔗 **Canonical URLs** preventing duplicate content issues
 
+### Legal & Compliance Pages
+
+Comprehensive legal framework ensuring verification compliance:
+
+**Privacy Policy Implementation:**
+
+- ✅ **Dedicated privacy policy page** at `/privacy-policy`
+- ✅ **Prominent homepage links** in hero, CTA, and footer sections
+- ✅ **Proper metadata** with unique title and description
+- ✅ **Search engine indexing** with sitemap inclusion
+
+**Terms of Service Implementation:**
+
+- ✅ **Dedicated terms page** at `/terms-of-service`
+- ✅ **Multiple homepage references** for visibility
+- ✅ **Complete legal framework** covering all service aspects
+- ✅ **Professional formatting** with proper sections
+
+**Verification Requirements Met:**
+
+- 🔗 **Homepage privacy policy links** - Multiple prominent placements
+- 📄 **Separate privacy policy URL** - Distinct from home page with unique metadata
+- 📋 **Complete legal documentation** - Both privacy policy and terms of service
+- 🗺️ **Sitemap inclusion** - All legal pages properly indexed
+
 ---
 
 ## ⚡ Performance Optimizations

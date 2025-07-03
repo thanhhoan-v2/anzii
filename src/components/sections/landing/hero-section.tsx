@@ -40,6 +40,22 @@ export default function HeroSection({
 				<ButtonWithLink href={ROUTES.DASHBOARD} className="w-fit">
 					Start Learning for Free
 				</ButtonWithLink>
+				<p className="text-xs text-gray-500">
+					By using our service, you agree to our{" "}
+					<a
+						href="/privacy-policy"
+						className="text-lime-400 underline hover:text-lime-300"
+					>
+						Privacy Policy
+					</a>{" "}
+					and{" "}
+					<a
+						href="/terms-of-service"
+						className="text-lime-400 underline hover:text-lime-300"
+					>
+						Terms of Service
+					</a>
+				</p>
 			</div>
 
 			{/* Desktop Layout */}
@@ -57,6 +73,22 @@ export default function HeroSection({
 					<ButtonWithLink href={ROUTES.DASHBOARD} className="w-fit">
 						Start Learning for Free
 					</ButtonWithLink>
+					<p className="text-xs text-gray-500">
+						By using our service, you agree to our{" "}
+						<a
+							href="/privacy-policy"
+							className="text-lime-400 underline hover:text-lime-300"
+						>
+							Privacy Policy
+						</a>{" "}
+						and{" "}
+						<a
+							href="/terms-of-service"
+							className="text-lime-400 underline hover:text-lime-300"
+						>
+							Terms of Service
+						</a>
+					</p>
 				</div>
 				<HeroSection_01_SVG />
 			</div>

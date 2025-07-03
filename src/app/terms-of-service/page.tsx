@@ -1,7 +1,31 @@
+import { Metadata } from "next";
+
 import Heading from "@/components/common/heading";
 import AppFooter from "@/components/layout/app-footer";
 import AppHeader from "@/components/layout/app-header";
 import { APP_NAME, APP_URL, SUPPORT_EMAIL } from "@/lib/constants";
+
+export const metadata: Metadata = {
+	title: "Terms of Service - Anzii",
+	description:
+		"Terms of Service for Anzii - Our terms and conditions for using our AI-powered flashcard learning platform.",
+	robots: {
+		index: true,
+		follow: true,
+	},
+	openGraph: {
+		title: "Terms of Service - Anzii",
+		description:
+			"Terms of Service for Anzii - Our terms and conditions for using our AI-powered flashcard learning platform.",
+		url: "https://anzii.vercel.app/terms-of-service",
+		type: "website",
+	},
+	twitter: {
+		title: "Terms of Service - Anzii",
+		description:
+			"Terms of Service for Anzii - Our terms and conditions for using our AI-powered flashcard learning platform.",
+	},
+};
 
 const TermsOfServicePage = () => {
 	return (
