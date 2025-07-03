@@ -1,6 +1,5 @@
-"use client";
-
 import Heading from "@/components/common/heading";
+import AppFooter from "@/components/layout/app-footer";
 import AppHeader from "@/components/layout/app-header";
 import { APP_NAME, APP_URL, SUPPORT_EMAIL } from "@/lib/constants";
 
@@ -189,6 +188,7 @@ const TermsOfServicePage = () => {
 					</div>
 				</div>
 			</main>
+			<AppFooter />
 		</div>
 	);
 };

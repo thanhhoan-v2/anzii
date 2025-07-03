@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { AppLogoSVG } from "@/lib/svg";
+import AppLogoSVG from "@/components/svgs/app-logo.svg";
 
 export const AppLogo = ({
 	textClassName,

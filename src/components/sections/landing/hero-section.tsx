@@ -1,6 +1,6 @@
+import HeroSection_01_SVG from "@/components/svgs/hero-section-01-svg";
 import { ButtonWithLink } from "@/components/ui/button";
 import { ROUTES } from "@/lib/routes";
-import { HeroSectionSVG } from "@/lib/svg";
 
 interface HeroSectionProps {
 	onGetStarted: () => void;
@@ -50,7 +50,7 @@ export default function HeroSection({
 						Start Learning for Free
 					</ButtonWithLink>
 				</div>
-				<HeroSectionSVG />
+				<HeroSection_01_SVG />
 			</div>
 		</section>
 	);

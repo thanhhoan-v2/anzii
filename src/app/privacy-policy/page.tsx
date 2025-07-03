@@ -1,6 +1,5 @@
-"use client";
-
 import Heading from "@/components/common/heading";
+import AppFooter from "@/components/layout/app-footer";
 import AppHeader from "@/components/layout/app-header";
 import { APP_NAME, SUPPORT_EMAIL } from "@/lib/constants";
 
@@ -231,6 +230,7 @@ const PrivacyPolicyPage = () => {
 					</div>
 				</div>
 			</main>
+			<AppFooter />
 		</div>
 	);
 };
