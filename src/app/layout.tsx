@@ -75,9 +75,6 @@ export const metadata: Metadata = {
 			"max-snippet": -1,
 		},
 	},
-	verification: {
-		google: "Ot02JW5JSGZiiZo8tR2fMKhHxdInuawmKB1E4QG6afo",
-	},
 };
 
 export default function RootLayout({
@@ -87,6 +84,12 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en" suppressHydrationWarning>
+			<head>
+				<meta
+					name="google-site-verification"
+					content="Ot02JW5JSGZiiZo8tR2fMKhHxdInuawmKB1E4QG6afo"
+				/>
+			</head>
 			<body
 				className={`${spaceGrotesk.variable} font-space-grotesk antialiased`}
 			>

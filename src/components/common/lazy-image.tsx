@@ -71,7 +71,7 @@ export default function LazyImage({
 
 			{isLoading && (
 				<div className="absolute inset-0 animate-pulse bg-zinc-800">
-					<div className="h-full w-full animate-shimmer bg-gradient-to-r from-zinc-800 via-zinc-700 to-zinc-800 bg-[length:200%_100%]"></div>
+					<div className="animate-shimmer h-full w-full bg-gradient-to-r from-zinc-800 via-zinc-700 to-zinc-800 bg-[length:200%_100%]"></div>
 				</div>
 			)}
 		</div>
