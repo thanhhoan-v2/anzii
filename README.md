@@ -121,6 +121,54 @@ Git pre-commit hooks automatically run:
 
 This ensures consistent code quality and prevents commits with linting errors.
 
+### Testing
+
+The project includes comprehensive testing setup with Jest + React Testing Library for unit/integration tests and Playwright for end-to-end testing.
+
+#### Testing Scripts
+
+```bash
+# Unit & Integration Tests (Jest + RTL)
+pnpm test              # Run all unit tests
+pnpm test:watch        # Run tests in watch mode
+pnpm test:coverage     # Run tests with coverage report
+
+# End-to-End Tests (Playwright)
+pnpm test:e2e          # Run all e2e tests
+pnpm test:e2e:ui       # Run e2e tests with UI mode
+pnpm test:e2e:headed   # Run e2e tests in headed mode
+
+# All Tests
+pnpm test:all          # Run both unit and e2e tests
+```
+
+#### Test Structure
+
+```
+tests/
+├── e2e/                    # Playwright e2e tests
+│   └── homepage.spec.ts    # Example e2e test
+├── fixtures/               # Test fixtures and mock data
+├── utils/                  # Test utilities and helpers
+│   └── test-utils.tsx      # Custom render function with providers
+└── README.md               # Testing documentation
+
+src/components/
+└── __tests__/              # Unit tests for components
+    └── app-logo.test.tsx   # Example unit test
+```
+
+#### Features
+
+- ✅ **Jest Configuration** - Optimized for Next.js with TypeScript support
+- ✅ **React Testing Library** - Component testing with user-focused queries
+- ✅ **Playwright E2E** - Cross-browser testing with mobile viewport support
+- ✅ **Test Utilities** - Custom render function with providers and mocks
+- ✅ **Coverage Reports** - Code coverage tracking and reporting
+- ✅ **CI/CD Ready** - Configured for continuous integration environments
+
+For detailed testing guidelines and examples, see [`tests/README.md`](tests/README.md).
+
 ---
 
 ## 🔍 SEO & Social Media Optimization
