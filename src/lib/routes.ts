@@ -16,11 +16,12 @@ export const ROUTES = {
 	// Auth routes
 	SIGN_IN: "/sign-in",
 	SIGN_UP: "/sign-up",
-	SETTINGS: "/settings",
+	FORGOT_PASSWORD: "/forgot-password",
+	RESET_PASSWORD: "/reset-password",
 	// Authenticated routes
 	DASHBOARD: "/dashboard",
 	CREATE: "/create",
-
+	SETTINGS: "/settings",
 	// Dynamic routes (functions to generate with parameters)
 	DECK: (deckId: string) => `/deck/${deckId}`,
 } as const;
