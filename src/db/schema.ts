@@ -8,6 +8,7 @@ export const decks = pgTable("decks", {
 		.primaryKey()
 		.$defaultFn(() => randomUUID()),
 	name: text("name").notNull(),
+	userId: text("user_id").notNull(),
 	createdAt: timestamp("created_at", { withTimezone: true })
 		.defaultNow()
 		.notNull(),

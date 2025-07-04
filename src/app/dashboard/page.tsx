@@ -1,6 +1,6 @@
 "use client";
 
-import { useUser } from "@stackframe/stack";
+import { useUser } from "@clerk/nextjs";
 import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -18,7 +18,7 @@ export default function Home() {
 	const [isAiDeckGeneratorOpen, setIsAiDeckGeneratorOpen] = useState(false);
 	const { toast } = useToast();
 
-	const user = useUser({ or: "redirect" });
+	const { user, isLoaded } = useUser();
 
 	// Custom hooks
 	const deckManagement = useDeckManagement();
@@ -41,7 +41,7 @@ export default function Home() {
 		deckManagement.fetchDecks();
 	};
 
-	if (deckManagement.isLoading) {
+	if (!isLoaded || deckManagement.isLoading) {
 		return (
 			<div className="flex h-screen items-center justify-center">
 				<Loader2 className="h-8 w-8 animate-spin" />

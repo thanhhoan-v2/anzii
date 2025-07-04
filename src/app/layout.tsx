@@ -1,13 +1,13 @@
 import "./globals.css";
 
-import { StackProvider } from "@stackframe/stack";
+import { ClerkProvider } from "@clerk/nextjs";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import { Moirai_One, Space_Grotesk } from "next/font/google";
 
 import { Toaster } from "@/components/ui/toaster";
 import { ColorSchemeProvider } from "@/hooks/use-color-scheme";
-import { stackServerApp } from "@/stack";
+import { clerkAppearance } from "@/lib/clerk-appearance";
 
 export const moiraiOne = Moirai_One({
 	subsets: ["latin"],
@@ -83,24 +83,24 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="en" suppressHydrationWarning>
-			<head>
-				<meta
-					name="google-site-verification"
-					content="Sep1E3CQFEOuAAP3wkvtqsWA0einNzMAon6JaeDZAZI"
-				/>
-			</head>
-			<body
-				className={`${spaceGrotesk.variable} font-space-grotesk antialiased`}
-			>
-				<SpeedInsights />
-				<ColorSchemeProvider>
-					<StackProvider app={stackServerApp}>
+		<ClerkProvider telemetry={false} appearance={clerkAppearance}>
+			<html lang="en" suppressHydrationWarning>
+				<head>
+					<meta
+						name="google-site-verification"
+						content="Sep1E3CQFEOuAAP3wkvtqsWA0einNzMAon6JaeDZAZI"
+					/>
+				</head>
+				<body
+					className={`${spaceGrotesk.variable} font-space-grotesk antialiased`}
+				>
+					<SpeedInsights />
+					<ColorSchemeProvider>
 						{children}
 						<Toaster />
-					</StackProvider>
-				</ColorSchemeProvider>
-			</body>
-		</html>
+					</ColorSchemeProvider>
+				</body>
+			</html>
+		</ClerkProvider>
 	);
 }

@@ -25,6 +25,7 @@
 - Node.js 18+ and pnpm
 - PostgreSQL database (Neon recommended)
 - Google Gemini API key
+- Clerk account for authentication
 
 ### Setup Instructions
 
@@ -47,6 +48,8 @@
    ```env
    DATABASE_URL="postgresql://username:password@host/database"
    GEMINI_API_KEY="your-gemini-api-key"
+   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="your-clerk-publishable-key"
+   CLERK_SECRET_KEY="your-clerk-secret-key"
    ```
 
 3. **Database Setup**
@@ -563,7 +566,7 @@ sequenceDiagram
 
 - **17 Curated Themes**: From minimalist designs to vibrant cyberpunk aesthetics
 - **Next.js Themes Integration**: Seamless light/dark mode switching with system preference detection
-- **Stack Auth Theming**: Automatic theme sync between your app and authentication components
+- **Clerk Integration**: Seamless authentication with customizable themes and components
 - **CSS Custom Properties**: Dynamic theme switching without page reloads
 - **Accessibility Focus**: High contrast ratios and color-blind friendly palettes
 
@@ -574,6 +577,7 @@ sequenceDiagram
 ### Core Technologies
 
 - **Frontend**: Next.js 14, React 18, TypeScript
+- **Authentication**: Clerk for secure user management
 - **Styling**: Tailwind CSS, Radix UI Components
 - **Database**: PostgreSQL with Drizzle ORM
 - **AI**: Google Gemini Pro API
@@ -782,7 +786,7 @@ anzii/
 │   │   ├── deck/[deckId]/           # Individual deck study page
 │   │   ├── features/                 # Features page
 │   │   ├── pricing/                  # Pricing page
-│   │   ├── handler/[...stack]/      # Stack Auth handler
+│   │   ├── settings/                # User settings page
 │   │   ├── page.tsx                 # Landing page (home)
 │   │   ├── layout.tsx               # Root layout with providers
 │   │   └── globals.css              # Global styles
@@ -874,7 +878,63 @@ The application features a unified design system with:
 - **Color Scheme**: Black background with lime green (`#a3e635`) accents
 - **Typography**: Responsive text sizing with mobile-first approach
 - **Components**: Consistent card styling with rounded corners and shadow effects
-- **Theme Integration**: Next-themes integration with Stack Auth theming
+- **Theme Integration**: Next-themes integration with Clerk components
 - **Responsive Design**: Mobile-first breakpoints (sm, md, lg, xl)
 
 All pages follow the same design language for a cohesive user experience.
+
+## 🎨 Theme System
+
+### Dynamic Color Schemes
+
+Anzii features a sophisticated theme system with **17 carefully curated color schemes**:
+
+- **Light Themes**: Green, Purple, Orange, Rose, Slate
+- **Dark Themes**: Blue Dark, Green Dark, Purple Dark, Orange Dark, Rose Dark
+- **Neon Themes**: Cyan, Magenta, Lime (cyberpunk-inspired)
+- **Minimalist**: Minimal Black, Amber Black, Crimson Black
+
+### Clerk Authentication Integration
+
+The app seamlessly integrates Clerk authentication with the dynamic theme system:
+
+- **Theme-Aware Components**: All Clerk components (SignIn, SignUp, UserButton) automatically match the selected color scheme
+- **CSS Custom Properties**: Uses dynamic CSS variables that update in real-time when users switch themes
+- **Consistent Design Language**: Authentication flows maintain the same visual style as the rest of the application
+- **Responsive Integration**: Works perfectly across all device sizes
+
+#### Theme Configuration Files
+
+- `src/lib/clerk-appearance.ts` - Clerk component theming configuration
+- `src/hooks/use-color-scheme.tsx` - Dynamic theme management
+- `src/types/colorscheme.ts` - Theme definitions and color schemes
+
+### Real-time Theme Switching
+
+Users can switch between any of the 17 themes instantly without page reloads, and all components (including authentication) update seamlessly.
+
+## 🤖 AI Integration & MCP Support
+
+### Model Context Protocol (MCP) Server
+
+Anzii supports the **Model Context Protocol** - enabling AI assistants like Claude and Cursor to securely access user data:
+
+- **Secure AI Access**: Users can grant AI applications permission to access their flashcard data
+- **Context-Aware Interactions**: AI can quiz users, create decks, and provide study insights
+- **Standard Protocol**: Works with Claude Desktop, Cursor IDE, and other MCP-compatible tools
+- **User-Controlled**: Full control over what data AI can access
+
+#### MCP Use Cases
+
+1. **AI-Powered Study Sessions**: Ask Claude to quiz you using your flashcard decks
+2. **Intelligent Deck Creation**: Have AI generate new study materials based on topics
+3. **Progress Analysis**: Get AI insights about learning patterns and suggestions
+4. **Content Enhancement**: AI can improve existing flashcards with better examples
+
+For detailed setup instructions, see [`docs/clerk-mcp-integration-guide.md`](docs/clerk-mcp-integration-guide.md).
+
+### AI-Powered Features
+
+- **Deck Generation**: Create flashcard decks from any topic using Google Gemini
+- **Smart Suggestions**: AI-powered question suggestions for better learning
+- **Markdown Import**: Convert existing notes into flashcard decks automatically

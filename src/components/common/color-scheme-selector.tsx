@@ -180,7 +180,7 @@ export function ColorSchemeSelector() {
 
 				<div className="mt-4 flex-shrink-0 border-t pt-4">
 					<p className="text-center text-xs text-muted-foreground">
-						Changes apply instantly across the entire app including Stack Auth
+						Changes apply instantly across the entire app
 					</p>
 				</div>
 			</SheetContent>

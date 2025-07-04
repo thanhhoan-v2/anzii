@@ -1,6 +1,6 @@
 "use client";
 
-import { UserButton, useUser } from "@stackframe/stack";
+import { UserButton, useUser } from "@clerk/nextjs";
 import { PlusIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -9,6 +9,7 @@ import { AppLogo } from "@/components/common/app-logo";
 import { ColorSchemeSelector } from "@/components/common/color-scheme-selector";
 import AppHeaderMobile from "@/components/layout/app-header-mobile";
 import { Button, ButtonWithLink } from "@/components/ui/button";
+import { userButtonAppearance } from "@/lib/clerk-appearance";
 import { ROUTES } from "@/lib/routes";
 
 export default function AppHeader({
@@ -17,7 +18,7 @@ export default function AppHeader({
 	children?: React.ReactNode;
 }) {
 	const pathname = usePathname();
-	const user = useUser();
+	const { user } = useUser();
 
 	// Pages that show main navigation (Features, Pricing, Roadmap)
 	const publicNavigationPages = [
@@ -56,7 +57,7 @@ export default function AppHeader({
 								<PlusIcon className="h-4 w-4" /> Create
 							</ButtonWithLink>
 							<ColorSchemeSelector />
-							<UserButton />
+							<UserButton appearance={userButtonAppearance} />
 						</div>
 					)}
 
@@ -96,7 +97,7 @@ export default function AppHeader({
 								>
 									Go to dashboard
 								</ButtonWithLink>
-								<UserButton />
+								<UserButton appearance={userButtonAppearance} />
 							</>
 						) : (
 							<>

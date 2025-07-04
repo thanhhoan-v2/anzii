@@ -1,6 +1,7 @@
 "use server";
 
-import { asc, eq, lte, sql } from "drizzle-orm";
+import { auth } from "@clerk/nextjs/server";
+import { asc, eq, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
@@ -25,66 +26,75 @@ type ActionResponse = {
 	deckId?: string;
 };
 
-// Type for raw card data from database (with Date objects)
-type RawCardData = Omit<CardType, "dueDate" | "createdAt"> & {
-	dueDate: Date;
-	createdAt?: Date;
-};
+// Helper function to get current user ID
+async function getCurrentUserId(): Promise<string | null> {
+	const { userId } = await auth();
+	return userId;
+}
 
-const convertCardTimestamps = (cardData: RawCardData): CardType => ({
-	...cardData,
-	dueDate: cardData.dueDate.toISOString(),
-	createdAt: cardData.createdAt?.toISOString(),
-});
+// Helper function to ensure user is authenticated
+async function requireAuth(): Promise<string> {
+	const userId = await getCurrentUserId();
+	if (!userId) {
+		throw new Error("Authentication required");
+	}
+	return userId;
+}
+
+function convertCardTimestamps(card: {
+	id: string;
+	deckId: string;
+	question: string;
+	answer: string;
+	interval: number;
+	easeFactor: number;
+	dueDate: Date;
+	createdAt: Date;
+}): CardType {
+	return {
+		...card,
+		dueDate: card.dueDate.toISOString(),
+		createdAt: card.createdAt.toISOString(),
+	};
+}
 
 export async function getDecksWithCounts(): Promise<DeckListItem[]> {
+	const userId = await requireAuth();
 	const db = getDb();
-	const cardCountSubquery = db.$with("card_count_sq").as(
-		db
-			.select({
-				deckId: cards.deckId,
-				cardCount: sql<number>`count(${cards.id})`.as("card_count"),
-			})
-			.from(cards)
-			.groupBy(cards.deckId)
-	);
 
-	const dueCountSubquery = db.$with("due_count_sq").as(
-		db
-			.select({
-				deckId: cards.deckId,
-				dueCount: sql<number>`count(${cards.id})`.as("due_count"),
-			})
-			.from(cards)
-			.where(lte(cards.dueDate, new Date()))
-			.groupBy(cards.deckId)
-	);
-
-	const result = await db
-		.with(cardCountSubquery, dueCountSubquery)
+	const results = await db
 		.select({
 			id: decks.id,
 			name: decks.name,
-			cardCount:
-				sql<number>`coalesce(${cardCountSubquery.cardCount}, 0)`.mapWith(
-					Number
+			createdAt: decks.createdAt,
+			totalCards: sql<number>`count(${cards.id})`.as("totalCards"),
+			dueCards:
+				sql<number>`sum(case when ${cards.dueDate} <= now() then 1 else 0 end)`.as(
+					"dueCards"
 				),
-			dueCount: sql<number>`coalesce(${dueCountSubquery.dueCount}, 0)`.mapWith(
-				Number
-			),
 		})
 		.from(decks)
-		.leftJoin(cardCountSubquery, eq(decks.id, cardCountSubquery.deckId))
-		.leftJoin(dueCountSubquery, eq(decks.id, dueCountSubquery.deckId))
+		.leftJoin(cards, eq(decks.id, cards.deckId))
+		.where(eq(decks.userId, userId))
+		.groupBy(decks.id)
 		.orderBy(asc(decks.createdAt));
 
-	return result;
+	return results.map((deck) => ({
+		id: deck.id,
+		name: deck.name,
+		createdAt: deck.createdAt.toISOString(),
+		cardCount: Number(deck.totalCards) || 0,
+		dueCount: Number(deck.dueCards) || 0,
+	}));
 }
 
 export async function getDeck(deckId: string): Promise<DeckType | null> {
+	const userId = await requireAuth();
 	const db = getDb();
+
 	const deckData = await db.query.decks.findFirst({
-		where: eq(decks.id, deckId),
+		where: (decks, { eq, and }) =>
+			and(eq(decks.id, deckId), eq(decks.userId, userId)),
 		with: {
 			cards: {
 				orderBy: asc(cards.createdAt),
@@ -107,7 +117,9 @@ export async function createDeckFromMarkdown(data: {
 	topic: string;
 	markdown: string;
 }): Promise<ActionResponse> {
+	const userId = await requireAuth();
 	const db = getDb();
+
 	try {
 		const aiResult = await generateCardsFromMarkdown(data);
 		if (!aiResult.cards || aiResult.cards.length === 0) {
@@ -120,7 +132,7 @@ export async function createDeckFromMarkdown(data: {
 		// Create deck first
 		const [newDeck] = await db
 			.insert(decks)
-			.values({ name: data.topic })
+			.values({ name: data.topic, userId })
 			.returning();
 
 		// Then add cards if any exist
@@ -139,6 +151,12 @@ export async function createDeckFromMarkdown(data: {
 		return { success: true };
 	} catch (error) {
 		console.error(error);
+		if (error instanceof Error && error.message === "Authentication required") {
+			return {
+				success: false,
+				error: "Please sign in to create decks.",
+			};
+		}
 		if (
 			error instanceof Error &&
 			(error.message.includes("API key not valid") ||
@@ -159,24 +177,26 @@ export async function createDeckFromMarkdown(data: {
 	}
 }
 
-const ImportCardSchema = z.object({
-	id: z.string().optional(),
-	question: z.string(),
-	answer: z.string(),
-	interval: z.number().optional(),
-	easeFactor: z.number().optional(),
-	dueDate: z.string().datetime().optional(),
-});
-
-const ImportDeckSchema = z.object({
-	name: z.string().min(1),
-	cards: z.array(ImportCardSchema),
-});
-
 export async function createDeckFromImport(
 	data: unknown
 ): Promise<ActionResponse> {
+	const userId = await requireAuth();
 	const db = getDb();
+
+	const ImportCardSchema = z.object({
+		id: z.string().optional(),
+		question: z.string(),
+		answer: z.string(),
+		interval: z.number().optional(),
+		easeFactor: z.number().optional(),
+		dueDate: z.string().datetime().optional(),
+	});
+
+	const ImportDeckSchema = z.object({
+		name: z.string().min(1),
+		cards: z.array(ImportCardSchema),
+	});
+
 	const validation = ImportDeckSchema.safeParse(data);
 	if (!validation.success) {
 		return { success: false, error: "Invalid deck format." };
@@ -186,7 +206,10 @@ export async function createDeckFromImport(
 
 	try {
 		// Create deck first
-		const [newDeck] = await db.insert(decks).values({ name }).returning();
+		const [newDeck] = await db
+			.insert(decks)
+			.values({ name, userId })
+			.returning();
 
 		// Then add cards if any exist
 		if (importedCards.length > 0) {
@@ -206,6 +229,12 @@ export async function createDeckFromImport(
 		return { success: true };
 	} catch (error) {
 		console.error(error);
+		if (error instanceof Error && error.message === "Authentication required") {
+			return {
+				success: false,
+				error: "Please sign in to import decks.",
+			};
+		}
 		return {
 			success: false,
 			error: "Could not save imported deck to database.",
@@ -341,6 +370,7 @@ export async function createDeckFromAi(data: {
 	topic: string;
 }): Promise<ActionResponse> {
 	const db = getDb();
+
 	try {
 		const aiResult = await generateDeckFromTopic(data);
 		if (!aiResult.cards || aiResult.cards.length === 0) {
@@ -353,7 +383,7 @@ export async function createDeckFromAi(data: {
 		// Create deck first
 		const [newDeck] = await db
 			.insert(decks)
-			.values({ name: data.topic })
+			.values({ name: data.topic, userId })
 			.returning();
 
 		// Then add cards if any exist
@@ -372,6 +402,12 @@ export async function createDeckFromAi(data: {
 		return { success: true };
 	} catch (error) {
 		console.error(error);
+		if (error instanceof Error && error.message === "Authentication required") {
+			return {
+				success: false,
+				error: "Please sign in to create decks.",
+			};
+		}
 		if (
 			error instanceof Error &&
 			(error.message.includes("API key not valid") ||
@@ -436,17 +472,25 @@ export async function resetDeckProgress(
 export async function createDeck(data: {
 	name: string;
 }): Promise<ActionResponse> {
+	const userId = await requireAuth();
 	const db = getDb();
+
 	try {
 		const [newDeck] = await db
 			.insert(decks)
-			.values({ name: data.name })
+			.values({ name: data.name, userId })
 			.returning();
 
 		revalidatePath(ROUTES.HOME);
 		return { success: true, deckId: newDeck.id };
 	} catch (error) {
 		console.error(error);
+		if (error instanceof Error && error.message === "Authentication required") {
+			return {
+				success: false,
+				error: "Please sign in to create decks.",
+			};
+		}
 		return { success: false, error: "Failed to create deck." };
 	}
 }
