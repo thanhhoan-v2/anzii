@@ -171,6 +171,48 @@ For detailed testing guidelines and examples, see [`tests/README.md`](tests/READ
 
 ---
 
+## 🔧 Troubleshooting
+
+### Common Deployment Issues
+
+#### Outdated Lockfile Error
+
+If you encounter a deployment error about `pnpm-lock.yaml` being outdated or not matching `package.json`, this typically happens when dependencies are added to `package.json` but the lockfile wasn't regenerated.
+
+**Error Example:**
+
+```
+ERR_PNPM_OUTDATED_LOCKFILE Cannot install with "frozen-lockfile" because pnpm-lock.yaml is not up to date with package.json
+```
+
+**Solution:**
+
+```bash
+# Regenerate the lockfile to match package.json
+pnpm install
+
+# Verify the build works locally
+pnpm run build
+
+# Commit the updated lockfile
+git add pnpm-lock.yaml
+git commit -m "Update lockfile to match package.json dependencies"
+```
+
+This ensures the lockfile contains all the dependencies listed in `package.json` and prevents deployment failures.
+
+#### Build Warnings
+
+Some non-critical warnings may appear during build:
+
+- **OpenTelemetry warnings**: Optional tracing dependencies that don't affect functionality
+- **Handlebars warnings**: Webpack compatibility warnings that don't prevent builds
+- **Deprecated package warnings**: Non-breaking deprecation notices
+
+These warnings don't prevent successful builds and can be safely ignored.
+
+---
+
 ## 🔍 SEO & Social Media Optimization
 
 Anzii implements comprehensive SEO best practices and social media optimization for maximum discoverability and shareability.
