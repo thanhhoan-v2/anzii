@@ -1,6 +1,7 @@
 import "./globals.css";
 
 import { StackProvider } from "@stackframe/stack";
+import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import { Moirai_One, Space_Grotesk } from "next/font/google";
@@ -94,6 +95,7 @@ export default function RootLayout({
 				className={`${spaceGrotesk.variable} font-space-grotesk antialiased`}
 			>
 				<SpeedInsights />
+				<Analytics />
 				<ColorSchemeProvider>
 					<StackProvider app={stackServerApp}>
 						{children}
