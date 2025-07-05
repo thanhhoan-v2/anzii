@@ -7,7 +7,6 @@
 **Live Application**: [https://anzii.vercel.app](https://anzii.vercel.app)
 
 ### Legal & Compliance
-
 - **Privacy Policy**: [/privacy-policy](https://anzii.vercel.app/privacy-policy)
 - **Terms of Service**: [/terms-of-service](https://anzii.vercel.app/terms-of-service)
 - **Contact**: [/contact](https://anzii.vercel.app/contact)
