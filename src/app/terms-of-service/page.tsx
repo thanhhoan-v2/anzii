@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 		title: "Terms of Service - Anzii",
 		description:
 			"Terms of Service for Anzii - Our terms and conditions for using our AI-powered flashcard learning platform.",
-		url: "https://anzii.vercel.app/terms-of-service",
+		url: "https://anzii.space/terms-of-service",
 		type: "website",
 	},
 	twitter: {
@@ -202,8 +202,7 @@ const TermsOfServicePage = () => {
 								Support: <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
 							</li>
 							<li>
-								Website:{" "}
-								<a href="https://anzii.vercel.app">https://anzii.vercel.app</a>
+								Website: <a href="https://anzii.space">https://anzii.space</a>
 							</li>
 						</ul>
 						<p className="text-sm text-gray-500">

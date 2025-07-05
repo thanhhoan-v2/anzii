@@ -34,21 +34,21 @@ export const metadata: Metadata = {
 		address: false,
 		telephone: false,
 	},
-	metadataBase: new URL("https://anzii.vercel.app"),
+	metadataBase: new URL("https://anzii.space"),
 	alternates: {
-		canonical: "https://anzii.vercel.app",
+		canonical: "https://anzii.space",
 	},
 	openGraph: {
 		title: "Anzii - AI-Powered Flashcards for Smarter Learning",
 		description:
 			"Transform your study routine with AI-generated flashcards and scientifically-proven spaced repetition. Boost retention by 89% with personalized learning algorithms.",
-		url: "https://anzii.vercel.app",
+		url: "https://anzii.space",
 		siteName: "Anzii",
 		locale: "en_US",
 		type: "website",
 		images: [
 			{
-				url: "https://anzii.vercel.app/og-image.png",
+				url: "https://anzii.space/og-image.png",
 				width: 1200,
 				height: 630,
 				alt: "Anzii - AI-Powered Flashcards for Smarter Learning",
@@ -62,7 +62,7 @@ export const metadata: Metadata = {
 		title: "Anzii - AI-Powered Flashcards for Smarter Learning",
 		description:
 			"Transform your study routine with AI-generated flashcards and scientifically-proven spaced repetition. Boost retention by 89% with personalized learning algorithms.",
-		images: ["https://anzii.vercel.app/og-image.png"],
+		images: ["https://anzii.space/og-image.png"],
 	},
 	robots: {
 		index: true,

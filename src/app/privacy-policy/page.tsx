@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 		title: "Privacy Policy - Anzii",
 		description:
 			"Privacy Policy for Anzii - How we collect, use, and protect your personal information when using our AI-powered flashcard learning platform.",
-		url: "https://anzii.vercel.app/privacy-policy",
+		url: "https://anzii.space/privacy-policy",
 		type: "website",
 	},
 	twitter: {
@@ -239,8 +239,7 @@ const PrivacyPolicyPage = () => {
 								Support: <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
 							</li>
 							<li>
-								Website:{" "}
-								<a href="https://anzii.vercel.app">https://anzii.vercel.app</a>
+								Website: <a href="https://anzii.space">https://anzii.space</a>
 							</li>
 						</ul>
 						<p>

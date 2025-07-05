@@ -4,13 +4,13 @@
 
 ## 🌐 Official Website
 
-**Live Application**: [https://anzii.vercel.app](https://anzii.vercel.app)
+**Live Application**: [https://anzii.space](https://anzii.space)
 
 ### Legal & Compliance
 
-- **Privacy Policy**: [/privacy-policy](https://anzii.vercel.app/privacy-policy)
-- **Terms of Service**: [/terms-of-service](https://anzii.vercel.app/terms-of-service)
-- **Contact**: [/contact](https://anzii.vercel.app/contact)
+- **Privacy Policy**: [/privacy-policy](https://anzii.space/privacy-policy)
+- **Terms of Service**: [/terms-of-service](https://anzii.space/terms-of-service)
+- **Contact**: [/contact](https://anzii.space/contact)
 
 ### Support
 
@@ -189,12 +189,12 @@ export const metadata: Metadata = {
 	openGraph: {
 		title: "Anzii - AI-Powered Flashcards for Smarter Learning",
 		description: "Transform your study routine with AI-generated flashcards...",
-		url: "https://anzii.vercel.app",
+		url: "https://anzii.space",
 		siteName: "Anzii",
 		type: "website",
 		images: [
 			{
-				url: "https://anzii.vercel.app/og-image.png",
+				url: "https://anzii.space/og-image.png",
 				width: 1200,
 				height: 630,
 			},
@@ -207,7 +207,7 @@ export const metadata: Metadata = {
 		site: "@anzii_app",
 		title: "Anzii - AI-Powered Flashcards for Smarter Learning",
 		description: "Transform your study routine with AI-generated flashcards...",
-		images: ["https://anzii.vercel.app/og-image.png"],
+		images: ["https://anzii.space/og-image.png"],
 	},
 };
 ```
