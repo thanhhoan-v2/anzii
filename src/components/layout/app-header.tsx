@@ -23,7 +23,7 @@ export default function AppHeader({
 	const publicNavigationPages = [
 		ROUTES.HOME,
 		ROUTES.FEATURES,
-		ROUTES.PRICING,
+		// ROUTES.PRICING,
 		ROUTES.ROADMAP,
 		ROUTES.PRIVACY_POLICY,
 		ROUTES.TERMS_OF_SERVICE,
@@ -33,7 +33,7 @@ export default function AppHeader({
 	// Main navigation links to show on public pages
 	const mainNavLinks = [
 		{ href: ROUTES.FEATURES, label: "Features" },
-		{ href: ROUTES.PRICING, label: "Pricing" },
+		// { href: ROUTES.PRICING, label: "Pricing" },
 		{ href: ROUTES.ROADMAP, label: "Roadmap" },
 	];
 

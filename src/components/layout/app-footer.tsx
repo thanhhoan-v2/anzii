@@ -22,12 +22,12 @@ export default function AppFooter() {
 									>
 										Features
 									</Link>
-									<Link
+									{/* <Link
 										href="/pricing"
-										className="transition-colors hover:text-lime-400"
+										className="hover:text-lime-400 transition-colors"
 									>
 										Pricing
-									</Link>
+									</Link> */}
 									<Link
 										href="/roadmap"
 										className="transition-colors hover:text-lime-400"
