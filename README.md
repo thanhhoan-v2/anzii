@@ -190,6 +190,52 @@ pnpm test:e2e          # Run end-to-end tests
 pnpm test:all          # Run both unit and e2e tests
 ```
 
+### Component Architecture
+
+Anzii follows a modular component architecture with server/client separation for optimal performance:
+
+- **Server Components**: Pages and static sections for better SEO and performance
+- **Client Components**: Interactive features requiring state management
+- **Modular Sections**: Reusable components organized by feature (landing, pricing, contact, etc.)
+
+**Contact Page Structure:**
+
+- `src/app/contact/page.tsx` - Server-only page component
+- `src/components/sections/contact/contact-hero.tsx` - Server-only hero section
+- `src/components/sections/contact/contact-form.tsx` - Client-side form with state management
+
+**Create Page Structure:**
+
+- `src/app/create/page.tsx` - Server-only page component
+- `src/components/sections/create/create-tabs.tsx` - Client-side tabs wrapper
+- `src/components/sections/create/manual-creation-tab.tsx` - Manual card creation interface
+- `src/components/sections/create/ai-topic-tab.tsx` - AI-powered deck generation
+- `src/components/sections/create/markdown-tab.tsx` - Markdown to flashcards converter
+- `src/components/sections/create/import-tab.tsx` - JSON file import functionality
+
+**Dashboard Page Structure:**
+
+- `src/app/dashboard/page.tsx` - Server-only page component
+- `src/components/sections/dashboard/dashboard-content.tsx` - Client-side main dashboard logic
+- `src/components/sections/dashboard/dashboard-loading.tsx` - Loading state component
+
+**Deck Detail Page Structure:**
+
+- `src/app/deck/[deckId]/page.tsx` - Server-only page component
+- `src/components/sections/deck/deck-detail-content.tsx` - Client-side deck management with all functionality
+- `src/components/sections/deck/deck-loading.tsx` - Deck-specific loading state component
+
+**Settings Page Structure:**
+
+- `src/app/settings/page.tsx` - Server-only page component
+- `src/components/sections/settings/settings-content.tsx` - Client-side settings management and user profile
+- `src/components/sections/settings/settings-loading.tsx` - Settings-specific loading state component
+
+**Roadmap Page Structure:**
+
+- `src/app/roadmap/page.tsx` - Server-only page component
+- `src/components/sections/roadmap/roadmap-content.tsx` - Client-side roadmap with dynamic loading and data
+
 ---
 
 ## License

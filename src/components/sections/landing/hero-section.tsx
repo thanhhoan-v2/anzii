@@ -37,7 +37,11 @@ export default function HeroSection({
 					<HeroSectionSVG />
 				</div> */}
 
-				<ButtonWithLink href={ROUTES.DASHBOARD} className="w-fit">
+				<ButtonWithLink
+					prefetch={true}
+					href={ROUTES.DASHBOARD}
+					className="w-fit"
+				>
 					Start Learning for Free
 				</ButtonWithLink>
 			</div>
@@ -54,7 +58,11 @@ export default function HeroSection({
 						learn faster with spaced repetition. Join thousands of learners
 						achieving better results in less time.
 					</p>
-					<ButtonWithLink href={ROUTES.DASHBOARD} className="w-fit">
+					<ButtonWithLink
+						prefetch={true}
+						href={ROUTES.DASHBOARD}
+						className="w-fit"
+					>
 						Start Learning for Free
 					</ButtonWithLink>
 				</div>

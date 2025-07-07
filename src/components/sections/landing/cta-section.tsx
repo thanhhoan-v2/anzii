@@ -23,7 +23,11 @@ export default function CTASection({
 							deeper understanding today.
 						</p>
 						<div className="space-y-4">
-							<ButtonWithLink href={ROUTES.SIGN_UP} className="w-fit">
+							<ButtonWithLink
+								prefetch={true}
+								href={ROUTES.SIGN_UP}
+								className="w-fit"
+							>
 								Get Your Free Account
 							</ButtonWithLink>
 						</div>

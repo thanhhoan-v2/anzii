@@ -58,10 +58,11 @@ export interface ButtonWithLinkProps {
 	href: string;
 	children: React.ReactNode;
 	className?: string;
+	prefetch?: boolean;
 }
 
 const ButtonWithLink = React.forwardRef<HTMLAnchorElement, ButtonWithLinkProps>(
-	({ href, children, className, ...props }, ref) => {
+	({ href, children, className, prefetch = false, ...props }, ref) => {
 		return (
 			<Button
 				asChild
@@ -71,7 +72,7 @@ const ButtonWithLink = React.forwardRef<HTMLAnchorElement, ButtonWithLinkProps>(
 					className
 				)}
 			>
-				<Link href={href} ref={ref} {...props}>
+				<Link href={href} prefetch={prefetch} ref={ref} {...props}>
 					{children}
 				</Link>
 			</Button>
