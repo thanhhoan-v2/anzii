@@ -124,26 +124,21 @@ Before you begin, ensure you have the following installed:
 
 We welcome contributions from the learning and developer community! 🎉
 
-### Getting Help & Support
+### Visit [CONTRIBUTING.md](.github/CONTRIBUTING.md)
 
-- 📋 **Issues**: See our [Support Guide](.github/SUPPORT.md) for comprehensive help
-- 🔒 **Security**: Review our [Security Policy](.github/SECURITY.md) for vulnerability reporting
-- 🤝 **Community**: Follow our [Code of Conduct](.github/CONTRIBUTING.md) for respectful collaboration
+We welcome contributions! Please see our [Contributing Guide](.github/CONTRIBUTING.md) for detailed setup instructions and development guidelines.
 
-### Quick start for contributors:
+**Quick start for contributors:**
 
 - Fork the repo and clone locally
 - Follow the setup instructions above
 - Create a feature branch and submit a PR
 - Our CI pipeline will automatically test your changes
 
-**Our automated CI pipeline includes:**
+**Additional resources:**
 
-- ✅ Code quality (ESLint, Prettier, TypeScript)
-- 🧪 Testing (Jest unit tests + Playwright E2E)
-- 🔒 Security (dependency scanning, CodeQL analysis)
-- 🏗️ Build verification and database validation
-- 🚀 Automated deployments to staging/production
+- 📋 [Support Guide](.github/SUPPORT.md) - Get help with development issues
+- 🔒 [Security Policy](.github/SECURITY.md) - Report vulnerabilities responsibly
 
 ### Development Scripts
 
