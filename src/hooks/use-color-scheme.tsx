@@ -19,6 +19,7 @@ import {
 
 interface ColorSchemeContextType {
 	colorScheme: string;
+	colorSchemeName: IColorScheme["name"];
 	colorSchemeData: IColorScheme;
 	setColorScheme: (scheme: string) => void;
 	availableSchemes: IColorScheme[];
@@ -174,6 +175,7 @@ function InnerColorSchemeProvider({ children }: ColorSchemeProviderProps) {
 		<ColorSchemeContext.Provider
 			value={{
 				colorScheme,
+				colorSchemeName: colorSchemeData.name,
 				colorSchemeData,
 				setColorScheme,
 				availableSchemes: COLOR_SCHEMES,

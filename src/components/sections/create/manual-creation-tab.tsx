@@ -120,7 +120,7 @@ export default function ManualCreationTab() {
 		<Card>
 			<CardHeader>
 				<CardTitle className="flex items-center gap-2">
-					<PlusCircle className="w-5 h-5" />
+					{/* <PlusCircle className="w-5 h-5" /> */}
 					Manual Card Creation
 				</CardTitle>
 				<CardDescription>

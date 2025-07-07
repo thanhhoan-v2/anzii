@@ -19,21 +19,17 @@ export default function AppHeader({
 	const pathname = usePathname();
 	const user = useUser();
 
-	// Pages that show main navigation (Features, Pricing, Roadmap)
 	const publicNavigationPages = [
 		ROUTES.HOME,
 		ROUTES.FEATURES,
-		// ROUTES.PRICING,
 		ROUTES.ROADMAP,
 		ROUTES.PRIVACY_POLICY,
 		ROUTES.TERMS_OF_SERVICE,
 		ROUTES.CONTACT,
 	] as const;
 
-	// Main navigation links to show on public pages
 	const mainNavLinks = [
 		{ href: ROUTES.FEATURES, label: "Features" },
-		// { href: ROUTES.PRICING, label: "Pricing" },
 		{ href: ROUTES.ROADMAP, label: "Roadmap" },
 	];
 
@@ -44,17 +40,20 @@ export default function AppHeader({
 	return (
 		<header className="top-0 z-50 sticky bg-black p-4 border-zinc-800 border-b">
 			<div className="flex justify-between items-center">
-				{/* Logo */}
 				{children ?? <AppLogo textClassName="text-white" showText={true} />}
 
-				{/* Desktop Navigation */}
 				<div className="hidden md:flex items-center gap-6">
 					{/* Protected/Dashboard Navigation */}
 					{!isPublicPage && (
 						<div className="flex items-center gap-4">
-							<ButtonWithLink href={ROUTES.CREATE} className="px-3 h-9 text-sm">
-								<PlusIcon className="w-4 h-4" /> Create
-							</ButtonWithLink>
+							{pathname !== ROUTES.CREATE && (
+								<ButtonWithLink
+									href={ROUTES.CREATE}
+									className="px-3 h-9 text-sm"
+								>
+									<PlusIcon className="w-4 h-4" /> Create
+								</ButtonWithLink>
+							)}
 							<ColorSchemeSelector />
 							<UserButton />
 						</div>

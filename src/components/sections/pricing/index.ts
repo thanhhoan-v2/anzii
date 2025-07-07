@@ -1,3 +1,3 @@
-export { default as PricingCards } from "./pricing-cards";
-export { default as PricingFAQ } from "./pricing-faq";
-export { default as PricingHero } from "./pricing-hero";
+export { default as PricingCards } from "@/components/sections/pricing/pricing-cards";
+export { default as PricingFAQ } from "@/components/sections/pricing/pricing-faq";
+export { default as PricingHero } from "@/components/sections/pricing/pricing-hero";

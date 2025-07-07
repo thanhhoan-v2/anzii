@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Palette } from "lucide-react";
+import { Check, Palette, X } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -12,9 +12,19 @@ import {
 	SheetTrigger,
 } from "@/components/ui/sheet";
 import { useColorScheme } from "@/hooks/use-color-scheme";
+import { cn } from "@/lib/utils";
 
-export function ColorSchemeSelector() {
-	const { colorScheme, setColorScheme, availableSchemes } = useColorScheme();
+export function ColorSchemeSelector({
+	showText = true,
+	triggerClassName: triggerBtnClassName,
+	triggerTextClassName: triggerTextClassName,
+}: {
+	showText?: boolean;
+	triggerClassName?: string;
+	triggerTextClassName?: string;
+}) {
+	const { colorScheme, setColorScheme, availableSchemes, colorSchemeName } =
+		useColorScheme();
 	const [isOpen, setIsOpen] = useState(false);
 
 	const handleSchemeSelect = (schemeId: string) => {
@@ -39,54 +49,36 @@ export function ColorSchemeSelector() {
 	return (
 		<Sheet open={isOpen} onOpenChange={setIsOpen}>
 			<SheetTrigger asChild>
-				<Button variant="outline" size="lg" className="rounded-lg p-4">
-					<Palette className="h-[1.2rem] w-[1.2rem]" />
+				<Button
+					variant="outline"
+					size="lg"
+					className={cn("rounded-lg p-4", triggerBtnClassName)}
+				>
+					<Palette className="mr-1 w-[1.2rem] h-[1.2rem]" />
+					{showText && (
+						<div className={triggerTextClassName}>{colorSchemeName}</div>
+					)}
 					<span className="sr-only">Select color scheme</span>
 				</Button>
 			</SheetTrigger>
 			<SheetContent
 				side="right"
-				className="flex w-80 flex-col sm:w-96"
+				className="flex flex-col w-80 sm:w-96"
 				onOpenAutoFocus={(e) => e.preventDefault()}
 			>
 				<SheetHeader className="flex-shrink-0">
-					<SheetTitle className="flex items-center gap-2">
-						<Palette className="h-5 w-5" />
-						Theme & Colors
+					<SheetTitle className="flex justify-between items-center gap-2">
+						<Palette className="w-5 h-5" />
+						<X
+							className="w-5 h-5 cursor-pointer"
+							onClick={() => setIsOpen(false)}
+						/>
 					</SheetTitle>
 				</SheetHeader>
 
-				<div className="-mr-2 mt-6 flex-1 overflow-y-auto pr-2">
-					{/* Light/Dark Mode Section */}
-					{/* <div className="mb-6">
-						<h3 className="mb-3 font-semibold text-muted-foreground text-sm uppercase tracking-wide">
-							Theme Mode
-						</h3>
-						<div className="gap-2 grid grid-cols-3">
-							{themeOptions.map((option) => {
-								const Icon = option.icon;
-								const isSelected = theme === option.id;
-								return (
-									<button
-										key={option.id}
-										type="button"
-										onClick={() => handleThemeSelect(option.id)}
-										className={`p-3 rounded-lg border transition-all ${isSelected
-											? "border-primary bg-primary/5 text-primary"
-											: "border-border hover:bg-muted/50 hover:border-primary/50"
-											}`}
-									>
-										<Icon className="mx-auto mb-1 w-5 h-5" />
-										<div className="font-medium text-xs">{option.label}</div>
-									</button>
-								);
-							})}
-						</div>
-					</div> */}
-
-					{/* Color Schemes Section */}
+				<div className="flex-1 mt-6 -mr-2 pr-2 overflow-y-auto">
 					<div>
-						<h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+						<h3 className="mb-3 font-semibold text-muted-foreground text-sm uppercase tracking-wide">
 							Color Schemes
 						</h3>
 						<div className="space-y-3 pb-4">
@@ -108,19 +100,19 @@ export function ColorSchemeSelector() {
 											<div className="flex flex-col gap-2">
 												<div className="flex gap-1">
 													<div
-														className="h-4 w-4 rounded-full border border-border/50 shadow-sm"
+														className="shadow-sm border border-border/50 rounded-full w-4 h-4"
 														style={{
 															backgroundColor: `hsl(${scheme.colors.primary})`,
 														}}
 													/>
 													<div
-														className="h-4 w-4 rounded-full border border-border/50 shadow-sm"
+														className="shadow-sm border border-border/50 rounded-full w-4 h-4"
 														style={{
 															backgroundColor: `hsl(${scheme.colors.secondary})`,
 														}}
 													/>
 													<div
-														className="h-4 w-4 rounded-full border border-border/50 shadow-sm"
+														className="shadow-sm border border-border/50 rounded-full w-4 h-4"
 														style={{
 															backgroundColor: `hsl(${scheme.colors.accent})`,
 														}}
@@ -128,19 +120,19 @@ export function ColorSchemeSelector() {
 												</div>
 												<div className="flex gap-1">
 													<div
-														className="h-4 w-4 rounded-full border border-border/50 shadow-sm"
+														className="shadow-sm border border-border/50 rounded-full w-4 h-4"
 														style={{
 															backgroundColor: `hsl(${scheme.colors.background})`,
 														}}
 													/>
 													<div
-														className="h-4 w-4 rounded-full border border-border/50 shadow-sm"
+														className="shadow-sm border border-border/50 rounded-full w-4 h-4"
 														style={{
 															backgroundColor: `hsl(${scheme.colors.card})`,
 														}}
 													/>
 													<div
-														className="h-4 w-4 rounded-full border border-border/50 shadow-sm"
+														className="shadow-sm border border-border/50 rounded-full w-4 h-4"
 														style={{
 															backgroundColor: `hsl(${scheme.colors.muted})`,
 														}}
@@ -149,7 +141,7 @@ export function ColorSchemeSelector() {
 											</div>
 
 											{/* Scheme Info */}
-											<div className="min-w-0 flex-1">
+											<div className="flex-1 min-w-0">
 												<div
 													className={`mb-1 text-base font-semibold transition-colors ${
 														isSelected
@@ -159,15 +151,15 @@ export function ColorSchemeSelector() {
 												>
 													{scheme.name}
 												</div>
-												<div className="text-sm leading-relaxed text-muted-foreground">
+												<div className="text-muted-foreground text-sm leading-relaxed">
 													{scheme.description}
 												</div>
 											</div>
 
 											{/* Selected Indicator */}
 											{isSelected && (
-												<div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-primary">
-													<Check className="h-4 w-4 text-primary-foreground" />
+												<div className="flex flex-shrink-0 justify-center items-center bg-primary rounded-full w-6 h-6">
+													<Check className="w-4 h-4 text-primary-foreground" />
 												</div>
 											)}
 										</div>
@@ -178,8 +170,8 @@ export function ColorSchemeSelector() {
 					</div>
 				</div>
 
-				<div className="mt-4 flex-shrink-0 border-t pt-4">
-					<p className="text-center text-xs text-muted-foreground">
+				<div className="flex-shrink-0 mt-4 pt-4 border-t">
+					<p className="text-muted-foreground text-xs text-center">
 						Changes apply instantly across the entire app including Stack Auth
 					</p>
 				</div>

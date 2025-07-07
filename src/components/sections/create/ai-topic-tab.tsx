@@ -63,7 +63,7 @@ export default function AiTopicTab() {
 		<Card>
 			<CardHeader>
 				<CardTitle className="flex items-center gap-2">
-					<Bot className="w-5 h-5" />
+					{/* <Bot className="w-5 h-5" /> */}
 					AI Topic Generation
 				</CardTitle>
 				<CardDescription>

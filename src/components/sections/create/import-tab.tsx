@@ -94,7 +94,7 @@ export default function ImportTab() {
 		<Card>
 			<CardHeader>
 				<CardTitle className="flex items-center gap-2">
-					<Upload className="w-5 h-5" />
+					{/* <Upload className="w-5 h-5" /> */}
 					Import from File
 				</CardTitle>
 				<CardDescription>
