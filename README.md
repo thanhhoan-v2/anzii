@@ -1,131 +1,76 @@
-# Anzii - Transform Learning Through AI-Powered Spaced Repetition
+<table width="100%">
+  <tr>
+    <td align="left" width="120">
+      <img src="public/logo.png" alt="Anzii Logo" width="100" />
+    </td>
+    <td align="right">
+      <h1>Anzii</h1>
+      <h3 style="margin-top: -10px;">AI-powered spaced repetition learning system that transforms any content into optimized flashcards.</h3>
+    </td>
+  </tr>
+</table>
 
 > "Memory is the treasury and guardian of all things." — Cicero
 
 [![Live Application](https://img.shields.io/badge/Live-App-green)](https://anzii.space)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
----
+## Why?
 
-## Table of Contents
+- **Efficiency**: Reduce study time by 60% with AI-optimized scheduling
+- **Intelligence**: Transform any content into personalized flashcards using advanced AI
+- **Science**: Scientifically-proven spaced repetition improves retention by 89%
+- **Accessibility**: 17 beautiful themes with full WCAG 2.1 AA compliance
+- **Freedom**: No paywalls, no limits - open-source learning for everyone
 
-- [Overview](#overview)
-- [Features & Benefits](#features--benefits)
-- [Use Cases](#use-cases)
-- [How It Works](#how-it-works)
-- [Installation](#installation)
-- [Contributing](#contributing)
-- [License](#license)
-- [Acknowledgments](#acknowledgments)
-- [Roadmap](#roadmap)
-- [FAQ](#faq)
+## Features
 
----
+- AI-powered flashcard generation from any content (PDFs, text, markdown)
+- Scientifically-proven spaced repetition scheduling with SM-2 algorithm
+- Advanced analytics and progress tracking with learning insights
+- Multi-format import and export capabilities
+- Cross-platform synchronization across all devices
+- 17 curated themes with accessibility compliance
+- Real-time collaboration and deck sharing
+- Offline study mode with sync when online
 
-## Overview
+## Project Structure
 
-**Anzii is the AI-powered learning platform that becomes every student's secret weapon when exam season hits.**
+- `src/app/` – Next.js 15 app router pages and API routes
+- `src/components/` – Reusable UI components and feature modules
+- `src/db/` – Database schema, migrations, and seed data (Drizzle ORM)
+- `src/ai/` – AI integration flows for flashcard generation (Google Gemini)
+- `src/hooks/` – Custom React hooks for state management
+- `src/lib/` – Utility functions, constants, and core logic
+- `src/types/` – TypeScript type definitions
+- `tests/` – E2E tests (Playwright) and test utilities
 
-It transforms any content into personalized flashcards using advanced AI, then schedules optimal review sessions with scientifically-proven spaced repetition — reducing study time by 60% while boosting retention.
-
-Built for medical students, language learners, and busy professionals, Anzii replaces hours of manual flashcard creation and random review sessions. What used to take weeks of prep work now happens in minutes — so you can stay focused on actually learning, not creating study materials.
-
-At its core, Anzii is an **intelligent learning system** that automates knowledge retention on your behalf — maximizing memory formation with minimal effort.
-You can feed it anything: textbooks, PDFs, lecture notes, or random web articles, and it instantly generates contextually relevant question-answer pairs.
-And because we want Anzii to be your central hub for all learning, we've built smart analytics, progress tracking, and cross-platform sync — making mastery effortless.
-
-**Features include:**
-
-- AI-powered flashcard generation from any content
-- Scientifically-proven spaced repetition scheduling
-- Advanced analytics and progress tracking
-- Multi-format import (PDFs, text, markdown)
-- 17 beautiful themes with accessibility compliance
-- Cross-platform synchronization
-
-We believe learning should follow a universal protocol: intelligent, personalized, and effortless. You shouldn't have to think about when to review. With Anzii, you won't.
-
----
-
-## Features & Benefits
-
-- **89% retention rate improvement**  
-  Scientifically-proven spaced repetition outperforms traditional study methods by 22 percentage points.
-
-- **60% reduction in study time**  
-  AI-optimized scheduling ensures you review exactly when needed for maximum efficiency.
-
-- **AI content generation**  
-  Transform any text into comprehensive flashcards using Google Gemini's advanced language processing.
-
-- **17 curated themes**  
-  From minimalist designs to vibrant aesthetics, with full accessibility compliance (WCAG 2.1 AA).
-
-- **Multi-format support**  
-  Import from PDFs, markdown, text files, or generate from topic prompts.
-
-- **Cross-platform sync**  
-  Access your learning materials anywhere with seamless synchronization across devices.
-
----
-
-## Use Cases
-
-- **Medical student preparing for boards**  
-  Generate thousands of flashcards from textbook PDFs, master complex terminology with optimized scheduling.
-
-- **Software engineer learning new languages**  
-  Build vocabulary decks from documentation, study during commute with mobile-optimized interface.
-
-- **Professional pursuing certification**  
-  Track learning progress with detailed analytics, ensure comprehensive coverage of exam topics.
-
-- **Language learner building fluency**  
-  Create conversation-based flashcards, practice with spaced intervals for long-term retention.
-
-- **Academic researcher organizing knowledge**  
-  Convert research papers into study materials, maintain knowledge base with intelligent review scheduling.
-
----
-
-## How It Works
-
-1. **Upload or input content**  
-   Import PDFs, paste text, upload markdown files, or simply describe a topic you want to learn.
-
-2. **AI generates flashcards**  
-   Advanced language models analyze your content and create optimized question-answer pairs.
-
-3. **Begin spaced repetition**  
-   Study with scientifically-proven intervals that adapt to your performance and memory patterns.
-
-4. **Track your progress**  
-   Monitor retention rates, learning streaks, and performance analytics with detailed insights.
-
-5. **Achieve mastery**  
-   Continue with personalized recommendations and adaptive scheduling for long-term knowledge retention.
-
----
-
-## Installation
+## Getting Started
 
 ### Prerequisites
 
-- Node.js 18+ and pnpm
-- PostgreSQL database (Neon recommended)
-- Google Gemini API key
+Before you begin, ensure you have the following installed:
 
-### Setup Instructions
+- [Node.js 18+](https://nodejs.org/en/) and [pnpm](https://pnpm.io/installation)
+- [PostgreSQL database](https://www.postgresql.org/download/) (or [Neon](https://neon.tech/) for cloud)
+- [Google Gemini API key](https://ai.google.dev/) for AI features
 
-1. **Clone and Install**
+### Setup
+
+1. **Clone the repository**
 
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/your-username/anzii.git
    cd anzii
+   ```
+
+2. **Install dependencies**
+
+   ```bash
    pnpm install
    ```
 
-2. **Environment Configuration**
+3. **Set up environment variables**
 
    ```bash
    cp .env.example .env.local
@@ -138,25 +83,42 @@ We believe learning should follow a universal protocol: intelligent, personalize
    GEMINI_API_KEY="your-gemini-api-key"
    ```
 
-3. **Database Setup**
+4. **Set up the database**
 
    ```bash
    pnpm db:generate
    pnpm db:migrate
+   pnpm db:seed  # Optional: Add sample data
    ```
 
-4. **Launch Application**
+5. **Start the development server**
 
    ```bash
-   pnpm build
-   pnpm start
+   pnpm dev
    ```
 
-5. **Access the Application**
-   - **Landing Page**: http://localhost:3000
-   - **Dashboard**: http://localhost:3000/dashboard
+   The application will be available at [http://localhost:3000](http://localhost:3000).
 
----
+6. **Run tests** (Optional)
+
+   ```bash
+   # Unit tests
+   pnpm test
+
+   # E2E tests
+   pnpm test:e2e
+
+   # All tests
+   pnpm test:all
+   ```
+
+## Use Cases
+
+- **Medical students** preparing for boards with AI-generated question banks
+- **Software engineers** learning new technologies through documentation conversion
+- **Language learners** building vocabulary with spaced repetition
+- **Professionals** pursuing certifications with progress tracking
+- **Researchers** organizing knowledge from academic papers
 
 ## Contributing
 
@@ -168,129 +130,73 @@ We welcome contributions from the learning and developer community! 🎉
 - 🔒 **Security**: Review our [Security Policy](.github/SECURITY.md) for vulnerability reporting
 - 🤝 **Community**: Follow our [Code of Conduct](.github/CONTRIBUTING.md) for respectful collaboration
 
-### How to Contribute
+### Quick start for contributors:
 
-1. **Fork the repository** and create your feature branch
-2. **Follow our development workflow** with automated CI/CD
-3. **Ensure all tests pass** - our CI runs comprehensive checks
-4. **Submit a pull request** with clear description
+- Fork the repo and clone locally
+- Follow the setup instructions above
+- Create a feature branch and submit a PR
+- Our CI pipeline will automatically test your changes
 
-Our automated CI pipeline includes:
+**Our automated CI pipeline includes:**
 
-- ✅ **Code Quality**: ESLint, Prettier, TypeScript checking
-- 🧪 **Testing**: Unit tests (Jest) and E2E tests (Playwright)
-- 🔒 **Security**: Dependency scanning, CodeQL analysis, secret detection
-- 🏗️ **Build**: Application build verification and database schema validation
-- 🚀 **Deploy**: Automated staging/production deployments on Vercel
+- ✅ Code quality (ESLint, Prettier, TypeScript)
+- 🧪 Testing (Jest unit tests + Playwright E2E)
+- 🔒 Security (dependency scanning, CodeQL analysis)
+- 🏗️ Build verification and database validation
+- 🚀 Automated deployments to staging/production
 
 ### Development Scripts
 
 ```bash
 # Development
 pnpm dev                 # Start development server with Turbopack
+pnpm build              # Build for production
+pnpm start              # Start production server
 
 # Code Quality
 pnpm lint               # Run ESLint checks
 pnpm lint:fix          # Fix ESLint issues automatically
 pnpm format            # Format code with Prettier
+pnpm typecheck         # TypeScript type checking
 
 # Database
 pnpm db:generate       # Generate database schema
 pnpm db:migrate        # Run database migrations
 pnpm db:studio         # Open Drizzle Studio
+pnpm db:seed           # Seed database with sample data
 
 # Testing
 pnpm test              # Run all unit tests
+pnpm test:watch        # Run tests in watch mode
+pnpm test:coverage     # Run tests with coverage
 pnpm test:e2e          # Run end-to-end tests
 pnpm test:all          # Run both unit and e2e tests
 ```
-
-### Component Architecture
-
-Anzii follows a modular component architecture with server/client separation for optimal performance:
-
-- **Server Components**: Pages and static sections for better SEO and performance
-- **Client Components**: Interactive features requiring state management
-- **Modular Sections**: Reusable components organized by feature (landing, pricing, contact, etc.)
-
-**Contact Page Structure:**
-
-- `src/app/contact/page.tsx` - Server-only page component
-- `src/components/sections/contact/contact-hero.tsx` - Server-only hero section
-- `src/components/sections/contact/contact-form.tsx` - Client-side form with state management
-
-**Create Page Structure:**
-
-- `src/app/create/page.tsx` - Server-only page component
-- `src/components/sections/create/create-tabs.tsx` - Client-side tabs wrapper
-- `src/components/sections/create/manual-creation-tab.tsx` - Manual card creation interface
-- `src/components/sections/create/ai-topic-tab.tsx` - AI-powered deck generation
-- `src/components/sections/create/markdown-tab.tsx` - Markdown to flashcards converter
-- `src/components/sections/create/import-tab.tsx` - JSON file import functionality
-
-**Dashboard Page Structure:**
-
-- `src/app/dashboard/page.tsx` - Server-only page component
-- `src/components/sections/dashboard/dashboard-content.tsx` - Client-side main dashboard logic
-- `src/components/sections/dashboard/dashboard-loading.tsx` - Loading state component
-
-**Deck Detail Page Structure:**
-
-- `src/app/deck/[deckId]/page.tsx` - Server-only page component
-- `src/components/sections/deck/deck-detail-content.tsx` - Client-side deck management with all functionality
-- `src/components/sections/deck/deck-loading.tsx` - Deck-specific loading state component
-
-**Settings Page Structure:**
-
-- `src/app/settings/page.tsx` - Server-only page component
-- `src/components/sections/settings/settings-content.tsx` - Client-side settings management and user profile
-- `src/components/sections/settings/settings-loading.tsx` - Settings-specific loading state component
-
-**Roadmap Page Structure:**
-
-- `src/app/roadmap/page.tsx` - Server-only page component
-- `src/components/sections/roadmap/roadmap-content.tsx` - Client-side roadmap with dynamic loading and data
-
----
-
-## License
-
-Distributed under the MIT License. See [LICENSE](LICENSE) for more information.
-
----
-
-## Acknowledgments
-
-Thanks to the cognitive science research that makes spaced repetition possible, the open source community, and early users who helped shape Anzii. Special thanks to Hermann Ebbinghaus for pioneering the forgetting curve research that underlies our algorithms.
-
----
 
 ## Roadmap
 
 - [x] Core spaced repetition system with SM-2 algorithm
 - [x] AI-powered flashcard generation using Google Gemini
 - [x] Multi-format content import and processing
+- [x] Advanced analytics and progress tracking
 - [ ] Mobile applications (iOS & Android) with offline sync
-- [ ] Advanced analytics dashboard with learning insights
 - [ ] Collaborative study groups and deck sharing
 - [ ] AI study assistant with personalized recommendations
 - [ ] Community marketplace for premium content
+- [ ] Integration with popular learning platforms
+- [ ] Advanced AI models for specialized subjects
+
+## Sponsors
+
+Thanks to [Vercel](https://vercel.com?utm_source=github-anzii&utm_campaign=oss) for powering our deployments and supporting open-source education.
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fyour-username%2Fanzii&project-name=anzii&repository-name=anzii)
+
+## License
+
+[MIT LICENSE](LICENSE)
 
 ---
 
-## FAQ
-
-**Q: How accurate is the AI flashcard generation?**  
-A: Our AI achieves 95%+ accuracy in content interpretation and question-answer pair generation using Google Gemini Pro.
-
-**Q: Can I use Anzii offline?**  
-A: Currently, Anzii requires internet connection for AI features and sync. Mobile apps with offline capabilities are planned.
-
-**Q: How does spaced repetition improve learning?**  
-A: Spaced repetition schedules reviews at optimal intervals based on your performance, improving retention by 89% compared to traditional methods.
-
-**Q: Is my study data secure?**  
-A: Yes. We follow strict privacy standards, implement proper encryption, and comply with modern data protection regulations.
-
-**Q: Can I import existing flashcards?**  
-A: Yes. Anzii supports importing from text files, PDFs, markdown, and manual entry. We're adding support for other flashcard formats.
+**Transform your learning with AI-powered spaced repetition.** 🚀  
+Visit [anzii.space](https://anzii.space) to get started today!
