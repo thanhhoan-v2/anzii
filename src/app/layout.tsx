@@ -6,6 +6,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import { Moirai_One, Space_Grotesk } from "next/font/google";
 
+import { QueryProvider } from "@/app/providers";
 import { Toaster } from "@/components/ui/toaster";
 import { ColorSchemeProvider } from "@/hooks/use-color-scheme";
 import { stackServerApp } from "@/stack";
@@ -96,12 +97,14 @@ export default function RootLayout({
 			>
 				<SpeedInsights />
 				<Analytics />
-				<ColorSchemeProvider>
-					<StackProvider app={stackServerApp}>
-						{children}
-						<Toaster />
-					</StackProvider>
-				</ColorSchemeProvider>
+				<QueryProvider>
+					<ColorSchemeProvider>
+						<StackProvider app={stackServerApp}>
+							{children}
+							<Toaster />
+						</StackProvider>
+					</ColorSchemeProvider>
+				</QueryProvider>
 			</body>
 		</html>
 	);

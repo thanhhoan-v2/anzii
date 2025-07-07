@@ -40,10 +40,30 @@
 - `src/components/` – Reusable UI components and feature modules
 - `src/db/` – Database schema, migrations, and seed data (Drizzle ORM)
 - `src/ai/` – AI integration flows for flashcard generation (Google Gemini)
-- `src/hooks/` – Custom React hooks for state management
+- `src/hooks/` – Custom React hooks for state management and React Query
 - `src/lib/` – Utility functions, constants, and core logic
 - `src/types/` – TypeScript type definitions
 - `tests/` – E2E tests (Playwright) and test utilities
+
+## React Query Integration
+
+Anzii uses [TanStack Query (React Query)](https://tanstack.com/query/latest) for efficient data fetching, caching, and state management:
+
+### Key Features
+
+- **Optimized Caching**: 5-minute stale time with automatic background refetching
+- **Error Boundaries**: Graceful error handling with user-friendly fallbacks
+- **Optimistic Updates**: Instant UI updates for better user experience
+- **Loading Animations**: Smooth skeleton loading with shimmer effects and rotating icons
+- **DevTools**: Built-in development tools for debugging queries and mutations
+
+### Architecture
+
+- **Query Keys**: Centralized in `src/lib/query-keys.ts` for consistency
+- **Custom Hooks**: Domain-specific hooks in `src/hooks/use-decks.ts` and `src/hooks/use-cards.ts`
+- **Provider Setup**: QueryClient configured in `src/app/providers.tsx`
+- **Error Handling**: QueryErrorBoundary component for error boundaries
+- **UI Feedback**: Custom AnimatedSkeleton components with shimmer and fade animations
 
 ## Getting Started
 
