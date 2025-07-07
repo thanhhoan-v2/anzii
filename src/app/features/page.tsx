@@ -30,9 +30,9 @@ const InActionSection = dynamic(
 	}
 );
 
-export default function FeaturesPage() {
+export default function Page() {
 	return (
-		<div className="min-h-screen bg-black">
+		<div className="bg-black min-h-screen">
 			<AppHeader />
 
 			<Suspense fallback={<LoadingSkeleton variant="hero" />}>

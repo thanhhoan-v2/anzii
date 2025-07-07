@@ -14,7 +14,7 @@ import { useFileImport } from "@/hooks/use-file-import";
 import { useReviewSession } from "@/hooks/use-review-session";
 import { useToast } from "@/hooks/use-toast";
 
-export default function Home() {
+export default function Page() {
 	const [isAiDeckGeneratorOpen, setIsAiDeckGeneratorOpen] = useState(false);
 	const { toast } = useToast();
 
@@ -43,8 +43,8 @@ export default function Home() {
 
 	if (deckManagement.isLoading) {
 		return (
-			<div className="flex h-screen items-center justify-center">
-				<Loader2 className="h-8 w-8 animate-spin" />
+			<div className="flex justify-center items-center h-screen">
+				<Loader2 className="w-8 h-8 animate-spin" />
 				<p className="ml-4">Loading decks...</p>
 			</div>
 		);
@@ -55,10 +55,10 @@ export default function Home() {
 	}
 
 	return (
-		<div className="min-h-screen bg-background font-sans text-foreground">
+		<div className="bg-background min-h-screen font-sans text-foreground">
 			<AppHeader />
 
-			<main className="container mx-auto p-4 md:p-8">
+			<main className="mx-auto p-4 md:p-8 container">
 				{reviewSession.sessionInProgress && reviewSession.activeDeck ? (
 					<ReviewSession
 						activeDeck={reviewSession.activeDeck}

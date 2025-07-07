@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
-const ContactPage = () => {
+export default function Page() {
 	const [formData, setFormData] = useState({
 		name: "",
 		email: "",
@@ -67,17 +67,17 @@ const ContactPage = () => {
 	};
 
 	return (
-		<div className="min-h-screen bg-black">
+		<div className="bg-black min-h-screen">
 			<AppHeader />
 
 			{/* Hero Section */}
-			<section className="mt-10 px-4 py-5 md:px-24 md:py-10">
-				<div className="space-y-5 text-center md:space-y-2">
+			<section className="mt-10 px-4 md:px-24 py-5 md:py-10">
+				<div className="space-y-5 md:space-y-2 text-center">
 					<div className="space-y-2 md:space-y-3">
-						<h1 className="text-4xl font-bold leading-tight text-gray-100 md:text-5xl lg:text-6xl">
+						<h1 className="font-bold text-gray-100 text-4xl md:text-5xl lg:text-6xl leading-tight">
 							Get in Touch
 						</h1>
-						<p className="mx-auto max-w-3xl text-lg text-gray-400 md:text-xl">
+						<p className="mx-auto max-w-3xl text-gray-400 text-lg md:text-xl">
 							Have questions, feedback, or need support? We&apos;d love to hear
 							from you. Send us a message and we&apos;ll get back to you as soon
 							as possible.
@@ -87,19 +87,19 @@ const ContactPage = () => {
 			</section>
 
 			{/* Contact Form Section */}
-			<section className="px-4 py-5 md:px-24 md:py-10">
+			<section className="px-4 md:px-24 py-5 md:py-10">
 				<div className="mx-auto max-w-4xl">
-					<div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+					<div className="gap-8 grid grid-cols-1 lg:grid-cols-2">
 						{/* Contact Form */}
 						<div className="lg:col-span-4">
-							<Card className="rounded-[25px] border border-zinc-800 bg-zinc-950 shadow-brand-md md:rounded-[45px]">
+							<Card className="bg-zinc-950 shadow-brand-md border border-zinc-800 rounded-[25px] md:rounded-[45px]">
 								<CardContent className="p-8 md:p-12">
 									{submitted ? (
 										<div className="text-center">
-											<div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-lime-400/20">
-												<Send className="h-8 w-8 text-lime-400" />
+											<div className="flex justify-center items-center bg-lime-400/20 mx-auto mb-4 rounded-full w-16 h-16">
+												<Send className="w-8 h-8 text-lime-400" />
 											</div>
-											<h3 className="mb-2 text-xl font-bold text-white">
+											<h3 className="mb-2 font-bold text-white text-xl">
 												Message Sent!
 											</h3>
 											<p className="text-gray-400">
@@ -110,8 +110,8 @@ const ContactPage = () => {
 									) : (
 										<>
 											{error && (
-												<div className="mb-6 rounded-xl border border-red-500/20 bg-red-500/10 p-4">
-													<p className="text-sm text-red-400">{error}</p>
+												<div className="bg-red-500/10 mb-6 p-4 border border-red-500/20 rounded-xl">
+													<p className="text-red-400 text-sm">{error}</p>
 												</div>
 											)}
 											<form onSubmit={handleSubmit} className="space-y-6">
@@ -126,7 +126,7 @@ const ContactPage = () => {
 														required
 														value={formData.name}
 														onChange={handleInputChange}
-														className="rounded-xl border-zinc-700 bg-zinc-900 text-white focus:border-lime-400 focus:ring-lime-400"
+														className="bg-zinc-900 border-zinc-700 focus:border-lime-400 rounded-xl focus:ring-lime-400 text-white"
 														placeholder="Enter your full name"
 													/>
 												</div>
@@ -142,7 +142,7 @@ const ContactPage = () => {
 														required
 														value={formData.email}
 														onChange={handleInputChange}
-														className="rounded-xl border-zinc-700 bg-zinc-900 text-white focus:border-lime-400 focus:ring-lime-400"
+														className="bg-zinc-900 border-zinc-700 focus:border-lime-400 rounded-xl focus:ring-lime-400 text-white"
 														placeholder="Enter your email address"
 													/>
 												</div>
@@ -158,7 +158,7 @@ const ContactPage = () => {
 														required
 														value={formData.subject}
 														onChange={handleInputChange}
-														className="rounded-xl border-zinc-700 bg-zinc-900 text-white focus:border-lime-400 focus:ring-lime-400"
+														className="bg-zinc-900 border-zinc-700 focus:border-lime-400 rounded-xl focus:ring-lime-400 text-white"
 														placeholder="What is this about?"
 													/>
 												</div>
@@ -174,7 +174,7 @@ const ContactPage = () => {
 														rows={6}
 														value={formData.message}
 														onChange={handleInputChange}
-														className="rounded-xl border-zinc-700 bg-zinc-900 text-white focus:border-lime-400 focus:ring-lime-400"
+														className="bg-zinc-900 border-zinc-700 focus:border-lime-400 rounded-xl focus:ring-lime-400 text-white"
 														placeholder="Tell us how we can help you..."
 													/>
 												</div>
@@ -182,16 +182,16 @@ const ContactPage = () => {
 												<Button
 													type="submit"
 													disabled={isSubmitting}
-													className="w-full rounded-xl bg-lime-400 px-8 py-3 font-semibold text-black transition-all duration-300 hover:bg-lime-500 disabled:opacity-50"
+													className="bg-lime-400 hover:bg-lime-500 disabled:opacity-50 px-8 py-3 rounded-xl w-full font-semibold text-black transition-all duration-300"
 												>
 													{isSubmitting ? (
 														<div className="flex items-center gap-2">
-															<div className="h-4 w-4 animate-spin rounded-full border-2 border-black border-t-transparent"></div>
+															<div className="border-2 border-t-transparent border-black rounded-full w-4 h-4 animate-spin"></div>
 															Sending...
 														</div>
 													) : (
 														<div className="flex items-center gap-2">
-															<Send className="h-4 w-4" />
+															<Send className="w-4 h-4" />
 															Send Message
 														</div>
 													)}
@@ -209,6 +209,4 @@ const ContactPage = () => {
 			<AppFooter />
 		</div>
 	);
-};
-
-export default ContactPage;
+}

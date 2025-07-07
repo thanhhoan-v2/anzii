@@ -35,7 +35,7 @@ const PricingFAQ = dynamic(
 	}
 );
 
-export default function PricingPage() {
+export default function Page() {
 	const router = useRouter();
 
 	const handleGetStarted = (_plan: string) => {
@@ -43,7 +43,7 @@ export default function PricingPage() {
 	};
 
 	return (
-		<div className="min-h-screen bg-black">
+		<div className="bg-black min-h-screen">
 			<AppHeader />
 
 			<Suspense fallback={<LoadingSkeleton variant="hero" />}>

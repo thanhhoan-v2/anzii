@@ -47,7 +47,7 @@ import {
 } from "@/lib/actions";
 import type { Card as CardType, Deck } from "@/types";
 
-export default function DeckManagerPage() {
+export default function Page() {
 	const router = useRouter();
 	const params = useParams();
 	const { deckId } = params;
@@ -176,29 +176,29 @@ export default function DeckManagerPage() {
 
 	if (isLoading || !deck) {
 		return (
-			<div className="flex h-screen items-center justify-center">
-				<Loader2 className="h-8 w-8 animate-spin" />
+			<div className="flex justify-center items-center h-screen">
+				<Loader2 className="w-8 h-8 animate-spin" />
 				<p className="ml-4">Loading deck...</p>
 			</div>
 		);
 	}
 
 	return (
-		<div className="font-body min-h-screen bg-background text-foreground">
+		<div className="bg-background min-h-screen font-body text-foreground">
 			<AppHeader>
 				<BackButton />
 			</AppHeader>
 
-			<main className="container mx-auto p-4 md:p-8">
+			<main className="mx-auto p-4 md:p-8 container">
 				<Card>
 					<CardHeader>
-						<div className="flex items-center justify-between">
+						<div className="flex justify-between items-center">
 							{isEditingName ? (
-								<div className="flex w-full items-center gap-2">
+								<div className="flex items-center gap-2 w-full">
 									<Input
 										value={deckName}
 										onChange={(e) => setDeckName(e.target.value)}
-										className="text-2xl font-semibold"
+										className="font-semibold text-2xl"
 									/>
 									<Button size="icon" onClick={handleNameSave}>
 										<Save />
@@ -222,12 +222,12 @@ export default function DeckManagerPage() {
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
-						<div className="mb-4 flex justify-end">
+						<div className="flex justify-end mb-4">
 							<Button onClick={handleAddCardClick}>
 								<PlusCircle className="mr-2" /> Add New Card
 							</Button>
 						</div>
-						<div className="rounded-lg border">
+						<div className="border rounded-lg">
 							<Table>
 								<TableHeader>
 									<TableRow>
@@ -240,14 +240,14 @@ export default function DeckManagerPage() {
 									{deck.cards.map((card) => (
 										<TableRow key={card.id}>
 											<TableCell className="align-top">
-												<div className="prose prose-sm max-w-none text-foreground [&_*]:text-foreground">
+												<div className="max-w-none text-foreground [&_*]:text-foreground prose prose-sm">
 													<ReactMarkdown remarkPlugins={[remarkGfm]}>
 														{card.question}
 													</ReactMarkdown>
 												</div>
 											</TableCell>
 											<TableCell className="align-top">
-												<div className="prose prose-sm max-w-none text-muted-foreground [&_*]:text-muted-foreground">
+												<div className="max-w-none text-muted-foreground [&_*]:text-muted-foreground prose prose-sm">
 													<ReactMarkdown remarkPlugins={[remarkGfm]}>
 														{card.answer}
 													</ReactMarkdown>
@@ -260,7 +260,7 @@ export default function DeckManagerPage() {
 														size="icon"
 														onClick={() => handleEditCardClick(card)}
 													>
-														<Edit className="h-4 w-4" />
+														<Edit className="w-4 h-4" />
 													</Button>
 													<AlertDialog>
 														<AlertDialogTrigger asChild>
@@ -269,7 +269,7 @@ export default function DeckManagerPage() {
 																size="icon"
 																className="text-destructive hover:text-destructive"
 															>
-																<Trash2 className="h-4 w-4" />
+																<Trash2 className="w-4 h-4" />
 															</Button>
 														</AlertDialogTrigger>
 														<AlertDialogContent>
@@ -299,7 +299,7 @@ export default function DeckManagerPage() {
 								</TableBody>
 							</Table>
 							{deck.cards.length === 0 && (
-								<div className="p-8 text-center text-muted-foreground">
+								<div className="p-8 text-muted-foreground text-center">
 									This deck has no cards yet.
 								</div>
 							)}

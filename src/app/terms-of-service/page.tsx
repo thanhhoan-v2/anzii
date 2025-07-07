@@ -27,22 +27,22 @@ export const metadata: Metadata = {
 	},
 };
 
-const TermsOfServicePage = () => {
+export default function Page() {
 	return (
-		<div className="min-h-screen bg-black">
+		<div className="bg-black min-h-screen">
 			<AppHeader />
-			<main className="container mx-auto px-4 py-12 md:px-24 md:py-20">
+			<main className="mx-auto px-4 md:px-24 py-12 md:py-20 container">
 				<div className="mx-auto max-w-4xl">
 					<div className="mb-8 text-center">
-						<h1 className="text-4xl font-bold text-gray-100 md:text-6xl">
+						<h1 className="font-bold text-gray-100 text-4xl md:text-6xl">
 							Terms of Service
 						</h1>
-						<p className="mt-4 text-lg text-gray-400">
+						<p className="mt-4 text-gray-400 text-lg">
 							Our terms and conditions of use
 						</p>
 					</div>
 					<div
-						className="prose prose-lg prose-invert mx-auto max-w-none"
+						className="prose-invert mx-auto max-w-none prose prose-lg"
 						style={
 							{
 								"--tw-prose-body": "rgb(156 163 175)",
@@ -205,7 +205,7 @@ const TermsOfServicePage = () => {
 								Website: <a href="https://anzii.space">https://anzii.space</a>
 							</li>
 						</ul>
-						<p className="text-sm text-gray-500">
+						<p className="text-gray-500 text-sm">
 							Last updated: January 1, 2025
 						</p>
 					</div>
@@ -214,6 +214,4 @@ const TermsOfServicePage = () => {
 			<AppFooter />
 		</div>
 	);
-};
-
-export default TermsOfServicePage;
+}

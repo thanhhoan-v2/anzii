@@ -1,6 +1,6 @@
 "use client";
 import { ForgotPassword } from "@stackframe/stack";
 
-export default function ForgotPasswordPage() {
+export default function Page() {
 	return <ForgotPassword />;
 }

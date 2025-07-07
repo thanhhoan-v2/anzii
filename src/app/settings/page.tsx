@@ -31,7 +31,7 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { ROUTES } from "@/lib/routes";
 
-export default function SettingsPage() {
+export default function Page() {
 	const user = useUser();
 	const router = useRouter();
 	const { toast } = useToast();
@@ -68,7 +68,7 @@ export default function SettingsPage() {
 		setIsLoading(true);
 		try {
 			await user.update({
-				displayName: displayName.trim() || null,
+				displayName: displayName.trim() || undefined,
 			});
 
 			setHasUnsavedChanges(false);

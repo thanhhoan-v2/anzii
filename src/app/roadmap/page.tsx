@@ -34,7 +34,7 @@ const RoadmapTimeline = dynamic(
 	}
 );
 
-export default function RoadmapPage() {
+export default function Page() {
 	const roadmapItems = [
 		{
 			quarter: "Q1 2025",
@@ -43,19 +43,19 @@ export default function RoadmapPage() {
 				{
 					title: "Core Platform Launch",
 					description: "Basic flashcard creation and spaced repetition system",
-					icon: <CheckCircle2 className="h-6 w-6" />,
+					icon: <CheckCircle2 className="w-6 h-6" />,
 					completed: true,
 				},
 				{
 					title: "AI-Powered Card Generation",
 					description: "Automatic flashcard creation from any content",
-					icon: <CheckCircle2 className="h-6 w-6" />,
+					icon: <CheckCircle2 className="w-6 h-6" />,
 					completed: true,
 				},
 				{
 					title: "Multi-format Import",
 					description: "Support for PDFs, images, and text files",
-					icon: <CheckCircle2 className="h-6 w-6" />,
+					icon: <CheckCircle2 className="w-6 h-6" />,
 					completed: true,
 				},
 			],
@@ -67,19 +67,19 @@ export default function RoadmapPage() {
 				{
 					title: "Advanced Analytics Dashboard",
 					description: "Detailed learning insights and progress tracking",
-					icon: <BarChart3 className="h-6 w-6" />,
+					icon: <BarChart3 className="w-6 h-6" />,
 					completed: false,
 				},
 				{
 					title: "Mobile Applications",
 					description: "Native iOS and Android apps with offline sync",
-					icon: <Rocket className="h-6 w-6" />,
+					icon: <Rocket className="w-6 h-6" />,
 					completed: false,
 				},
 				{
 					title: "Collaborative Study Groups",
 					description: "Share decks and study together with friends",
-					icon: <Users className="h-6 w-6" />,
+					icon: <Users className="w-6 h-6" />,
 					completed: false,
 				},
 			],
@@ -91,19 +91,19 @@ export default function RoadmapPage() {
 				{
 					title: "AI Study Assistant",
 					description: "Personalized study recommendations and coaching",
-					icon: <Sparkles className="h-6 w-6" />,
+					icon: <Sparkles className="w-6 h-6" />,
 					completed: false,
 				},
 				{
 					title: "Gamification System",
 					description: "Achievements, streaks, and competitive learning",
-					icon: <Zap className="h-6 w-6" />,
+					icon: <Zap className="w-6 h-6" />,
 					completed: false,
 				},
 				{
 					title: "Enhanced Security",
 					description: "Advanced privacy controls and data encryption",
-					icon: <Shield className="h-6 w-6" />,
+					icon: <Shield className="w-6 h-6" />,
 					completed: false,
 				},
 			],
@@ -115,19 +115,19 @@ export default function RoadmapPage() {
 				{
 					title: "Global Marketplace",
 					description: "Community-driven deck sharing and discovery",
-					icon: <Globe className="h-6 w-6" />,
+					icon: <Globe className="w-6 h-6" />,
 					completed: false,
 				},
 				{
 					title: "Advanced AI Features",
 					description: "Voice interaction and real-time content analysis",
-					icon: <Rocket className="h-6 w-6" />,
+					icon: <Rocket className="w-6 h-6" />,
 					completed: false,
 				},
 				{
 					title: "Enterprise Solutions",
 					description: "Team management and institutional features",
-					icon: <Users className="h-6 w-6" />,
+					icon: <Users className="w-6 h-6" />,
 					completed: false,
 				},
 			],
@@ -135,7 +135,7 @@ export default function RoadmapPage() {
 	];
 
 	return (
-		<div className="min-h-screen bg-black">
+		<div className="bg-black min-h-screen">
 			<AppHeader />
 
 			<Suspense fallback={<LoadingSkeleton variant="hero" />}>
