@@ -119,7 +119,6 @@ export default function AppHeader({
 					</div>
 				)}
 
-				{/* Mobile Menu */}
 				<AppHeaderMobile isNotDashboard={isPublicPage} />
 			</div>
 		</header>

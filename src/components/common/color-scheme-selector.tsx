@@ -23,9 +23,9 @@ export function ColorSchemeSelector({
 	triggerClassName?: string;
 	triggerTextClassName?: string;
 }) {
+	const [isOpen, setIsOpen] = useState(false);
 	const { colorScheme, setColorScheme, availableSchemes, colorSchemeName } =
 		useColorScheme();
-	const [isOpen, setIsOpen] = useState(false);
 
 	const handleSchemeSelect = (schemeId: string) => {
 		setColorScheme(schemeId);
