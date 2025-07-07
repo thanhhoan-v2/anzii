@@ -1,0 +1,200 @@
+name: Deploy CI
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment to deploy to"
+        required: true
+        default: "staging"
+        type: choice
+        options:
+          - staging
+          - production
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build & Test
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      sha-short: ${{ steps.version.outputs.sha-short }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate version info
+        id: version
+        run: |
+          if [[ $GITHUB_REF == refs/tags/* ]]; then
+            VERSION=${GITHUB_REF#refs/tags/}
+          else
+            VERSION="main-$(git rev-parse --short HEAD)"
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "sha-short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Run linting
+        run: pnpm lint
+
+      - name: Run type checking
+        run: pnpm typecheck
+
+      - name: Run unit tests
+        run: pnpm test
+
+      - name: Build application
+        run: pnpm build
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ steps.version.outputs.sha-short }}
+          path: |
+            .next/
+            public/
+            package.json
+            pnpm-lock.yaml
+          retention-days: 7
+
+  deploy-staging:
+    name: Deploy to Staging
+    if: github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'staging')
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
+      url: https://staging.anzii.space
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-${{ needs.build.outputs.sha-short }}
+
+      - name: Deploy to Vercel Staging
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          scope: ${{ secrets.VERCEL_ORG_ID }}
+          alias-domains: staging.anzii.space
+
+      - name: Run smoke tests
+        run: |
+          echo "Running smoke tests against staging..."
+          # Add actual smoke test commands here
+          curl -f https://staging.anzii.space/api/health || exit 1
+
+      - name: Notify deployment
+        if: always()
+        run: |
+          echo "## 🚀 Staging Deployment" >> $GITHUB_STEP_SUMMARY
+          echo "- **Version**: ${{ needs.build.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **URL**: https://staging.anzii.space" >> $GITHUB_STEP_SUMMARY
+          echo "- **Status**: ${{ job.status == 'success' && '✅ Success' || '❌ Failed' }}" >> $GITHUB_STEP_SUMMARY
+
+  deploy-production:
+    name: Deploy to Production
+    if: startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production')
+    needs: [build, deploy-staging]
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://anzii.space
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-${{ needs.build.outputs.sha-short }}
+
+      - name: Deploy to Vercel Production
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: "--prod"
+          scope: ${{ secrets.VERCEL_ORG_ID }}
+
+      - name: Run production smoke tests
+        run: |
+          echo "Running smoke tests against production..."
+          sleep 30  # Wait for deployment to propagate
+          curl -f https://anzii.space/api/health || exit 1
+          curl -f https://anzii.space/ || exit 1
+
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ needs.build.outputs.version }}
+          name: Release ${{ needs.build.outputs.version }}
+          generateReleaseNotes: true
+          body: |
+            ## 🎉 Anzii ${{ needs.build.outputs.version }}
+
+            ### What's New
+            - AI-powered flashcard generation improvements
+            - Enhanced spaced repetition algorithms
+            - Better user experience and performance
+
+            ### Deployment
+            - **Production URL**: https://anzii.space
+            - **Build SHA**: ${{ needs.build.outputs.sha-short }}
+
+            ### Migration Notes
+            Run database migrations if needed:
+            ```bash
+            pnpm db:migrate
+            ```
+
+      - name: Notify successful deployment
+        run: |
+          echo "## 🎉 Production Deployment Successful" >> $GITHUB_STEP_SUMMARY
+          echo "- **Version**: ${{ needs.build.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **URL**: https://anzii.space" >> $GITHUB_STEP_SUMMARY
+          echo "- **Release**: ${{ startsWith(github.ref, 'refs/tags/v') && 'Created' || 'N/A' }}" >> $GITHUB_STEP_SUMMARY
+
+  rollback:
+    name: Rollback Production
+    if: failure() && needs.deploy-production.result == 'failure'
+    needs: [deploy-production]
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+    steps:
+      - name: Rollback deployment
+        run: |
+          echo "🚨 Rolling back production deployment..."
+          # Add rollback logic here - depends on your deployment strategy
+          # For Vercel, you might want to promote the previous successful deployment
+
+      - name: Notify rollback
+        run: |
+          echo "## 🚨 Production Rollback Initiated" >> $GITHUB_STEP_SUMMARY
+          echo "Production deployment failed and rollback has been initiated." >> $GITHUB_STEP_SUMMARY

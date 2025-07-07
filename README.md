@@ -160,13 +160,28 @@ We believe learning should follow a universal protocol: intelligent, personalize
 
 ## Contributing
 
-We welcome contributions from the learning and developer community. To propose a fix, feature, or improvement:
+We welcome contributions from the learning and developer community! 🎉
 
-- Open a pull request
-- Submit an issue
-- Contribute to documentation
+### Getting Help & Support
 
-Please review our contributing guidelines and ensure all tests pass before submitting.
+- 📋 **Issues**: See our [Support Guide](.github/SUPPORT.md) for comprehensive help
+- 🔒 **Security**: Review our [Security Policy](.github/SECURITY.md) for vulnerability reporting
+- 🤝 **Community**: Follow our [Code of Conduct](.github/CONTRIBUTING.md) for respectful collaboration
+
+### How to Contribute
+
+1. **Fork the repository** and create your feature branch
+2. **Follow our development workflow** with automated CI/CD
+3. **Ensure all tests pass** - our CI runs comprehensive checks
+4. **Submit a pull request** with clear description
+
+Our automated CI pipeline includes:
+
+- ✅ **Code Quality**: ESLint, Prettier, TypeScript checking
+- 🧪 **Testing**: Unit tests (Jest) and E2E tests (Playwright)
+- 🔒 **Security**: Dependency scanning, CodeQL analysis, secret detection
+- 🏗️ **Build**: Application build verification and database schema validation
+- 🚀 **Deploy**: Automated staging/production deployments on Vercel
 
 ### Development Scripts
 
