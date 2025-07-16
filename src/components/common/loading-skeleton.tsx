@@ -151,3 +151,39 @@ export default function LoadingSkeleton({
 			);
 	}
 }
+
+// Custom animated skeleton component with enhanced animations
+export const AnimatedSkeleton = ({
+	className,
+	...props
+}: React.HTMLAttributes<HTMLDivElement>) => {
+	return (
+		<div
+			className={`animate-skeleton-fade-in transform animate-pulse animate-shimmer rounded-md transition-all duration-300 ease-out hover:scale-105 ${className}`}
+			{...props}
+		/>
+	);
+};
+
+// Transition wrapper for smooth skeleton to content transition
+export const SkeletonTransition = ({
+	isLoading,
+	skeleton,
+	children,
+	className = "",
+}: {
+	isLoading: boolean;
+	skeleton: React.ReactNode;
+	children: React.ReactNode;
+	className?: string;
+}) => {
+	return (
+		<div className={`relative ${className}`}>
+			{isLoading ? (
+				<div className="animate-skeleton-fade-in">{skeleton}</div>
+			) : (
+				<div className="animate-fade-in-up">{children}</div>
+			)}
+		</div>
+	);
+};

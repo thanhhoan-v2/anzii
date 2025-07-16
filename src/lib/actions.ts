@@ -6,6 +6,7 @@ import { z } from "zod";
 
 import { generateCardsFromMarkdown } from "@/ai/flows/generate-cards-from-markdown";
 import { generateDeckFromTopic } from "@/ai/flows/generate-deck-from-topic";
+import { summarizeTopic } from "@/ai/flows/summarize-topic";
 import { getDb } from "@/db";
 import { cards, decks } from "@/db/schema";
 import { calculateNextReview } from "@/lib/srs";
@@ -339,9 +340,15 @@ export async function updateCard({
 
 export async function createDeckFromAi(data: {
 	topic: string;
+	numberOfCards?: number;
+	description?: string;
 }): Promise<ActionResponse> {
 	const db = getDb();
 	try {
+		// Generate AI-summarized deck name (max 5 words)
+		const summaryResult = await summarizeTopic({ topic: data.topic });
+		const deckName = summaryResult.summary;
+
 		const aiResult = await generateDeckFromTopic(data);
 		if (!aiResult.cards || aiResult.cards.length === 0) {
 			return {
@@ -350,10 +357,10 @@ export async function createDeckFromAi(data: {
 			};
 		}
 
-		// Create deck first
+		// Create deck with summarized name
 		const [newDeck] = await db
 			.insert(decks)
-			.values({ name: data.topic })
+			.values({ name: deckName })
 			.returning();
 
 		// Then add cards if any exist

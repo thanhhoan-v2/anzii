@@ -1,11 +1,11 @@
 import { neon } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
 
-import * as schema from "./schema";
+import * as schema from "@/db/schema";
 
-// This file has been modified to fix an issue where DATABASE_URL was not available.
 // Instead of creating a single `db` instance when the app starts, we now
-// create it on-demand inside each server action. This ensures `process.env` is loaded.
+// create it on-demand inside each server action. This ensures `process.env` is loaded
+// and fix the issue where DATABASE_URL is not available.
 
 export const getDb = () => {
 	if (!process.env.DATABASE_URL) {

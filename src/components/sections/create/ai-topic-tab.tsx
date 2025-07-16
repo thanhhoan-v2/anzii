@@ -44,7 +44,7 @@ export default function AiTopicTab() {
 					title: "Deck Generated!",
 					description: "Your AI deck has been created.",
 				});
-				router.push(ROUTES.HOME);
+				router.push(ROUTES.DASHBOARD);
 			} else {
 				throw new Error(result.error);
 			}
@@ -89,12 +89,12 @@ export default function AiTopicTab() {
 				>
 					{isCreatingAi ? (
 						<>
-							<Loader2 className="mr-2 w-4 h-4 animate-spin" />
+							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 							Generating Deck...
 						</>
 					) : (
 						<>
-							<Bot className="mr-2 w-4 h-4" />
+							<Bot className="mr-2 h-4 w-4" />
 							Generate with AI
 						</>
 					)}

@@ -14,6 +14,14 @@ import { ai } from "@/ai/genkit";
 
 const GenerateDeckFromTopicInputSchema = z.object({
 	topic: z.string().describe("The topic to generate a flashcard deck for."),
+	numberOfCards: z
+		.number()
+		.optional()
+		.describe("The number of flashcards to generate (5-30)."),
+	description: z
+		.string()
+		.optional()
+		.describe("Additional context or focus areas for the flashcards."),
 });
 export type GenerateDeckFromTopicInput = z.infer<
 	typeof GenerateDeckFromTopicInputSchema
@@ -35,9 +43,7 @@ const GenerateDeckFromTopicOutputSchema = z.object({
 					),
 			})
 		)
-		.describe(
-			"An array of generated flashcards, between 10 and 20 cards long."
-		),
+		.describe("An array of generated flashcards."),
 });
 export type GenerateDeckFromTopicOutput = z.infer<
 	typeof GenerateDeckFromTopicOutputSchema
@@ -54,12 +60,16 @@ const prompt = ai.definePrompt({
 	input: { schema: GenerateDeckFromTopicInputSchema },
 	output: { schema: GenerateDeckFromTopicOutputSchema },
 	prompt: `You are an AI assistant that creates comprehensive flashcard decks for students.
-You will be given a topic. Your task is to generate a list of question and answer pairs that are suitable for flashcards for learning about that topic.
-Generate between 10 and 20 flashcards.
+You will be given a topic and configuration. Your task is to generate a list of question and answer pairs that are suitable for flashcards for learning about that topic.
+
+Generate {{#if numberOfCards}}{{numberOfCards}}{{else}}10-20{{/if}} flashcards.
 The questions should be clear and concise. The answers should be accurate and directly address the questions, providing enough detail for a student to learn from.
 Ensure the generated cards cover the key concepts of the provided topic.
 
 Topic: {{{topic}}}
+{{#if description}}
+Additional context: {{{description}}}
+{{/if}}
 `,
 });
 

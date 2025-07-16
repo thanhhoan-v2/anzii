@@ -49,7 +49,7 @@ export default function MarkdownTab() {
 					title: "Deck Created!",
 					description: "Your deck has been generated from markdown.",
 				});
-				router.push(ROUTES.HOME);
+				router.push(ROUTES.DASHBOARD);
 			} else {
 				throw new Error(result.error);
 			}
@@ -105,12 +105,12 @@ export default function MarkdownTab() {
 				>
 					{isCreatingMarkdown ? (
 						<>
-							<Loader2 className="mr-2 w-4 h-4 animate-spin" />
+							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 							Processing Markdown...
 						</>
 					) : (
 						<>
-							<FileText className="mr-2 w-4 h-4" />
+							<FileText className="mr-2 h-4 w-4" />
 							Generate from Markdown
 						</>
 					)}
