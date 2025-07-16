@@ -1,7 +1,7 @@
 ---
 id: task-1
 title: Browse Decks
-status: Done
+status: To Do
 assignee: []
 created_date: '2025-07-16'
 updated_date: '2025-07-16'
