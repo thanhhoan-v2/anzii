@@ -98,7 +98,11 @@ export function useCreateDeckFromAi() {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: async (data: { topic: string }) => {
+		mutationFn: async (data: {
+			topic: string;
+			numberOfCards?: number;
+			description?: string;
+		}) => {
 			const result = await createDeckFromAi(data);
 			if (!result.success) {
 				throw new Error(result.error || "Failed to create deck with AI");

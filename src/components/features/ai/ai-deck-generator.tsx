@@ -24,6 +24,7 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { createDeckFromAi } from "@/lib/actions";
 
@@ -35,6 +36,11 @@ interface AiDeckGeneratorProps {
 
 const FormSchema = z.object({
 	topic: z.string().min(3, { message: "Topic must be at least 3 characters." }),
+	numberOfCards: z
+		.number()
+		.min(5, { message: "At least 5 cards required." })
+		.max(30, { message: "Maximum 30 cards allowed." }),
+	description: z.string().optional(),
 });
 
 export default function AiDeckGenerator({
@@ -49,6 +55,8 @@ export default function AiDeckGenerator({
 		resolver: zodResolver(FormSchema),
 		defaultValues: {
 			topic: "",
+			numberOfCards: 15,
+			description: "",
 		},
 	});
 
@@ -94,8 +102,7 @@ export default function AiDeckGenerator({
 				<DialogHeader>
 					<DialogTitle>Create Deck with AI</DialogTitle>
 					<DialogDescription>
-						Enter a topic below. The AI will generate a full flashcard deck for
-						you.
+						Configure your flashcard deck settings below.
 					</DialogDescription>
 				</DialogHeader>
 				<Form {...form}>
@@ -110,7 +117,43 @@ export default function AiDeckGenerator({
 								<FormItem>
 									<FormLabel>Topic</FormLabel>
 									<FormControl>
-										<Input placeholder="e.g., 'The Roman Empire'" {...field} />
+										<Input placeholder="Roman Empire" {...field} />
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<FormField
+							control={form.control}
+							name="numberOfCards"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Number of Cards</FormLabel>
+									<FormControl>
+										<Input
+											type="number"
+											min="5"
+											max="30"
+											{...field}
+											onChange={(e) => field.onChange(Number(e.target.value))}
+										/>
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<FormField
+							control={form.control}
+							name="description"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Description (Optional)</FormLabel>
+									<FormControl>
+										<Textarea
+											placeholder="Focus areas or special requirements"
+											className="min-h-[60px] resize-none"
+											{...field}
+										/>
 									</FormControl>
 									<FormMessage />
 								</FormItem>
@@ -128,7 +171,7 @@ export default function AiDeckGenerator({
 							<Button type="submit" disabled={isLoading}>
 								{isLoading ? (
 									<>
-										<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+										<Loader2 className="mr-2 w-4 h-4 animate-spin" />
 										Generating...
 									</>
 								) : (
