@@ -92,6 +92,12 @@ importers:
       '@stackframe/stack':
         specifier: ^2.8.12
         version: 2.8.12(@babel/core@7.27.7)(@types/react-dom@18.3.7(@types/react@18.3.23))(@types/react@18.3.23)(next@15.3.3(@babel/core@7.27.7)(@opentelemetry/api@1.9.0)(@playwright/test@1.53.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.17)
+      '@tanstack/react-query':
+        specifier: ^5.81.5
+        version: 5.83.0(react@18.3.1)
+      '@tanstack/react-query-devtools':
+        specifier: ^5.81.5
+        version: 5.83.0(@tanstack/react-query@5.83.0(react@18.3.1))(react@18.3.1)
       '@vercel/analytics':
         specifier: ^1.5.0
         version: 1.5.0(next@15.3.3(@babel/core@7.27.7)(@opentelemetry/api@1.9.0)(@playwright/test@1.53.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
@@ -146,6 +152,9 @@ importers:
       react-dom:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
+      react-error-boundary:
+        specifier: ^6.0.0
+        version: 6.0.0(react@18.3.1)
       react-hook-form:
         specifier: ^7.54.2
         version: 7.59.0(react@18.3.1)
@@ -2284,6 +2293,23 @@ packages:
     resolution: {integrity: sha512-0wDLwCVF5V3x3b1SGXPCDcdsbDHMBe+lkFzBRaHeLvNi+nrrnZ1lA18u+OTWO8iSWU2GxUOCvlXtDuqftc1oiA==}
     peerDependencies:
       tailwindcss: '>=3.0.0 || insiders || >=4.0.0-alpha.20 || >=4.0.0-beta.1'
+
+  '@tanstack/query-core@5.83.0':
+    resolution: {integrity: sha512-0M8dA+amXUkyz5cVUm/B+zSk3xkQAcuXuz5/Q/LveT4ots2rBpPTZOzd7yJa2Utsf8D2Upl5KyjhHRY+9lB/XA==}
+
+  '@tanstack/query-devtools@5.81.2':
+    resolution: {integrity: sha512-jCeJcDCwKfoyyBXjXe9+Lo8aTkavygHHsUHAlxQKKaDeyT0qyQNLKl7+UyqYH2dDF6UN/14873IPBHchcsU+Zg==}
+
+  '@tanstack/react-query-devtools@5.83.0':
+    resolution: {integrity: sha512-yfp8Uqd3I1jgx8gl0lxbSSESu5y4MO2ThOPBnGNTYs0P+ZFu+E9g5IdOngyUGuo6Uz6Qa7p9TLdZEX3ntik2fQ==}
+    peerDependencies:
+      '@tanstack/react-query': ^5.83.0
+      react: ^18 || ^19
+
+  '@tanstack/react-query@5.83.0':
+    resolution: {integrity: sha512-/XGYhZ3foc5H0VM2jLSD/NyBRIOK4q9kfeml4+0x2DlL6xVuAcVEW+hTlTapAmejObg0i3eNqhkr2dT+eciwoQ==}
+    peerDependencies:
+      react: ^18 || ^19
 
   '@tanstack/react-table@8.21.3':
     resolution: {integrity: sha512-5nNMTSETP4ykGegmVkhjcS8tTLW6Vl4axfEGQN3v0zdHYbK4UfoqfPChclTrJ4EoK9QynqAu9oUf8VEmrpZ5Ww==}
@@ -5912,6 +5938,11 @@ packages:
     peerDependencies:
       react: ^18.3.1
 
+  react-error-boundary@6.0.0:
+    resolution: {integrity: sha512-gdlJjD7NWr0IfkPlaREN2d9uUZUlksrfOx7SX62VRerwXbMY6ftGCIZua1VG1aXFNOimhISsTq+Owp725b9SiA==}
+    peerDependencies:
+      react: '>=16.13.1'
+
   react-hook-form@7.59.0:
     resolution: {integrity: sha512-kmkek2/8grqarTJExFNjy+RXDIP8yM+QTl3QL6m6Q8b2bih4ltmiXxH7T9n+yXNK477xPh5yZT/6vD8sYGzJTA==}
     engines: {node: '>=18.0.0'}
@@ -9079,6 +9110,21 @@ snapshots:
       lodash.merge: 4.6.2
       postcss-selector-parser: 6.0.10
       tailwindcss: 3.4.17
+
+  '@tanstack/query-core@5.83.0': {}
+
+  '@tanstack/query-devtools@5.81.2': {}
+
+  '@tanstack/react-query-devtools@5.83.0(@tanstack/react-query@5.83.0(react@18.3.1))(react@18.3.1)':
+    dependencies:
+      '@tanstack/query-devtools': 5.81.2
+      '@tanstack/react-query': 5.83.0(react@18.3.1)
+      react: 18.3.1
+
+  '@tanstack/react-query@5.83.0(react@18.3.1)':
+    dependencies:
+      '@tanstack/query-core': 5.83.0
+      react: 18.3.1
 
   '@tanstack/react-table@8.21.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
@@ -13375,6 +13421,11 @@ snapshots:
       loose-envify: 1.4.0
       react: 18.3.1
       scheduler: 0.23.2
+
+  react-error-boundary@6.0.0(react@18.3.1):
+    dependencies:
+      '@babel/runtime': 7.27.6
+      react: 18.3.1
 
   react-hook-form@7.59.0(react@18.3.1):
     dependencies:
