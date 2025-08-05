@@ -3,7 +3,6 @@
 import { useUser } from "@stackframe/stack";
 import { useState } from "react";
 
-import BackButton from "@/components/common/back-button";
 import AiDeckGenerator from "@/components/features/ai/ai-deck-generator";
 import DeckList from "@/components/features/deck/deck-list";
 import AppHeader from "@/components/layout/app-header";
@@ -41,9 +40,7 @@ export default function DashboardContent() {
 
 	return (
 		<div className="min-h-screen bg-background font-sans text-foreground">
-			<AppHeader>
-				<BackButton />
-			</AppHeader>
+			<AppHeader />
 
 			<main className="container mx-auto p-4 md:p-8">
 				{deckManagement.decks.length === 0 ? (

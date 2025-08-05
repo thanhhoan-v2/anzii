@@ -131,19 +131,17 @@ export function useReviewSession(): UseReviewSessionReturn {
 					return;
 				}
 
-				const dueCards = deckToReview.cards.filter(
-					(card) => new Date(card.dueDate) <= new Date()
-				);
+				const allCards = deckToReview.cards;
 
-				if (dueCards.length === 0) {
+				if (allCards.length === 0) {
 					toast({
-						title: "All Caught Up!",
-						description: "You have no cards due for review today in this deck.",
+						title: "No Cards Available",
+						description: "This deck has no cards to review.",
 					});
 					return;
 				}
 
-				startSession(deckToReview as Deck, dueCards);
+				startSession(deckToReview as Deck, allCards);
 			} catch {
 				toast({
 					variant: "destructive",

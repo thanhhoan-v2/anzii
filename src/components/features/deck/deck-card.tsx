@@ -1,11 +1,10 @@
 import { ExternalLinkIcon } from "lucide-react";
 
+import { Badge } from "@/components/ui/badge";
 import { ButtonWithLink } from "@/components/ui/button";
 import {
 	Card as ShadCard,
 	CardContent,
-	CardDescription,
-	CardFooter,
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
@@ -32,7 +31,7 @@ export default function DeckCard({
 			<div className="flex justify-between">
 				<CardHeader>
 					<CardTitle>{deck.name}</CardTitle>
-					<CardDescription>{deck.cardCount} cards</CardDescription>
+					{/* <CardDescription>{deck.cardCount} cards</CardDescription> */}
 				</CardHeader>
 				<DeckDeleteBtn
 					deckId={deck.id}
@@ -40,21 +39,12 @@ export default function DeckCard({
 					onDeleteDeck={onDeleteDeck}
 				/>
 			</div>
-			<CardContent className="flex-grow">
-				<div
-					className={`text-lg font-bold ${
-						deck.dueCount > 0 ? "text-primary" : "text-muted-foreground"
-					}`}
-				>
-					{deck.dueCount} due
-				</div>
-				<p className="text-sm text-muted-foreground">for review today</p>
-			</CardContent>
-			<CardFooter className="flex justify-end">
+			<CardContent className="flex items-baseline justify-between gap-2">
+				<Badge className="text-md">{deck.cardCount} cards</Badge>
 				<ButtonWithLink className="w-[130px]" href={ROUTES.DECK(deck.id)}>
 					View Deck <ExternalLinkIcon />
 				</ButtonWithLink>
-			</CardFooter>
+			</CardContent>
 		</ShadCard>
 	);
 }

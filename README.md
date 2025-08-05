@@ -38,7 +38,14 @@
 
 ## Recent Updates
 
-### Embedded Review Sessions (Latest)
+### Unlimited Review Access (Latest)
+
+- **No More Limited Trials**: Removed the "due today" filtering - all cards are now available for review at any time
+- **Seamless Review Experience**: Users can start reviewing any deck without needing to click "restart" to access all cards
+- **Improved Accessibility**: All cards in a deck are immediately available for review, regardless of their due date
+- **Better Learning Flow**: Users can review cards multiple times in a session without artificial restrictions
+
+### Embedded Review Sessions
 
 - **Dashboard Overview**: Dashboard shows deck cards with links to detail pages and management actions
 - **Deck Detail Pages**: Each deck has a dedicated detail page (`/deck/[deckId]`) with settings, reset, and start review buttons

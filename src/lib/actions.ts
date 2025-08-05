@@ -1,6 +1,6 @@
 "use server";
 
-import { asc, eq, lte, sql } from "drizzle-orm";
+import { asc, eq, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
@@ -50,19 +50,8 @@ export async function getDecksWithCounts(): Promise<DeckListItem[]> {
 			.groupBy(cards.deckId)
 	);
 
-	const dueCountSubquery = db.$with("due_count_sq").as(
-		db
-			.select({
-				deckId: cards.deckId,
-				dueCount: sql<number>`count(${cards.id})`.as("due_count"),
-			})
-			.from(cards)
-			.where(lte(cards.dueDate, new Date()))
-			.groupBy(cards.deckId)
-	);
-
 	const result = await db
-		.with(cardCountSubquery, dueCountSubquery)
+		.with(cardCountSubquery)
 		.select({
 			id: decks.id,
 			name: decks.name,
@@ -70,13 +59,9 @@ export async function getDecksWithCounts(): Promise<DeckListItem[]> {
 				sql<number>`coalesce(${cardCountSubquery.cardCount}, 0)`.mapWith(
 					Number
 				),
-			dueCount: sql<number>`coalesce(${dueCountSubquery.dueCount}, 0)`.mapWith(
-				Number
-			),
 		})
 		.from(decks)
 		.leftJoin(cardCountSubquery, eq(decks.id, cardCountSubquery.deckId))
-		.leftJoin(dueCountSubquery, eq(decks.id, dueCountSubquery.deckId))
 		.orderBy(asc(decks.createdAt));
 
 	return result;

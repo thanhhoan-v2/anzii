@@ -4,7 +4,6 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import BackButton from "@/components/common/back-button";
-import DeckResetDialog from "@/components/features/deck/deck-reset-dialog";
 import CardEditor from "@/components/features/study/card-editor";
 import ReviewSession from "@/components/features/study/review-session";
 import AppHeader from "@/components/layout/app-header";
@@ -56,10 +55,8 @@ export default function DeckDetailPage() {
 	const [showConfirmDeckNameEditDialog, setShowConfirmDeckNameEditDialog] =
 		useState(false);
 
-	// Calculate due count from cards
-	const dueCount =
-		deck?.cards.filter((card) => new Date(card.dueDate) <= new Date()).length ||
-		0;
+	// Calculate total card count (no longer filtering by due date)
+	const totalCardCount = deck?.cards.length || 0;
 
 	// Set up review session completion callback
 	useEffect(() => {
@@ -217,15 +214,15 @@ export default function DeckDetailPage() {
 									isPending={addCardMutation.isPending}
 								/>
 								<div className="flex flex-wrap items-center gap-2">
-									<DeckResetDialog
+									{/* <DeckResetDialog
 										deckId={deck.id}
 										deckName={deck.name}
 										cardCount={deck.cards.length}
 										isResetting={deckManagement.resetLoadingDeckId === deck.id}
 										onResetDeck={deckManagement.handleResetDeck}
-									/>
+									/> */}
 									<div className="flex items-center gap-2">
-										{dueCount === 0 ? (
+										{totalCardCount === 0 ? (
 											<Button disabled>Start Review</Button>
 										) : (
 											<Button

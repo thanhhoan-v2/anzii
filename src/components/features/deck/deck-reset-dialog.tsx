@@ -66,7 +66,7 @@ export default function DeckResetDialog({
 							<span className="font-bold">{cardCount} cards</span> in the{" "}
 							<span className="font-bold">{deckName}</span> deck.
 						</>
-						<>All cards will be due for review today.</>
+						<>All cards will be available for review again.</>
 					</AlertDialogDescription>
 				</AlertDialogHeader>
 				<AlertDialogFooter className="flex flex-row items-center justify-center gap-2">
