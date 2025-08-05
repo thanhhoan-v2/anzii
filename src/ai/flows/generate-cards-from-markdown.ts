@@ -8,9 +8,10 @@
  * - GenerateCardsFromMarkdownOutput - The return type for the function.
  */
 
-import { z } from "genkit";
+import { generateText, Output } from "ai";
+import { z } from "zod";
 
-import { ai } from "@/ai/genkit";
+import { ai } from "@/ai/config";
 
 const GenerateCardsFromMarkdownInputSchema = z.object({
 	topic: z
@@ -41,34 +42,26 @@ export type GenerateCardsFromMarkdownOutput = z.infer<
 export async function generateCardsFromMarkdown(
 	input: GenerateCardsFromMarkdownInput
 ): Promise<GenerateCardsFromMarkdownOutput> {
-	return generateCardsFromMarkdownFlow(input);
-}
-
-const prompt = ai.definePrompt({
-	name: "generateCardsFromMarkdownPrompt",
-	input: { schema: GenerateCardsFromMarkdownInputSchema },
-	output: { schema: GenerateCardsFromMarkdownOutputSchema },
-	prompt: `You are an AI assistant that helps users create flashcards from their notes.
+	const prompt = `You are an AI assistant that helps users create flashcards from their notes.
 You will be given a topic and notes in Markdown format.
 Your task is to analyze the content and generate a list of question and answer pairs that are suitable for flashcards.
 The questions should be clear and concise. The answers should be accurate and directly address the questions.
 Ensure the generated cards cover the key concepts in the provided markdown.
 
-Topic: {{{topic}}}
+Topic: ${input.topic}
 
 Markdown Notes:
-{{{markdown}}}
-`,
-});
+${input.markdown}
 
-const generateCardsFromMarkdownFlow = ai.defineFlow(
-	{
-		name: "generateCardsFromMarkdownFlow",
-		inputSchema: GenerateCardsFromMarkdownInputSchema,
-		outputSchema: GenerateCardsFromMarkdownOutputSchema,
-	},
-	async (input) => {
-		const { output } = await prompt(input);
-		return output!;
-	}
-);
+Generate flashcards with questions and answers based on the markdown content.`;
+
+	const result = await generateText({
+		model: ai,
+		prompt,
+		experimental_output: Output.object({
+			schema: GenerateCardsFromMarkdownOutputSchema,
+		}),
+	});
+
+	return result.experimental_output as GenerateCardsFromMarkdownOutput;
+}

@@ -8,9 +8,10 @@
  * - GenerateDeckFromTopicOutput - The return type for the function.
  */
 
-import { z } from "genkit";
+import { generateText, Output } from "ai";
+import { z } from "zod";
 
-import { ai } from "@/ai/genkit";
+import { ai } from "@/ai/config";
 
 const GenerateDeckFromTopicInputSchema = z.object({
 	topic: z.string().describe("The topic to generate a flashcard deck for."),
@@ -52,35 +53,27 @@ export type GenerateDeckFromTopicOutput = z.infer<
 export async function generateDeckFromTopic(
 	input: GenerateDeckFromTopicInput
 ): Promise<GenerateDeckFromTopicOutput> {
-	return generateDeckFromTopicFlow(input);
-}
+	const cardCount = input.numberOfCards || 15;
 
-const prompt = ai.definePrompt({
-	name: "generateDeckFromTopicPrompt",
-	input: { schema: GenerateDeckFromTopicInputSchema },
-	output: { schema: GenerateDeckFromTopicOutputSchema },
-	prompt: `You are an AI assistant that creates comprehensive flashcard decks for students.
+	const prompt = `You are an AI assistant that creates comprehensive flashcard decks for students.
 You will be given a topic and configuration. Your task is to generate a list of question and answer pairs that are suitable for flashcards for learning about that topic.
 
-Generate {{#if numberOfCards}}{{numberOfCards}}{{else}}10-20{{/if}} flashcards.
+Generate ${cardCount} flashcards.
 The questions should be clear and concise. The answers should be accurate and directly address the questions, providing enough detail for a student to learn from.
 Ensure the generated cards cover the key concepts of the provided topic.
 
-Topic: {{{topic}}}
-{{#if description}}
-Additional context: {{{description}}}
-{{/if}}
-`,
-});
+Topic: ${input.topic}
+${input.description ? `Additional context: ${input.description}` : ""}
 
-const generateDeckFromTopicFlow = ai.defineFlow(
-	{
-		name: "generateDeckFromTopicFlow",
-		inputSchema: GenerateDeckFromTopicInputSchema,
-		outputSchema: GenerateDeckFromTopicOutputSchema,
-	},
-	async (input) => {
-		const { output } = await prompt(input);
-		return output!;
-	}
-);
+Generate exactly ${cardCount} flashcards with questions and answers.`;
+
+	const result = await generateText({
+		model: ai,
+		prompt,
+		experimental_output: Output.object({
+			schema: GenerateDeckFromTopicOutputSchema,
+		}),
+	});
+
+	return result.experimental_output as GenerateDeckFromTopicOutput;
+}

@@ -8,9 +8,10 @@
  * - SummarizeTopicOutput - The return type for the function.
  */
 
-import { z } from "genkit";
+import { generateText, Output } from "ai";
+import { z } from "zod";
 
-import { ai } from "@/ai/genkit";
+import { ai } from "@/ai/config";
 
 const SummarizeTopicInputSchema = z.object({
 	topic: z.string().describe("The topic to summarize into a deck name."),
@@ -29,14 +30,7 @@ export type SummarizeTopicOutput = z.infer<typeof SummarizeTopicOutputSchema>;
 export async function summarizeTopic(
 	input: SummarizeTopicInput
 ): Promise<SummarizeTopicOutput> {
-	return summarizeTopicFlow(input);
-}
-
-const prompt = ai.definePrompt({
-	name: "summarizeTopicPrompt",
-	input: { schema: SummarizeTopicInputSchema },
-	output: { schema: SummarizeTopicOutputSchema },
-	prompt: `You are an AI assistant that creates concise deck names from topics.
+	const prompt = `You are an AI assistant that creates concise deck names from topics.
 
 Your task is to summarize the given topic into a clear, concise deck name using a maximum of 5 words.
 
@@ -53,18 +47,17 @@ Examples:
 - "Python programming basics for beginners" → "Python Programming Basics"
 - "Understanding photosynthesis in plants" → "Plant Photosynthesis Process"
 
-Topic: {{{topic}}}
-`,
-});
+Topic: ${input.topic}
 
-const summarizeTopicFlow = ai.defineFlow(
-	{
-		name: "summarizeTopicFlow",
-		inputSchema: SummarizeTopicInputSchema,
-		outputSchema: SummarizeTopicOutputSchema,
-	},
-	async (input) => {
-		const { output } = await prompt(input);
-		return output!;
-	}
-);
+Generate a concise deck name:`;
+
+	const result = await generateText({
+		model: ai,
+		prompt,
+		experimental_output: Output.object({
+			schema: SummarizeTopicOutputSchema,
+		}),
+	});
+
+	return result.experimental_output as SummarizeTopicOutput;
+}
