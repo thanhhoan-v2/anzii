@@ -1,5 +1,31 @@
 import "@testing-library/jest-dom";
 
+// Polyfill for TransformStream (needed for AI SDK)
+if (typeof globalThis.TransformStream === "undefined") {
+	globalThis.TransformStream = class TransformStream {
+		constructor() {
+			this.readable = {
+				getReader: () => ({
+					read: () => Promise.resolve({ done: true, value: undefined }),
+					releaseLock: () => {},
+				}),
+			};
+			this.writable = {
+				getWriter: () => ({
+					write: () => Promise.resolve(),
+					close: () => Promise.resolve(),
+					releaseLock: () => {},
+				}),
+			};
+		}
+	};
+}
+
+// Polyfill for fetch (needed for AI SDK)
+if (typeof globalThis.fetch === "undefined") {
+	globalThis.fetch = jest.fn();
+}
+
 // Mock next/router
 jest.mock("next/router", () => ({
 	useRouter() {

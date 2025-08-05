@@ -27,6 +27,7 @@
 
 - AI-powered flashcard generation from any content (PDFs, text, markdown)
 - Intelligent deck naming with AI topic summarization (max 5 words)
+- AI-generated deck descriptions for better context and organization
 - Scientifically-proven spaced repetition scheduling with SM-2 algorithm
 - Advanced analytics and progress tracking with learning insights
 - Multi-format import and export capabilities

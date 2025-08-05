@@ -4,6 +4,7 @@
 	"description": "An intelligent spaced repetition learning system with AI-powered content generation",
 	"license": "MIT",
 	"private": true,
+	"type": "module",
 	"scripts": {
 		"dev": "next dev --turbopack",
 		"build": "next build",

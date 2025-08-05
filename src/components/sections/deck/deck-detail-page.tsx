@@ -206,6 +206,12 @@ export default function DeckDetailPage() {
 								onNameChange={handleDeckNameChange}
 							/>
 							<CardDescription>
+								{deck.description && (
+									<>
+										{deck.description}
+										<br />
+									</>
+								)}
 								{deck.cards.length} cards in this deck.
 							</CardDescription>
 							<div className="flex flex-wrap items-center justify-between gap-2">

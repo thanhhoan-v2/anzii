@@ -11,6 +11,7 @@ export interface Card {
 export interface Deck {
 	id: string;
 	name: string;
+	description?: string;
 	cards: Card[];
 	createdAt?: string; // ISO date string
 }
@@ -18,6 +19,7 @@ export interface Deck {
 export interface DeckListItem {
 	id: string;
 	name: string;
+	description?: string;
 	cardCount: number;
 }
 

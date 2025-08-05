@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 import { generateCardsFromMarkdown } from "@/ai/flows/generate-cards-from-markdown";
+import { generateDeckDescription } from "@/ai/flows/generate-deck-description";
 import { generateDeckFromTopic } from "@/ai/flows/generate-deck-from-topic";
 import { summarizeTopic } from "@/ai/flows/summarize-topic";
 import { getDb } from "@/db";
@@ -13,8 +14,8 @@ import { calculateNextReview } from "@/lib/srs";
 import { shuffle } from "@/lib/utils";
 import type {
 	Card as CardType,
-	Deck as DeckType,
 	DeckListItem,
+	Deck as DeckType,
 	Rating,
 } from "@/types";
 
@@ -55,6 +56,7 @@ export async function getDecksWithCounts(): Promise<DeckListItem[]> {
 		.select({
 			id: decks.id,
 			name: decks.name,
+			description: decks.description,
 			cardCount:
 				sql<number>`coalesce(${cardCountSubquery.cardCount}, 0)`.mapWith(
 					Number
@@ -64,7 +66,10 @@ export async function getDecksWithCounts(): Promise<DeckListItem[]> {
 		.leftJoin(cardCountSubquery, eq(decks.id, cardCountSubquery.deckId))
 		.orderBy(asc(decks.createdAt));
 
-	return result;
+	return result.map((deck) => ({
+		...deck,
+		description: deck.description || undefined,
+	}));
 }
 
 export async function getDeck(deckId: string): Promise<DeckType | null> {
@@ -84,6 +89,7 @@ export async function getDeck(deckId: string): Promise<DeckType | null> {
 
 	return {
 		...deckData,
+		description: deckData.description || undefined,
 		createdAt: deckData.createdAt.toISOString(),
 		cards: deckData.cards.map(convertCardTimestamps),
 	};
@@ -334,6 +340,12 @@ export async function createDeckFromAi(data: {
 		const summaryResult = await summarizeTopic({ topic: data.topic });
 		const deckName = summaryResult.summary;
 
+		// Generate AI description for the deck
+		const descriptionResult = await generateDeckDescription({
+			topic: data.topic,
+		});
+		const deckDescription = descriptionResult.description;
+
 		const aiResult = await generateDeckFromTopic(data);
 		if (!aiResult.cards || aiResult.cards.length === 0) {
 			return {
@@ -342,10 +354,13 @@ export async function createDeckFromAi(data: {
 			};
 		}
 
-		// Create deck with summarized name
+		// Create deck with summarized name and description
 		const [newDeck] = await db
 			.insert(decks)
-			.values({ name: deckName })
+			.values({
+				name: deckName,
+				description: deckDescription,
+			})
 			.returning();
 
 		// Then add cards if any exist

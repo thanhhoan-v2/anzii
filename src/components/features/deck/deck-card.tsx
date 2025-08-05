@@ -3,10 +3,11 @@ import { ExternalLinkIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { ButtonWithLink } from "@/components/ui/button";
 import {
-	Card as ShadCard,
 	CardContent,
+	CardDescription,
 	CardHeader,
 	CardTitle,
+	Card as ShadCard,
 } from "@/components/ui/card";
 import { ROUTES } from "@/lib/routes";
 import type { DeckListItem } from "@/types";
@@ -31,7 +32,11 @@ export default function DeckCard({
 			<div className="flex justify-between">
 				<CardHeader>
 					<CardTitle>{deck.name}</CardTitle>
-					{/* <CardDescription>{deck.cardCount} cards</CardDescription> */}
+					{deck.description && (
+						<CardDescription className="line-clamp-2">
+							{deck.description}
+						</CardDescription>
+					)}
 				</CardHeader>
 				<DeckDeleteBtn
 					deckId={deck.id}
