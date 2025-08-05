@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
+
 import CardRow from "@/components/sections/deck/components/card-row";
 import {
 	Table,
@@ -25,14 +27,40 @@ export default function CardsTable({
 	isUpdatePending,
 	isDeletePending,
 }: CardsTableProps) {
+	const [activeRowId, setActiveRowId] = useState<string | null>(null);
+	const tableRef = useRef<HTMLDivElement>(null);
+
+	const handleRowToggle = (cardId: string) => {
+		setActiveRowId(activeRowId === cardId ? null : cardId);
+	};
+
+	// Handle click outside to close active row
+	useEffect(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			if (
+				tableRef.current &&
+				!tableRef.current.contains(event.target as Node)
+			) {
+				setActiveRowId(null);
+			}
+		};
+
+		if (activeRowId) {
+			document.addEventListener("mousedown", handleClickOutside);
+		}
+
+		return () => {
+			document.removeEventListener("mousedown", handleClickOutside);
+		};
+	}, [activeRowId]);
+
 	return (
-		<div className="rounded-lg border">
+		<div className="rounded-lg border" ref={tableRef}>
 			<Table>
 				<TableHeader>
 					<TableRow>
-						<TableHead className="w-[45%]">Question</TableHead>
-						<TableHead className="w-[45%]">Answer</TableHead>
-						<TableHead className="text-right">Actions</TableHead>
+						<TableHead className="w-[50%] border-r">Question</TableHead>
+						<TableHead className="w-[50%]">Answer</TableHead>
 					</TableRow>
 				</TableHeader>
 				<TableBody>
@@ -44,6 +72,8 @@ export default function CardsTable({
 							onDelete={onDeleteCard}
 							isUpdatePending={isUpdatePending}
 							isDeletePending={isDeletePending}
+							isActive={activeRowId === card.id}
+							onToggle={() => handleRowToggle(card.id)}
 						/>
 					))}
 				</TableBody>
