@@ -1,17 +1,16 @@
 "use client";
 
 import { useUser } from "@stackframe/stack";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
+import BackButton from "@/components/common/back-button";
 import AiDeckGenerator from "@/components/features/ai/ai-deck-generator";
 import DeckList from "@/components/features/deck/deck-list";
-import ReviewSession from "@/components/features/study/review-session";
 import AppHeader from "@/components/layout/app-header";
 import WelcomeScreen from "@/components/sections/welcome-screen";
 import { Input } from "@/components/ui/input";
 import { useDeckManagement } from "@/hooks/use-deck-management";
 import { useFileImport } from "@/hooks/use-file-import";
-import { useReviewSession } from "@/hooks/use-review-session";
 import { useToast } from "@/hooks/use-toast";
 
 import DashboardLoading from "./dashboard-loading";
@@ -21,14 +20,7 @@ export default function DashboardContent() {
 	const { toast } = useToast();
 	const user = useUser({ or: "redirect" });
 	const deckManagement = useDeckManagement();
-	const reviewSession = useReviewSession();
 	const fileImport = useFileImport(() => deckManagement.fetchDecks());
-
-	useEffect(() => {
-		reviewSession.setOnSessionComplete(() => {
-			deckManagement.refreshDecks();
-		});
-	}, [reviewSession, deckManagement]);
 
 	const handleDeckCreated = () => {
 		setIsAiDeckGeneratorOpen(false);
@@ -48,25 +40,13 @@ export default function DashboardContent() {
 	}
 
 	return (
-		<div className="bg-background min-h-screen font-sans text-foreground">
-			<AppHeader />
+		<div className="min-h-screen bg-background font-sans text-foreground">
+			<AppHeader>
+				<BackButton />
+			</AppHeader>
 
-			<main className="mx-auto p-4 md:p-8 container">
-				{reviewSession.sessionInProgress && reviewSession.activeDeck ? (
-					<ReviewSession
-						activeDeck={reviewSession.activeDeck}
-						currentCard={reviewSession.currentCard}
-						currentCardIndex={reviewSession.currentCardIndex}
-						reviewQueueLength={reviewSession.reviewQueue.length}
-						progressValue={reviewSession.progressValue}
-						isFlipped={reviewSession.isFlipped}
-						pendingReviewsCount={reviewSession.pendingReviews.length}
-						isProcessingReviews={reviewSession.isProcessingReviews}
-						onFlip={reviewSession.handleFlip}
-						onRate={reviewSession.handleRate}
-						onEndSession={reviewSession.handleEndSession}
-					/>
-				) : deckManagement.decks.length === 0 ? (
+			<main className="container mx-auto p-4 md:p-8">
+				{deckManagement.decks.length === 0 ? (
 					<WelcomeScreen
 						onImport={fileImport.handleImportClick}
 						onAiCreate={() => setIsAiDeckGeneratorOpen(true)}
@@ -75,7 +55,6 @@ export default function DashboardContent() {
 					<DeckList
 						decks={deckManagement.decks}
 						resetLoadingDeckId={deckManagement.resetLoadingDeckId}
-						onStartReview={reviewSession.startReviewSession}
 						onDeleteDeck={deckManagement.handleDeleteDeck}
 						onResetDeck={deckManagement.handleResetDeck}
 					/>

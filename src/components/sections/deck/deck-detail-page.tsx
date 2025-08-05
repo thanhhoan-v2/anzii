@@ -4,7 +4,9 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import BackButton from "@/components/common/back-button";
+import DeckResetDialog from "@/components/features/deck/deck-reset-dialog";
 import CardEditor from "@/components/features/study/card-editor";
+import ReviewSession from "@/components/features/study/review-session";
 import AppHeader from "@/components/layout/app-header";
 import {
 	AddCardButton,
@@ -13,14 +15,18 @@ import {
 	DeckNameEditor,
 } from "@/components/sections/deck/components";
 import DeckLoading from "@/components/sections/deck/deck-loading";
+import { Button } from "@/components/ui/button";
 import {
 	Card,
 	CardContent,
 	CardDescription,
+	CardFooter,
 	CardHeader,
 } from "@/components/ui/card";
 import { useAddCard, useDeleteCard, useUpdateCard } from "@/hooks/use-cards";
+import { useDeckManagement } from "@/hooks/use-deck-management";
 import { useDeck, useUpdateDeckName } from "@/hooks/use-decks";
+import { useReviewSession } from "@/hooks/use-review-session";
 import { useToast } from "@/hooks/use-toast";
 import { ROUTES } from "@/lib/routes";
 import type { Card as CardType } from "@/types";
@@ -30,6 +36,8 @@ export default function DeckDetailPage() {
 	const params = useParams();
 	const { deckId } = params;
 	const { toast } = useToast();
+	const deckManagement = useDeckManagement();
+	const reviewSession = useReviewSession();
 
 	const {
 		data: deck,
@@ -47,6 +55,18 @@ export default function DeckDetailPage() {
 	const [cardToEdit, setCardToEdit] = useState<CardType | null>(null);
 	const [showConfirmDeckNameEditDialog, setShowConfirmDeckNameEditDialog] =
 		useState(false);
+
+	// Calculate due count from cards
+	const dueCount =
+		deck?.cards.filter((card) => new Date(card.dueDate) <= new Date()).length ||
+		0;
+
+	// Set up review session completion callback
+	useEffect(() => {
+		reviewSession.setOnSessionComplete(() => {
+			deckManagement.refreshDecks();
+		});
+	}, [reviewSession, deckManagement]);
 
 	// Update local deck name when deck data changes
 	useEffect(() => {
@@ -163,34 +183,77 @@ export default function DeckDetailPage() {
 			</AppHeader>
 
 			<main className="container mx-auto p-4 md:p-8">
-				<Card>
-					<CardHeader>
-						<DeckNameEditor
-							deckName={deckName}
-							isEditing={isEditingName}
-							isPending={updateDeckNameMutation.isPending}
-							onStartEdit={handleDeckNameEditStart}
-							onSave={handleDeckNameSaveClick}
-							onNameChange={handleDeckNameChange}
-						/>
-						<CardDescription>
-							{deck.cards.length} cards in this deck.
-						</CardDescription>
-					</CardHeader>
-					<CardContent>
-						<AddCardButton
-							onClick={handleAddCardClick}
-							isPending={addCardMutation.isPending}
-						/>
-						<CardsTable
-							cards={deck.cards}
-							onEditCard={handleEditCardClick}
-							onDeleteCard={handleDeleteCard}
-							isUpdatePending={updateCardMutation.isPending}
-							isDeletePending={deleteCardMutation.isPending}
-						/>
-					</CardContent>
-				</Card>
+				{reviewSession.sessionInProgress && reviewSession.activeDeck ? (
+					<ReviewSession
+						activeDeck={reviewSession.activeDeck}
+						currentCard={reviewSession.currentCard}
+						currentCardIndex={reviewSession.currentCardIndex}
+						reviewQueueLength={reviewSession.reviewQueue.length}
+						progressValue={reviewSession.progressValue}
+						isFlipped={reviewSession.isFlipped}
+						pendingReviewsCount={reviewSession.pendingReviews.length}
+						isProcessingReviews={reviewSession.isProcessingReviews}
+						onFlip={reviewSession.handleFlip}
+						onRate={reviewSession.handleRate}
+						onEndSession={reviewSession.handleEndSession}
+					/>
+				) : (
+					<Card>
+						<CardHeader className="gap-5">
+							<DeckNameEditor
+								deckName={deckName}
+								isEditing={isEditingName}
+								isPending={updateDeckNameMutation.isPending}
+								onStartEdit={handleDeckNameEditStart}
+								onSave={handleDeckNameSaveClick}
+								onNameChange={handleDeckNameChange}
+							/>
+							<CardDescription>
+								{deck.cards.length} cards in this deck.
+							</CardDescription>
+							<div className="flex flex-wrap items-center justify-between gap-2">
+								<AddCardButton
+									onClick={handleAddCardClick}
+									isPending={addCardMutation.isPending}
+								/>
+								<div className="flex flex-wrap items-center gap-2">
+									<DeckResetDialog
+										deckId={deck.id}
+										deckName={deck.name}
+										cardCount={deck.cards.length}
+										isResetting={deckManagement.resetLoadingDeckId === deck.id}
+										onResetDeck={deckManagement.handleResetDeck}
+									/>
+									<div className="flex items-center gap-2">
+										{dueCount === 0 ? (
+											<Button disabled>Start Review</Button>
+										) : (
+											<Button
+												onClick={() =>
+													reviewSession.startReviewSession(deck.id)
+												}
+											>
+												Start Review
+											</Button>
+										)}
+									</div>
+								</div>
+							</div>
+						</CardHeader>
+						<CardContent>
+							<CardsTable
+								cards={deck.cards}
+								onEditCard={handleEditCardClick}
+								onDeleteCard={handleDeleteCard}
+								isUpdatePending={updateCardMutation.isPending}
+								isDeletePending={deleteCardMutation.isPending}
+							/>
+						</CardContent>
+						<CardFooter className="flex justify-between gap-2">
+							<div className="flex items-center gap-2"></div>
+						</CardFooter>
+					</Card>
+				)}
 			</main>
 
 			<CardEditor

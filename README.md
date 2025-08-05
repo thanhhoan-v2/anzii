@@ -34,6 +34,17 @@
 - 17 curated themes with accessibility compliance
 - Real-time collaboration and deck sharing
 - Offline study mode with sync when online
+- Dedicated review pages for focused study sessions
+
+## Recent Updates
+
+### Embedded Review Sessions (Latest)
+
+- **Dashboard Overview**: Dashboard shows deck cards with links to detail pages and management actions
+- **Deck Detail Pages**: Each deck has a dedicated detail page (`/deck/[deckId]`) with settings, reset, and start review buttons
+- **Embedded Review Sessions**: Review sessions are embedded within the deck detail page - no separate review page needed
+- **Seamless Experience**: Users stay on the same page when starting and completing review sessions
+- **Improved UX**: All deck management and review functionality in one unified interface
 
 ## Project Structure
 

@@ -19,7 +19,7 @@ interface DeckDeleteDialogProps {
 	onDeleteDeck: (deckId: string) => void;
 }
 
-export default function DeckDeleteDialog({
+export default function DeckDeleteBtn({
 	deckId,
 	deckName,
 	onDeleteDeck,

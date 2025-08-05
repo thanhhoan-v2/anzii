@@ -1,6 +1,6 @@
-import { Settings } from "lucide-react";
+import { ExternalLinkIcon } from "lucide-react";
 
-import { Button, ButtonWithLink } from "@/components/ui/button";
+import { ButtonWithLink } from "@/components/ui/button";
 import {
 	Card as ShadCard,
 	CardContent,
@@ -12,13 +12,11 @@ import {
 import { ROUTES } from "@/lib/routes";
 import type { DeckListItem } from "@/types";
 
-import DeckDeleteDialog from "./deck-delete-dialog";
-import DeckResetDialog from "./deck-reset-dialog";
+import DeckDeleteBtn from "./deck-delete-dialog";
 
 interface DeckCardProps {
 	deck: DeckListItem;
 	isResetting: boolean;
-	onStartReview: (deckId: string) => void;
 	onDeleteDeck: (deckId: string) => void;
 	onResetDeck: (deckId: string) => void;
 }
@@ -26,7 +24,6 @@ interface DeckCardProps {
 export default function DeckCard({
 	deck,
 	isResetting,
-	onStartReview,
 	onDeleteDeck,
 	onResetDeck,
 }: DeckCardProps) {
@@ -37,7 +34,7 @@ export default function DeckCard({
 					<CardTitle>{deck.name}</CardTitle>
 					<CardDescription>{deck.cardCount} cards</CardDescription>
 				</CardHeader>
-				<DeckDeleteDialog
+				<DeckDeleteBtn
 					deckId={deck.id}
 					deckName={deck.name}
 					onDeleteDeck={onDeleteDeck}
@@ -53,27 +50,10 @@ export default function DeckCard({
 				</div>
 				<p className="text-sm text-muted-foreground">for review today</p>
 			</CardContent>
-			<CardFooter className="flex justify-between gap-2">
-				<div className="flex gap-2">
-					<ButtonWithLink href={ROUTES.DECK(deck.id)}>
-						<Settings />
-					</ButtonWithLink>
-				</div>
-				<div className="flex items-center gap-2">
-					<DeckResetDialog
-						deckId={deck.id}
-						deckName={deck.name}
-						cardCount={deck.cardCount}
-						isResetting={isResetting}
-						onResetDeck={onResetDeck}
-					/>
-					<Button
-						onClick={() => onStartReview(deck.id)}
-						disabled={deck.dueCount === 0}
-					>
-						Start
-					</Button>
-				</div>
+			<CardFooter className="flex justify-end">
+				<ButtonWithLink className="w-[130px]" href={ROUTES.DECK(deck.id)}>
+					View Deck <ExternalLinkIcon />
+				</ButtonWithLink>
 			</CardFooter>
 		</ShadCard>
 	);

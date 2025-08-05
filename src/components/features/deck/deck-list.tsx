@@ -5,7 +5,6 @@ import DeckCard from "./deck-card";
 interface DeckListProps {
 	decks: DeckListItem[];
 	resetLoadingDeckId?: string | null;
-	onStartReview: (deckId: string) => void;
 	onDeleteDeck: (deckId: string) => void;
 	onResetDeck: (deckId: string) => void;
 }
@@ -13,7 +12,6 @@ interface DeckListProps {
 export default function DeckList({
 	decks,
 	resetLoadingDeckId,
-	onStartReview,
 	onDeleteDeck,
 	onResetDeck,
 }: DeckListProps) {
@@ -27,7 +25,6 @@ export default function DeckList({
 						key={deck.id}
 						deck={deck}
 						isResetting={isResetting}
-						onStartReview={onStartReview}
 						onDeleteDeck={onDeleteDeck}
 						onResetDeck={onResetDeck}
 					/>
