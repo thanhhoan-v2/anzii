@@ -10,6 +10,8 @@
   </tr>
 </table>
 
+[![GitBook](https://img.shields.io/static/v1?message=See%20Anzii's%20documentation%20on%20GitBook&logo=gitbook&logoColor=ffffff&label=%20&labelColor=5c5c5c&color=white)](https://anzii.gitbook.io/docs)
+
 > "Memory is the treasury and guardian of all things." — Cicero
 
 [![Live Application](https://img.shields.io/badge/Live-App-green)](https://anzii.space)
