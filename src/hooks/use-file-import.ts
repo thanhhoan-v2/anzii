@@ -5,7 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import { createDeckFromImport } from "@/lib/actions";
 
 interface UseFileImportReturn {
-	fileInputRef: React.RefObject<HTMLInputElement>;
+	fileInputRef: React.RefObject<HTMLInputElement | null>;
 	handleImportClick: () => void;
 	handleFileChange: (
 		event: React.ChangeEvent<HTMLInputElement>

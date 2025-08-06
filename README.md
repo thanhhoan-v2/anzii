@@ -41,7 +41,15 @@
 
 ## Recent Updates
 
-### Unlimited Review Access (Latest)
+### Next.js 15 & React 19 Upgrade (Latest)
+
+- **Latest Framework**: Upgraded to Next.js 15.4.5 and React 19.1.1 for improved performance and features
+- **Enhanced TypeScript Support**: Updated TypeScript configurations for better type safety
+- **Updated Dependencies**: Upgraded key dependencies including react-day-picker, next-themes, and testing libraries
+- **Improved Build Performance**: Faster compilation and better optimization with the latest Next.js features
+- **Better Developer Experience**: Enhanced development tools and debugging capabilities
+
+### Unlimited Review Access
 
 - **No More Limited Trials**: Removed the "due today" filtering - all cards are now available for review at any time
 - **Seamless Review Experience**: Users can start reviewing any deck without needing to click "restart" to access all cards
@@ -58,7 +66,7 @@
 
 ## Project Structure
 
-- `src/app/` – Next.js 15 app router pages and API routes
+- `src/app/` – Next.js 15.4.5 app router pages and API routes
 - `src/components/` – Reusable UI components and feature modules
 - `src/db/` – Database schema, migrations, and seed data (Drizzle ORM)
 - `src/ai/` – AI integration flows for flashcard generation (Google Gemini)

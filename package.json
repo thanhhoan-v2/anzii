@@ -30,7 +30,6 @@
 		"prepare": "husky"
 	},
 	"dependencies": {
-		"ai": "^5.0.2",
 		"@ai-sdk/google": "^2.0.1",
 		"@ai-sdk/react": "^2.0.2",
 		"@gsap/react": "^2.1.2",
@@ -63,6 +62,7 @@
 		"@tanstack/react-query-devtools": "^5.81.5",
 		"@vercel/analytics": "^1.5.0",
 		"@vercel/speed-insights": "^1.2.0",
+		"ai": "^5.0.2",
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
 		"date-fns": "^3.6.0",
@@ -71,13 +71,13 @@
 		"gsap": "^3.13.0",
 		"lucide-react": "^0.475.0",
 		"motion": "^12.19.2",
-		"next": "15.3.3",
-		"next-themes": "^0.3.0",
+		"next": "^15.4.5",
+		"next-themes": "^0.4.6",
 		"patch-package": "^8.0.0",
 		"pg": "^8.11.5",
-		"react": "^18.3.1",
-		"react-day-picker": "^8.10.1",
-		"react-dom": "^18.3.1",
+		"react": "^19.1.1",
+		"react-day-picker": "^9.8.1",
+		"react-dom": "^19.1.1",
 		"react-error-boundary": "^6.0.0",
 		"react-hook-form": "^7.54.2",
 		"react-markdown": "^9.0.1",
@@ -92,20 +92,21 @@
 	"devDependencies": {
 		"@playwright/test": "^1.53.2",
 		"@tailwindcss/typography": "^0.5.13",
-		"@testing-library/jest-dom": "^6.6.3",
+		"@testing-library/dom": "^10.4.1",
+		"@testing-library/jest-dom": "^6.6.4",
 		"@testing-library/react": "^16.3.0",
 		"@testing-library/user-event": "^14.6.1",
 		"@types/jest": "^30.0.0",
 		"@types/node": "^20",
 		"@types/pg": "^8.11.6",
-		"@types/react": "^18",
-		"@types/react-dom": "^18",
+		"@types/react": "19.1.9",
+		"@types/react-dom": "19.1.7",
 		"@typescript-eslint/eslint-plugin": "^8.17.0",
 		"@typescript-eslint/parser": "^8.17.0",
 		"dotenv": "^17.0.1",
 		"drizzle-kit": "^0.21.4",
 		"eslint": "^8.57.1",
-		"eslint-config-next": "^15.3.3",
+		"eslint-config-next": "15.4.5",
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-import": "^2.31.0",
 		"eslint-plugin-next": "^0.0.0",
@@ -133,5 +134,9 @@
 		"*.{json,css,md}": [
 			"prettier --write"
 		]
+	},
+	"overrides": {
+		"@types/react": "19.1.9",
+		"@types/react-dom": "19.1.7"
 	}
 }

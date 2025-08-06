@@ -50,7 +50,7 @@ export default function LandingPage() {
 			<AppHeader />
 
 			<Suspense fallback={<LoadingSkeleton variant="hero" />}>
-				<HeroSection onGetStarted={handleGetStarted} />
+				<HeroSection />
 			</Suspense>
 
 			<Suspense fallback={<LoadingSkeleton variant="features" />}>
