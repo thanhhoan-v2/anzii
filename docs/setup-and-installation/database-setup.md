@@ -1,3 +1,20 @@
+---
+layout:
+  width: wide
+  title:
+    visible: true
+  description:
+    visible: true
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+  metadata:
+    visible: true
+---
+
 # Database Setup
 
 Set up PostgreSQL database and configure Drizzle ORM for Anzii.
@@ -6,9 +23,9 @@ Set up PostgreSQL database and configure Drizzle ORM for Anzii.
 
 Anzii uses:
 
-- **PostgreSQL** - Primary database
-- **Drizzle ORM** - Type-safe database operations
-- **Drizzle Kit** - Migration and schema management
+* **PostgreSQL** - Primary database
+* **Drizzle ORM** - Type-safe database operations
+* **Drizzle Kit** - Migration and schema management
 
 ## 📋 Prerequisites
 
@@ -32,8 +49,8 @@ sudo systemctl enable postgresql
 
 **Windows**
 
-- Download from [PostgreSQL Downloads](https://www.postgresql.org/download/windows/)
-- Install with default settings
+* Download from [PostgreSQL Downloads](https://www.postgresql.org/download/windows/)
+* Install with default settings
 
 **Docker (Alternative)**
 
@@ -186,10 +203,10 @@ pnpm db:studio
 
 Features:
 
-- Browse tables and data
-- Execute SQL queries
-- View relationships
-- Export data
+* Browse tables and data
+* Execute SQL queries
+* View relationships
+* Export data
 
 ### Migration Commands
 
@@ -362,11 +379,11 @@ seed().catch(console.error);
 
 ## 📚 Related Documentation
 
-- **[Environment Setup](environment-setup.md)** - Configure database connection
-- **[Quick Start](quick-start.md)** - Get up and running quickly
-- **[Development Workflow](development-workflow.md)** - Database development practices
-- **[Deployment Guide](deployment.md)** - Production database setup
+* [**Environment Setup**](environment-setup.md) - Configure database connection
+* [**Quick Start**](quick-start.md) - Get up and running quickly
+* [**Development Workflow**](../architecture-and-development/development-workflow.md) - Database development practices
+* [**Deployment Guide**](../deployment-and-support/deployment.md) - Production database setup
 
----
+***
 
-**Need help with database operations?** Check the [Debugging Guide](debugging.md) for troubleshooting database issues!
+**Need help with database operations?** Check the [Debugging Guide](../deployment-and-support/debugging.md) for troubleshooting database issues!

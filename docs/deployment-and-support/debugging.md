@@ -1,3 +1,20 @@
+---
+layout:
+  width: wide
+  title:
+    visible: true
+  description:
+    visible: true
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+  metadata:
+    visible: true
+---
+
 # Debugging Guide
 
 Troubleshoot common issues and debug problems in Anzii development and production.
@@ -596,11 +613,11 @@ npm run dev
 
 ## 📚 Related Documentation
 
-- **[Environment Setup](environment-setup.md)** - Configure development environment
-- **[Database Setup](database-setup.md)** - Database troubleshooting
-- **[Deployment Guide](deployment.md)** - Production debugging
-- **[Development Workflow](development-workflow.md)** - Testing and debugging
+* [**Environment Setup**](../setup-and-installation/environment-setup.md) - Configure development environment
+* [**Database Setup**](../setup-and-installation/database-setup.md) - Database troubleshooting
+* [**Deployment Guide**](deployment.md) - Production debugging
+* [**Development Workflow**](../architecture-and-development/development-workflow.md) - Testing and debugging
 
----
+***
 
 **Need more help?** Check out the [Contributing Guide](contributing.md) for how to report issues and contribute fixes!

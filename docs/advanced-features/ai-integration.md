@@ -1,3 +1,20 @@
+---
+layout:
+  width: wide
+  title:
+    visible: true
+  description:
+    visible: true
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+  metadata:
+    visible: true
+---
+
 # AI Integration
 
 Work with Anzii's AI-powered features for content generation and intelligent learning.
@@ -6,10 +23,10 @@ Work with Anzii's AI-powered features for content generation and intelligent lea
 
 Anzii uses Google Gemini API for:
 
-- **Flashcard Generation** - Convert any content into structured flashcards
-- **Deck Descriptions** - Generate contextual descriptions for decks
-- **Question Suggestions** - Suggest additional questions based on content
-- **Topic Summarization** - Create concise deck names and summaries
+* **Flashcard Generation** - Convert any content into structured flashcards
+* **Deck Descriptions** - Generate contextual descriptions for decks
+* **Question Suggestions** - Suggest additional questions based on content
+* **Topic Summarization** - Create concise deck names and summaries
 
 ## 🔧 AI Configuration
 
@@ -580,11 +597,11 @@ export function trackAIUsage(operation: string, success: boolean) {
 
 ## 📚 Related Documentation
 
-- **[Project Architecture](architecture.md)** - Understanding the tech stack
-- **[State Management](state-management.md)** - Managing AI state
-- **[UI Development](ui-development.md)** - Building AI components
-- **[Development Workflow](development-workflow.md)** - Testing AI features
+* [**Project Architecture**](../architecture-and-development/architecture.md) - Understanding the tech stack
+* [**State Management**](state-management.md) - Managing AI state
+* [**UI Development**](../architecture-and-development/ui-development.md) - Building AI components
+* [**Development Workflow**](../architecture-and-development/development-workflow.md) - Testing AI features
 
----
+***
 
 **Ready to build AI features?** Check out the [State Management](state-management.md) guide to learn about managing AI state effectively!

@@ -1,3 +1,20 @@
+---
+layout:
+  width: wide
+  title:
+    visible: true
+  description:
+    visible: true
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+  metadata:
+    visible: true
+---
+
 # Deployment Guide
 
 Deploy Anzii to production with proper configuration and best practices.
@@ -8,67 +25,65 @@ Deploy Anzii to production with proper configuration and best practices.
 
 **Why Vercel?**
 
-- Optimized for Next.js applications
-- Automatic deployments from Git
-- Built-in analytics and monitoring
-- Edge functions and serverless support
+* Optimized for Next.js applications
+* Automatic deployments from Git
+* Built-in analytics and monitoring
+* Edge functions and serverless support
 
 **Setup Steps:**
 
-1. **Connect Repository**
+1.  **Connect Repository**
 
-   ```bash
-   # Install Vercel CLI
-   npm i -g vercel
+    ```bash
+    # Install Vercel CLI
+    npm i -g vercel
 
-   # Login to Vercel
-   vercel login
+    # Login to Vercel
+    vercel login
 
-   # Deploy from project directory
-   vercel
-   ```
+    # Deploy from project directory
+    vercel
+    ```
+2.  **Configure Environment Variables**
 
-2. **Configure Environment Variables**
-   - Go to Vercel Dashboard → Project Settings → Environment Variables
-   - Add all required environment variables:
+    * Go to Vercel Dashboard → Project Settings → Environment Variables
+    * Add all required environment variables:
 
-   ```env
-   DATABASE_URL="your-production-database-url"
-   GEMINI_API_KEY="your-production-gemini-key"
-   NEXT_PUBLIC_STACK_PROJECT_ID="your-stack-project-id"
-   NEXT_PUBLIC_STACK_PUBLISHABLE_CLIENT_KEY="your-stack-client-key"
-   STACK_SECRET_SERVER_KEY="your-stack-server-key"
-   NEXT_PUBLIC_VERCEL_ANALYTICS_ID="your-analytics-id"
-   ```
-
+    ```env
+    DATABASE_URL="your-production-database-url"
+    GEMINI_API_KEY="your-production-gemini-key"
+    NEXT_PUBLIC_STACK_PROJECT_ID="your-stack-project-id"
+    NEXT_PUBLIC_STACK_PUBLISHABLE_CLIENT_KEY="your-stack-client-key"
+    STACK_SECRET_SERVER_KEY="your-stack-server-key"
+    NEXT_PUBLIC_VERCEL_ANALYTICS_ID="your-analytics-id"
+    ```
 3. **Configure Domains**
-   - Go to Vercel Dashboard → Project Settings → Domains
-   - Add your custom domain
-   - Configure DNS records
+   * Go to Vercel Dashboard → Project Settings → Domains
+   * Add your custom domain
+   * Configure DNS records
 
 ### 2. Railway
 
 **Setup Steps:**
 
-1. **Connect Repository**
+1.  **Connect Repository**
 
-   ```bash
-   # Install Railway CLI
-   npm i -g @railway/cli
+    ```bash
+    # Install Railway CLI
+    npm i -g @railway/cli
 
-   # Login to Railway
-   railway login
+    # Login to Railway
+    railway login
 
-   # Link project
-   railway link
+    # Link project
+    railway link
 
-   # Deploy
-   railway up
-   ```
-
+    # Deploy
+    railway up
+    ```
 2. **Environment Variables**
-   - Go to Railway Dashboard → Project → Variables
-   - Add all required environment variables
+   * Go to Railway Dashboard → Project → Variables
+   * Add all required environment variables
 
 ### 3. Docker Deployment
 
@@ -169,56 +184,54 @@ volumes:
 **Setup Steps:**
 
 1. **Create Neon Project**
-   - Visit [neon.tech](https://neon.tech)
-   - Create a new project
-   - Copy the connection string
+   * Visit [neon.tech](https://neon.tech)
+   * Create a new project
+   * Copy the connection string
+2.  **Configure Environment**
 
-2. **Configure Environment**
+    ```env
+    DATABASE_URL="postgresql://user:password@ep-xxx-xxx-xxx.region.aws.neon.tech/anzii?sslmode=require"
+    ```
+3.  **Run Migrations**
 
-   ```env
-   DATABASE_URL="postgresql://user:password@ep-xxx-xxx-xxx.region.aws.neon.tech/anzii?sslmode=require"
-   ```
-
-3. **Run Migrations**
-   ```bash
-   # Run migrations on production database
-   DATABASE_URL="your-production-db-url" pnpm db:migrate
-   ```
+    ```bash
+    # Run migrations on production database
+    DATABASE_URL="your-production-db-url" pnpm db:migrate
+    ```
 
 ### 2. Supabase
 
 **Setup Steps:**
 
 1. **Create Supabase Project**
-   - Visit [supabase.com](https://supabase.com)
-   - Create a new project
-   - Get the connection string
+   * Visit [supabase.com](https://supabase.com)
+   * Create a new project
+   * Get the connection string
+2.  **Configure Environment**
 
-2. **Configure Environment**
-   ```env
-   DATABASE_URL="postgresql://postgres:[YOUR-PASSWORD]@db.[YOUR-PROJECT-REF].supabase.co:5432/postgres"
-   ```
+    ```env
+    DATABASE_URL="postgresql://postgres:[YOUR-PASSWORD]@db.[YOUR-PROJECT-REF].supabase.co:5432/postgres"
+    ```
 
 ### 3. AWS RDS
 
 **Setup Steps:**
 
-1. **Create RDS Instance**
+1.  **Create RDS Instance**
 
-   ```bash
-   # Using AWS CLI
-   aws rds create-db-instance \
-     --db-instance-identifier anzii-db \
-     --db-instance-class db.t3.micro \
-     --engine postgres \
-     --master-username anzii_user \
-     --master-user-password your_secure_password \
-     --allocated-storage 20
-   ```
-
+    ```bash
+    # Using AWS CLI
+    aws rds create-db-instance \
+      --db-instance-identifier anzii-db \
+      --db-instance-class db.t3.micro \
+      --engine postgres \
+      --master-username anzii_user \
+      --master-user-password your_secure_password \
+      --allocated-storage 20
+    ```
 2. **Configure Security Groups**
-   - Allow inbound traffic on port 5432
-   - Restrict to your application's IP
+   * Allow inbound traffic on port 5432
+   * Restrict to your application's IP
 
 ## 🔧 Production Configuration
 
@@ -478,60 +491,55 @@ jobs:
 
 **GitHub Secrets:**
 
-- `DATABASE_URL`
-- `GEMINI_API_KEY`
-- `NEXT_PUBLIC_STACK_PROJECT_ID`
-- `NEXT_PUBLIC_STACK_PUBLISHABLE_CLIENT_KEY`
-- `STACK_SECRET_SERVER_KEY`
-- `VERCEL_TOKEN`
-- `VERCEL_ORG_ID`
-- `VERCEL_PROJECT_ID`
+* `DATABASE_URL`
+* `GEMINI_API_KEY`
+* `NEXT_PUBLIC_STACK_PROJECT_ID`
+* `NEXT_PUBLIC_STACK_PUBLISHABLE_CLIENT_KEY`
+* `STACK_SECRET_SERVER_KEY`
+* `VERCEL_TOKEN`
+* `VERCEL_ORG_ID`
+* `VERCEL_PROJECT_ID`
 
 ## 🚀 Deployment Checklist
 
 ### Pre-Deployment
 
-- [ ] **Environment Variables**
-  - [ ] Database URL configured
-  - [ ] AI API key set
-  - [ ] Authentication keys configured
-  - [ ] Analytics ID set
-
-- [ ] **Database**
-  - [ ] Production database created
-  - [ ] Migrations run successfully
-  - [ ] Seed data added (if needed)
-
-- [ ] **Security**
-  - [ ] HTTPS enabled
-  - [ ] Security headers configured
-  - [ ] Rate limiting implemented
-  - [ ] CORS configured
-
-- [ ] **Performance**
-  - [ ] Images optimized
-  - [ ] Bundle size analyzed
-  - [ ] Caching configured
-  - [ ] CDN configured
+* [ ] **Environment Variables**
+  * [ ] Database URL configured
+  * [ ] AI API key set
+  * [ ] Authentication keys configured
+  * [ ] Analytics ID set
+* [ ] **Database**
+  * [ ] Production database created
+  * [ ] Migrations run successfully
+  * [ ] Seed data added (if needed)
+* [ ] **Security**
+  * [ ] HTTPS enabled
+  * [ ] Security headers configured
+  * [ ] Rate limiting implemented
+  * [ ] CORS configured
+* [ ] **Performance**
+  * [ ] Images optimized
+  * [ ] Bundle size analyzed
+  * [ ] Caching configured
+  * [ ] CDN configured
 
 ### Post-Deployment
 
-- [ ] **Monitoring**
-  - [ ] Error tracking enabled
-  - [ ] Performance monitoring active
-  - [ ] Analytics configured
-  - [ ] Uptime monitoring set
-
-- [ ] **Testing**
-  - [ ] All features working
-  - [ ] Authentication flows tested
-  - [ ] AI features working
-  - [ ] Database operations successful
-
-- [ ] **Documentation**
-  - [ ] Deployment guide updated
-  - [ ] Environment variables documented
-  - [ ] Troubleshooting guide created
+* [ ] **Monitoring**
+  * [ ] Error tracking enabled
+  * [ ] Performance monitoring active
+  * [ ] Analytics configured
+  * [ ] Uptime monitoring set
+* [ ] **Testing**
+  * [ ] All features working
+  * [ ] Authentication flows tested
+  * [ ] AI features working
+  * [ ] Database operations successful
+* [ ] **Documentation**
+  * [ ] Deployment guide updated
+  * [ ] Environment variables documented
+  * [ ] Troubleshooting guide created
 
 ## 🐛 Troubleshooting
 
@@ -574,11 +582,11 @@ echo $GEMINI_API_KEY
 
 ## 📚 Related Documentation
 
-- **[Environment Setup](environment-setup.md)** - Configure development environment
-- **[Database Setup](database-setup.md)** - Production database configuration
-- **[Authentication](authentication.md)** - Production auth setup
-- **[Debugging Guide](debugging.md)** - Troubleshooting deployment issues
+* [**Environment Setup**](../setup-and-installation/environment-setup.md) - Configure development environment
+* [**Database Setup**](../setup-and-installation/database-setup.md) - Production database configuration
+* [**Authentication**](../advanced-features/authentication.md) - Production auth setup
+* [**Debugging Guide**](debugging.md) - Troubleshooting deployment issues
 
----
+***
 
 **Ready to deploy?** Check out the [Debugging Guide](debugging.md) for troubleshooting production issues!

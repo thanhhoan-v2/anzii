@@ -1,3 +1,20 @@
+---
+layout:
+  width: wide
+  title:
+    visible: true
+  description:
+    visible: true
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+  metadata:
+    visible: true
+---
+
 # Contributing Guide
 
 Learn how to contribute to Anzii and help improve the AI-powered learning platform.
@@ -96,10 +113,10 @@ git push origin feature/amazing-feature
 
 **TypeScript**
 
-- Use strict TypeScript configuration
-- Add proper type definitions
-- Avoid `any` type when possible
-- Use interfaces for object shapes
+* Use strict TypeScript configuration
+* Add proper type definitions
+* Avoid `any` type when possible
+* Use interfaces for object shapes
 
 **React Components**
 
@@ -161,10 +178,10 @@ test("user can use my feature", async ({ page }) => {
 
 **Test Coverage**
 
-- Aim for 80%+ coverage on new code
-- Test critical user flows
-- Include error scenarios
-- Test accessibility features
+* Aim for 80%+ coverage on new code
+* Test critical user flows
+* Include error scenarios
+* Test accessibility features
 
 ### 3. Documentation
 
@@ -187,10 +204,10 @@ export async function generateFlashcards(
 
 **README Updates**
 
-- Update README.md for new features
-- Add usage examples
-- Update installation instructions
-- Document breaking changes
+* Update README.md for new features
+* Add usage examples
+* Update installation instructions
+* Document breaking changes
 
 **API Documentation**
 
@@ -212,24 +229,24 @@ export async function generateFlashcards(
 
 **UI Components**
 
-- Build accessible components
-- Follow design system guidelines
-- Add proper ARIA labels
-- Implement responsive design
+* Build accessible components
+* Follow design system guidelines
+* Add proper ARIA labels
+* Implement responsive design
 
 **State Management**
 
-- Use React Query for server state
-- Use Zustand for client state
-- Implement proper error handling
-- Add loading states
+* Use React Query for server state
+* Use Zustand for client state
+* Implement proper error handling
+* Add loading states
 
 **Performance**
 
-- Optimize bundle size
-- Implement code splitting
-- Add proper caching
-- Monitor Core Web Vitals
+* Optimize bundle size
+* Implement code splitting
+* Add proper caching
+* Monitor Core Web Vitals
 
 ### 2. Backend Development
 
@@ -263,10 +280,10 @@ export async function POST(request: NextRequest) {
 
 **Database Operations**
 
-- Write efficient queries
-- Add proper indexes
-- Implement data validation
-- Handle database errors
+* Write efficient queries
+* Add proper indexes
+* Implement data validation
+* Handle database errors
 
 ### 3. AI Integration
 
@@ -287,10 +304,10 @@ export async function newAIFeature(input: string) {
 
 **Error Handling**
 
-- Add rate limiting
-- Implement retry logic
-- Cache AI responses
-- Handle API failures gracefully
+* Add rate limiting
+* Implement retry logic
+* Cache AI responses
+* Handle API failures gracefully
 
 ### 4. Testing
 
@@ -312,26 +329,26 @@ test("fetches decks successfully", async () => {
 
 **Integration Tests**
 
-- Test API endpoints
-- Test database operations
-- Test authentication flows
-- Test AI integration
+* Test API endpoints
+* Test database operations
+* Test authentication flows
+* Test AI integration
 
 ### 5. Documentation
 
 **Technical Documentation**
 
-- Update architecture docs
-- Document API changes
-- Add code examples
-- Explain complex logic
+* Update architecture docs
+* Document API changes
+* Add code examples
+* Explain complex logic
 
 **User Documentation**
 
-- Update user guides
-- Add feature tutorials
-- Document best practices
-- Create troubleshooting guides
+* Update user guides
+* Add feature tutorials
+* Document best practices
+* Create troubleshooting guides
 
 ## 🔄 Pull Request Process
 
@@ -376,35 +393,35 @@ Any additional context or notes
 
 **Code Review Checklist**
 
-- [ ] Code follows project standards
-- [ ] Tests are comprehensive
-- [ ] Documentation is updated
-- [ ] No security vulnerabilities
-- [ ] Performance impact considered
-- [ ] Accessibility requirements met
+* [ ] Code follows project standards
+* [ ] Tests are comprehensive
+* [ ] Documentation is updated
+* [ ] No security vulnerabilities
+* [ ] Performance impact considered
+* [ ] Accessibility requirements met
 
 **Review Guidelines**
 
-- Be constructive and respectful
-- Focus on code quality and functionality
-- Suggest improvements when possible
-- Test the changes locally if needed
+* Be constructive and respectful
+* Focus on code quality and functionality
+* Suggest improvements when possible
+* Test the changes locally if needed
 
 ### 3. Merge Process
 
 **Before Merging**
 
-- All tests must pass
-- Code review approved
-- Documentation updated
-- No conflicts with main branch
+* All tests must pass
+* Code review approved
+* Documentation updated
+* No conflicts with main branch
 
 **After Merging**
 
-- Delete feature branch
-- Update release notes
-- Deploy to staging (if applicable)
-- Monitor for issues
+* Delete feature branch
+* Update release notes
+* Deploy to staging (if applicable)
+* Monitor for issues
 
 ## 🐛 Bug Reports
 
@@ -443,13 +460,13 @@ Screenshots, logs, or other relevant information
 
 ### 2. Issue Labels
 
-- `bug` - Something isn't working
-- `enhancement` - New feature or request
-- `documentation` - Improvements to documentation
-- `good first issue` - Good for newcomers
-- `help wanted` - Extra attention is needed
-- `priority: high` - High priority issue
-- `priority: low` - Low priority issue
+* `bug` - Something isn't working
+* `enhancement` - New feature or request
+* `documentation` - Improvements to documentation
+* `good first issue` - Good for newcomers
+* `help wanted` - Extra attention is needed
+* `priority: high` - High priority issue
+* `priority: low` - Low priority issue
 
 ## 🚀 Feature Requests
 
@@ -480,48 +497,45 @@ Screenshots, mockups, or examples
 ### 2. Feature Development Process
 
 1. **Discussion**
-   - Create issue for discussion
-   - Gather feedback from community
-   - Define requirements clearly
-
+   * Create issue for discussion
+   * Gather feedback from community
+   * Define requirements clearly
 2. **Planning**
-   - Break down into smaller tasks
-   - Estimate effort required
-   - Plan testing strategy
-
+   * Break down into smaller tasks
+   * Estimate effort required
+   * Plan testing strategy
 3. **Implementation**
-   - Follow development workflow
-   - Write comprehensive tests
-   - Update documentation
-
+   * Follow development workflow
+   * Write comprehensive tests
+   * Update documentation
 4. **Review**
-   - Code review process
-   - User testing (if applicable)
-   - Performance testing
+   * Code review process
+   * User testing (if applicable)
+   * Performance testing
 
 ## 📚 Learning Resources
 
 ### 1. Project-Specific
 
-- **[Getting Started](getting-started.md)** - Setup development environment
-- **[Architecture](architecture.md)** - Understand the codebase
-- **[Development Workflow](development-workflow.md)** - Development practices
-- **[Testing Guide](testing.md)** - Testing strategies
+* [**Getting Started**](../) - Setup development environment
+* [**Architecture**](../architecture-and-development/architecture.md) - Understand the codebase
+* [**Development Workflow**](../architecture-and-development/development-workflow.md) - Development practices
+* [**Testing Guide**](../testing.md) - Testing strategies
 
 ### 2. Technology Stack
 
-- [Next.js Documentation](https://nextjs.org/docs)
-- [React Documentation](https://react.dev)
-- [TypeScript Handbook](https://www.typescriptlang.org/docs)
-- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
-- [TanStack Query Documentation](https://tanstack.com/query/latest)
+* [Next.js Documentation](https://nextjs.org/docs)
+* [React Documentation](https://react.dev)
+* [TypeScript Handbook](https://www.typescriptlang.org/docs)
+* [Tailwind CSS Documentation](https://tailwindcss.com/docs)
+* [TanStack Query Documentation](https://tanstack.com/query/latest)
 
 ### 3. Best Practices
 
-- [React Best Practices](https://react.dev/learn)
-- [TypeScript Best Practices](https://www.typescriptlang.org/docs/handbook/intro.html)
-- [Testing Best Practices](https://testing-library.com/docs/guiding-principles)
-- [Accessibility Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)
+* [React Best Practices](https://react.dev/learn)
+* [TypeScript Best Practices](https://www.typescriptlang.org/docs/handbook/intro.html)
+* [Testing Best Practices](https://testing-library.com/docs/guiding-principles)
+* [Accessibility Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)
 
 ## 🎉 Recognition
 
@@ -529,42 +543,42 @@ Screenshots, mockups, or examples
 
 All contributors are recognized in:
 
-- GitHub contributors list
-- Project README
-- Release notes
-- Contributor hall of fame
+* GitHub contributors list
+* Project README
+* Release notes
+* Contributor hall of fame
 
 ### 2. Contribution Levels
 
-- **First Time Contributor** - First PR merged
-- **Regular Contributor** - Multiple PRs merged
-- **Core Contributor** - Significant contributions
-- **Maintainer** - Project maintenance responsibilities
+* **First Time Contributor** - First PR merged
+* **Regular Contributor** - Multiple PRs merged
+* **Core Contributor** - Significant contributions
+* **Maintainer** - Project maintenance responsibilities
 
 ### 3. Rewards
 
-- Recognition in project documentation
-- Contributor badges
-- Special mentions in releases
-- Invitation to maintainer team (for significant contributions)
+* Recognition in project documentation
+* Contributor badges
+* Special mentions in releases
+* Invitation to maintainer team (for significant contributions)
 
 ## 📞 Getting Help
 
 ### 1. Communication Channels
 
-- **GitHub Issues** - Bug reports and feature requests
-- **GitHub Discussions** - Questions and general discussion
-- **Discord/Slack** - Real-time chat (if available)
-- **Email** - Direct contact for sensitive issues
+* **GitHub Issues** - Bug reports and feature requests
+* **GitHub Discussions** - Questions and general discussion
+* **Discord/Slack** - Real-time chat (if available)
+* **Email** - Direct contact for sensitive issues
 
 ### 2. Asking Questions
 
 **Before Asking**
 
-- Check existing issues and discussions
-- Read the documentation
-- Try to reproduce the issue
-- Provide clear, detailed information
+* Check existing issues and discussions
+* Read the documentation
+* Try to reproduce the issue
+* Provide clear, detailed information
 
 **Question Template**
 
@@ -588,11 +602,11 @@ Any other relevant information
 
 ## 📚 Related Documentation
 
-- **[Getting Started](getting-started.md)** - Setup development environment
-- **[Development Workflow](development-workflow.md)** - Development practices
-- **[Testing Guide](testing.md)** - Testing strategies
-- **[Debugging Guide](debugging.md)** - Troubleshooting issues
+* [**Getting Started**](../) - Setup development environment
+* [**Development Workflow**](../architecture-and-development/development-workflow.md) - Development practices
+* [**Testing Guide**](../testing.md) - Testing strategies
+* [**Debugging Guide**](debugging.md) - Troubleshooting issues
 
----
+***
 
-**Ready to contribute?** Start with the [Getting Started](getting-started.md) guide to set up your development environment!
+**Ready to contribute?** Start with the [Getting Started](../) guide to set up your development environment!

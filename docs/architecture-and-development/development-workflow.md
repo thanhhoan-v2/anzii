@@ -1,3 +1,20 @@
+---
+layout:
+  width: wide
+  title:
+    visible: true
+  description:
+    visible: true
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+  metadata:
+    visible: true
+---
+
 # Development Workflow
 
 Learn about development scripts, testing strategies, and best practices for contributing to Anzii.
@@ -458,12 +475,12 @@ npx next dev --inspect
 
 ## 📚 Related Documentation
 
-- **[Quick Start](quick-start.md)** - Get up and running quickly
-- **[Project Architecture](architecture.md)** - Understanding the tech stack
-- **[UI Development](ui-development.md)** - Building with the design system
-- **[Database Setup](database-setup.md)** - Database development practices
-- **[Contributing Guide](contributing.md)** - How to contribute code
+* [**Quick Start**](../setup-and-installation/quick-start.md) - Get up and running quickly
+* [**Project Architecture**](architecture.md) - Understanding the tech stack
+* [**UI Development**](ui-development.md) - Building with the design system
+* [**Database Setup**](../setup-and-installation/database-setup.md) - Database development practices
+* [**Contributing Guide**](../deployment-and-support/contributing.md) - How to contribute code
 
----
+***
 
 **Ready to start coding?** Check out the [UI Development](ui-development.md) guide to learn about building components with the design system!

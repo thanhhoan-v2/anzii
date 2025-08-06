@@ -1,3 +1,20 @@
+---
+layout:
+  width: wide
+  title:
+    visible: true
+  description:
+    visible: true
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+  metadata:
+    visible: true
+---
+
 # Quick Start Guide
 
 Get Anzii up and running on your local machine in minutes!
@@ -6,10 +23,10 @@ Get Anzii up and running on your local machine in minutes!
 
 Before you begin, ensure you have the following installed:
 
-- **[Node.js 18+](https://nodejs.org/en/)** - JavaScript runtime
-- **[pnpm](https://pnpm.io/installation)** - Package manager (recommended over npm)
-- **[PostgreSQL](https://www.postgresql.org/download/)** - Database (or [Neon](https://neon.tech/) for cloud)
-- **[Git](https://git-scm.com/)** - Version control
+* [**Node.js 18+**](https://nodejs.org/en/) - JavaScript runtime
+* [**pnpm**](https://pnpm.io/installation) - Package manager (recommended over npm)
+* [**PostgreSQL**](https://www.postgresql.org/download/) - Database (or [Neon](https://neon.tech/) for cloud)
+* [**Git**](https://git-scm.com/) - Version control
 
 ## 📋 Step-by-Step Setup
 
@@ -100,30 +117,30 @@ pg_isready -h localhost -p 5432
 
 **AI API Errors**
 
-- Verify your `GEMINI_API_KEY` is valid
-- Check API quota limits
-- Ensure the key has proper permissions
+* Verify your `GEMINI_API_KEY` is valid
+* Check API quota limits
+* Ensure the key has proper permissions
 
 **Authentication Issues**
 
-- Verify Stack Auth configuration
-- Check environment variables are set correctly
-- Ensure the project is properly configured in Stack Auth dashboard
+* Verify Stack Auth configuration
+* Check environment variables are set correctly
+* Ensure the project is properly configured in Stack Auth dashboard
 
 ### Still Having Issues?
 
-- Check the [Debugging Guide](debugging.md) for detailed troubleshooting
-- Review [Environment Setup](environment-setup.md) for configuration help
-- Create a GitHub issue with your specific error
+* Check the [Debugging Guide](../deployment-and-support/debugging.md) for detailed troubleshooting
+* Review [Environment Setup](environment-setup.md) for configuration help
+* Create a GitHub issue with your specific error
 
 ## 🎯 Next Steps
 
 Now that you have Anzii running locally, explore these areas:
 
-- **[Project Architecture](architecture.md)** - Understand the tech stack
-- **[Development Workflow](development-workflow.md)** - Learn about scripts and testing
-- **[UI Development](ui-development.md)** - Build with the design system
-- **[AI Integration](ai-integration.md)** - Work with AI features
+* [**Project Architecture**](../architecture-and-development/architecture.md) - Understand the tech stack
+* [**Development Workflow**](../architecture-and-development/development-workflow.md) - Learn about scripts and testing
+* [**UI Development**](../architecture-and-development/ui-development.md) - Build with the design system
+* [**AI Integration**](../advanced-features/ai-integration.md) - Work with AI features
 
 ## 📚 Quick Reference
 
@@ -135,6 +152,6 @@ Now that you have Anzii running locally, explore these areas:
 | `pnpm db:studio` | Open database browser    |
 | `pnpm lint`      | Check code quality       |
 
----
+***
 
-**Ready to dive deeper?** Explore the [Project Architecture](architecture.md) to understand how Anzii is built!
+**Ready to dive deeper?** Explore the [Project Architecture](../architecture-and-development/architecture.md) to understand how Anzii is built!

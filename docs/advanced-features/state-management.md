@@ -1,3 +1,20 @@
+---
+layout:
+  width: wide
+  title:
+    visible: true
+  description:
+    visible: true
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+  metadata:
+    visible: true
+---
+
 # State Management
 
 Learn how to manage state effectively in Anzii using React Query and Zustand.
@@ -6,9 +23,9 @@ Learn how to manage state effectively in Anzii using React Query and Zustand.
 
 Anzii uses a hybrid approach to state management:
 
-- **TanStack Query (React Query)** - Server state (API data, caching)
-- **Zustand** - Client state (UI state, user preferences)
-- **React Hook Form** - Form state management
+* **TanStack Query (React Query)** - Server state (API data, caching)
+* **Zustand** - Client state (UI state, user preferences)
+* **React Hook Form** - Form state management
 
 ## 🔄 React Query (TanStack Query)
 
@@ -689,11 +706,11 @@ test("resets settings to initial state", () => {
 
 ## 📚 Related Documentation
 
-- **[Project Architecture](architecture.md)** - Understanding the tech stack
-- **[UI Development](ui-development.md)** - Building stateful components
-- **[AI Integration](ai-integration.md)** - Managing AI state
-- **[Development Workflow](development-workflow.md)** - Testing state management
+* [**Project Architecture**](../architecture-and-development/architecture.md) - Understanding the tech stack
+* [**UI Development**](../architecture-and-development/ui-development.md) - Building stateful components
+* [**AI Integration**](ai-integration.md) - Managing AI state
+* [**Development Workflow**](../architecture-and-development/development-workflow.md) - Testing state management
 
----
+***
 
 **Ready to manage state effectively?** Check out the [Authentication](authentication.md) guide to learn about user state management!

@@ -1,3 +1,20 @@
+---
+layout:
+  width: wide
+  title:
+    visible: true
+  description:
+    visible: true
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+  metadata:
+    visible: true
+---
+
 # Project Architecture
 
 Understand Anzii's technical architecture, tech stack, and project structure.
@@ -6,43 +23,43 @@ Understand Anzii's technical architecture, tech stack, and project structure.
 
 ### Frontend
 
-- **Next.js 15** - React framework with App Router
-- **React 18** - UI library with concurrent features
-- **TypeScript** - Type-safe JavaScript
-- **Tailwind CSS** - Utility-first CSS framework
-- **Radix UI** - Accessible component primitives
+* **Next.js 15** - React framework with App Router
+* **React 18** - UI library with concurrent features
+* **TypeScript** - Type-safe JavaScript
+* **Tailwind CSS** - Utility-first CSS framework
+* **Radix UI** - Accessible component primitives
 
 ### Backend & Database
 
-- **PostgreSQL** - Primary database
-- **Drizzle ORM** - Type-safe database operations
-- **Next.js API Routes** - Server-side API endpoints
+* **PostgreSQL** - Primary database
+* **Drizzle ORM** - Type-safe database operations
+* **Next.js API Routes** - Server-side API endpoints
 
 ### AI & Services
 
-- **Google Gemini API** - AI content generation
-- **Stack Auth** - Authentication (replacing NextAuth.js)
-- **Vercel Analytics** - Performance monitoring
+* **Google Gemini API** - AI content generation
+* **Stack Auth** - Authentication (replacing NextAuth.js)
+* **Vercel Analytics** - Performance monitoring
 
 ### State Management
 
-- **TanStack Query (React Query)** - Server state management
-- **Zustand** - Client state management
-- **React Hook Form** - Form state management
+* **TanStack Query (React Query)** - Server state management
+* **Zustand** - Client state management
+* **React Hook Form** - Form state management
 
 ### Testing & Quality
 
-- **Jest** - Unit testing framework
-- **React Testing Library** - Component testing
-- **Playwright** - End-to-end testing
-- **ESLint** - Code linting
-- **Prettier** - Code formatting
+* **Jest** - Unit testing framework
+* **React Testing Library** - Component testing
+* **Playwright** - End-to-end testing
+* **ESLint** - Code linting
+* **Prettier** - Code formatting
 
 ### Build & Deployment
 
-- **Turbopack** - Fast bundler (development)
-- **Webpack** - Production bundler
-- **Vercel** - Deployment platform
+* **Turbopack** - Fast bundler (development)
+* **Webpack** - Production bundler
+* **Vercel** - Deployment platform
 
 ## 📁 Project Structure
 
@@ -89,10 +106,10 @@ anzii/
 
 **Benefits:**
 
-- Server Components by default
-- Built-in layouts and routing
-- Improved performance with streaming
-- Better SEO with server-side rendering
+* Server Components by default
+* Built-in layouts and routing
+* Improved performance with streaming
+* Better SEO with server-side rendering
 
 **Structure:**
 
@@ -369,12 +386,12 @@ test("user can create a new deck", async ({ page }) => {
 
 ## 📚 Related Documentation
 
-- **[Quick Start](quick-start.md)** - Get up and running quickly
-- **[Development Workflow](development-workflow.md)** - Development practices
-- **[UI Development](ui-development.md)** - Building with the design system
-- **[AI Integration](ai-integration.md)** - Working with AI features
-- **[State Management](state-management.md)** - State management patterns
+* [**Quick Start**](../setup-and-installation/quick-start.md) - Get up and running quickly
+* [**Development Workflow**](development-workflow.md) - Development practices
+* [**UI Development**](ui-development.md) - Building with the design system
+* [**AI Integration**](../advanced-features/ai-integration.md) - Working with AI features
+* [**State Management**](../advanced-features/state-management.md) - State management patterns
 
----
+***
 
 **Ready to start developing?** Check out the [Development Workflow](development-workflow.md) to learn about scripts, testing, and best practices!

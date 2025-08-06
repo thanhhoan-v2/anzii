@@ -1,3 +1,20 @@
+---
+layout:
+  width: wide
+  title:
+    visible: true
+  description:
+    visible: true
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+  metadata:
+    visible: true
+---
+
 # Authentication
 
 Implement user authentication and authorization using Stack Auth in Anzii.
@@ -6,10 +23,10 @@ Implement user authentication and authorization using Stack Auth in Anzii.
 
 Anzii uses Stack Auth for authentication, replacing NextAuth.js with a more modern and flexible solution:
 
-- **Stack Auth** - Modern authentication framework
-- **Multiple Providers** - Email, OAuth (Google, GitHub, etc.)
-- **Session Management** - Secure session handling
-- **User Profiles** - Rich user data management
+* **Stack Auth** - Modern authentication framework
+* **Multiple Providers** - Email, OAuth (Google, GitHub, etc.)
+* **Session Management** - Secure session handling
+* **User Profiles** - Rich user data management
 
 ## 🚀 Stack Auth Setup
 
@@ -726,11 +743,11 @@ test("unauthenticated user is redirected to sign in", async ({ page }) => {
 
 ## 📚 Related Documentation
 
-- **[Project Architecture](architecture.md)** - Understanding the tech stack
-- **[State Management](state-management.md)** - Managing user state
-- **[UI Development](ui-development.md)** - Building auth components
-- **[Development Workflow](development-workflow.md)** - Testing auth features
+* [**Project Architecture**](../architecture-and-development/architecture.md) - Understanding the tech stack
+* [**State Management**](state-management.md) - Managing user state
+* [**UI Development**](../architecture-and-development/ui-development.md) - Building auth components
+* [**Development Workflow**](../architecture-and-development/development-workflow.md) - Testing auth features
 
----
+***
 
-**Ready to implement authentication?** Check out the [Deployment Guide](deployment.md) to learn about production deployment!
+**Ready to implement authentication?** Check out the [Deployment Guide](../deployment-and-support/deployment.md) to learn about production deployment!

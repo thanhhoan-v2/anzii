@@ -1,3 +1,20 @@
+---
+layout:
+  width: wide
+  title:
+    visible: true
+  description:
+    visible: true
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+  metadata:
+    visible: true
+---
+
 # UI Development
 
 Build beautiful, accessible components using Anzii's design system and theme architecture.
@@ -6,10 +23,10 @@ Build beautiful, accessible components using Anzii's design system and theme arc
 
 Anzii uses a comprehensive design system built on:
 
-- **Radix UI** - Accessible component primitives
-- **Tailwind CSS** - Utility-first styling
-- **Class Variance Authority** - Component variants
-- **17 Curated Themes** - WCAG 2.1 AA compliant
+* **Radix UI** - Accessible component primitives
+* **Tailwind CSS** - Utility-first styling
+* **Class Variance Authority** - Component variants
+* **17 Curated Themes** - WCAG 2.1 AA compliant
 
 ## 🧩 Component Architecture
 
@@ -507,11 +524,11 @@ export default function DesignSystemPage() {
 
 ## 📚 Related Documentation
 
-- **[Project Architecture](architecture.md)** - Understanding the tech stack
-- **[Development Workflow](development-workflow.md)** - Development practices
-- **[State Management](state-management.md)** - Managing component state
-- **[AI Integration](ai-integration.md)** - Building AI-powered components
+* [**Project Architecture**](architecture.md) - Understanding the tech stack
+* [**Development Workflow**](development-workflow.md) - Development practices
+* [**State Management**](../advanced-features/state-management.md) - Managing component state
+* [**AI Integration**](../advanced-features/ai-integration.md) - Building AI-powered components
 
----
+***
 
-**Ready to build components?** Check out the [State Management](state-management.md) guide to learn about managing component state effectively!
+**Ready to build components?** Check out the [State Management](../advanced-features/state-management.md) guide to learn about managing component state effectively!
