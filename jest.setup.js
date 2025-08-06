@@ -107,3 +107,17 @@ global.IntersectionObserver = jest.fn().mockImplementation(() => ({
 	unobserve: jest.fn(),
 	disconnect: jest.fn(),
 }));
+
+// Mock lucide-react icons
+jest.mock("lucide-react", () => ({
+	Check: ({ className, ...props }) => (
+		<svg className={className} {...props} data-testid="check-icon">
+			<path d="M20 6L9 17l-5-5" />
+		</svg>
+	),
+	Palette: ({ className, ...props }) => (
+		<svg className={className} {...props} data-testid="palette-icon">
+			<path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+		</svg>
+	),
+}));

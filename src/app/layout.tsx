@@ -4,22 +4,18 @@ import { StackProvider } from "@stackframe/stack";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
-import { Moirai_One, Space_Grotesk } from "next/font/google";
+import { Inter } from "next/font/google";
 
 import { QueryProvider } from "@/app/providers";
 import { Toaster } from "@/components/ui/toaster";
 import { ColorSchemeProvider } from "@/hooks/use-color-scheme";
 import { stackServerApp } from "@/stack";
 
-export const moiraiOne = Moirai_One({
+// Font configuration
+const inter = Inter({
 	subsets: ["latin"],
-	variable: "--font-serif",
-	weight: "400",
-});
-const spaceGrotesk = Space_Grotesk({
-	subsets: ["latin"],
-	variable: "--font-space-grotesk",
-	weight: ["300", "400", "500", "600", "700"],
+	variable: "--font-sans",
+	display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -92,9 +88,7 @@ export default function RootLayout({
 					content={process.env.GOOGLE_SITE_VERIFICATION}
 				/>
 			</head>
-			<body
-				className={`${spaceGrotesk.variable} font-space-grotesk antialiased`}
-			>
+			<body className={`${inter.variable} font-sans antialiased`}>
 				<SpeedInsights />
 				<Analytics />
 				<QueryProvider>

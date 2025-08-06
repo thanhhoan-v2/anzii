@@ -24,16 +24,10 @@ export default {
 			},
 			fontFamily: {
 				sans: ["var(--font-sans)", ...fontFamily.sans],
-				"space-grotesk": ["var(--font-space-grotesk)", ...fontFamily.sans],
 			},
 			colors: {
 				background: "hsl(var(--background))",
 				foreground: "hsl(var(--foreground))",
-				brand: {
-					lime: "#B9FF66",
-					"lime-shadow": "rgba(163, 230, 53, 0.2)",
-					"lime-shadow-hover": "rgba(163, 230, 53, 0.4)",
-				},
 				card: {
 					DEFAULT: "hsl(var(--card))",
 					foreground: "hsl(var(--card-foreground))",
@@ -74,16 +68,14 @@ export default {
 				input: "hsl(var(--input))",
 				ring: "hsl(var(--ring))",
 			},
+			boxShadow: {
+				md: "hsl(var(--shadow-md))",
+				lg: "hsl(var(--shadow-lg))",
+			},
 			borderRadius: {
 				lg: "var(--radius)",
 				md: "calc(var(--radius) - 2px)",
 				sm: "calc(var(--radius) - 4px)",
-			},
-			boxShadow: {
-				"brand-sm": "0 3px 0 0 rgba(163, 230, 53, 0.2)",
-				"brand-md": "0 5px 0 0 rgba(163, 230, 53, 0.2)",
-				"brand-lg": "0 5px 0 0 rgba(163, 230, 53, 0.4)",
-				"brand-ring": "0 0 0 2px rgb(163 230 53 / 0.4)",
 			},
 			keyframes: {
 				"accordion-down": {

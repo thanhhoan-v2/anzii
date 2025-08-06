@@ -8,6 +8,7 @@ import {
 	useCallback,
 	useContext,
 	useEffect,
+	useMemo,
 	useState,
 } from "react";
 
@@ -144,43 +145,191 @@ function InnerColorSchemeProvider({ children }: ColorSchemeProviderProps) {
 		root.style.setProperty("--border", scheme.colors.border);
 		root.style.setProperty("--input", scheme.colors.input);
 		root.style.setProperty("--ring", scheme.colors.ring);
+
+		// Apply additional CSS custom properties for charts and sidebar
+		root.style.setProperty("--chart-1", scheme.colors.primary);
+		root.style.setProperty("--chart-2", scheme.colors.secondary);
+		root.style.setProperty("--chart-3", scheme.colors.accent);
+		root.style.setProperty("--chart-4", scheme.colors.muted);
+		root.style.setProperty("--chart-5", scheme.colors.destructive);
+
+		// Sidebar colors (using muted variants)
+		root.style.setProperty("--sidebar", scheme.colors.muted);
+		root.style.setProperty(
+			"--sidebar-foreground",
+			scheme.colors.mutedForeground
+		);
+		root.style.setProperty("--sidebar-primary", scheme.colors.primary);
+		root.style.setProperty(
+			"--sidebar-primary-foreground",
+			scheme.colors.primaryForeground
+		);
+		root.style.setProperty("--sidebar-accent", scheme.colors.accent);
+		root.style.setProperty(
+			"--sidebar-accent-foreground",
+			scheme.colors.accentForeground
+		);
+		root.style.setProperty("--sidebar-border", scheme.colors.border);
+		root.style.setProperty("--sidebar-ring", scheme.colors.ring);
+
+		// Apply theme-specific properties for retro minimal theme
+		if (scheme.id === "retro-minimal" || scheme.id === "retro-minimal-dark") {
+			// Custom border radius (0px for sharp edges)
+			root.style.setProperty("--radius", "0px");
+
+			// Custom shadows for retro theme
+			const shadowColor =
+				scheme.id === "retro-minimal"
+					? "hsl(0 0% 0% / 0.50)"
+					: "hsl(0 0% 100% / 0.50)";
+			const shadowColorFull =
+				scheme.id === "retro-minimal"
+					? "hsl(0 0% 0% / 1.00)"
+					: "hsl(0 0% 100% / 1.00)";
+			const shadowColor2xl =
+				scheme.id === "retro-minimal"
+					? "hsl(0 0% 0% / 2.50)"
+					: "hsl(0 0% 100% / 2.50)";
+
+			root.style.setProperty("--shadow-2xs", `4px 4px 0px 0px ${shadowColor}`);
+			root.style.setProperty("--shadow-xs", `4px 4px 0px 0px ${shadowColor}`);
+			root.style.setProperty(
+				"--shadow-sm",
+				`4px 4px 0px 0px ${shadowColorFull}, 4px 1px 2px -1px ${shadowColorFull}`
+			);
+			root.style.setProperty(
+				"--shadow",
+				`4px 4px 0px 0px ${shadowColorFull}, 4px 1px 2px -1px ${shadowColorFull}`
+			);
+			root.style.setProperty(
+				"--shadow-md",
+				`4px 4px 0px 0px ${shadowColorFull}, 4px 2px 4px -1px ${shadowColorFull}`
+			);
+			root.style.setProperty(
+				"--shadow-lg",
+				`4px 4px 0px 0px ${shadowColorFull}, 4px 4px 6px -1px ${shadowColorFull}`
+			);
+			root.style.setProperty(
+				"--shadow-xl",
+				`4px 4px 0px 0px ${shadowColorFull}, 4px 8px 10px -1px ${shadowColorFull}`
+			);
+			root.style.setProperty(
+				"--shadow-2xl",
+				`4px 4px 0px 0px ${shadowColor2xl}`
+			);
+		} else if (scheme.id === "retro-minimal") {
+			// Neo Brutalism theme - bold, heavy shadows
+
+			// Sharp edges for neo-brutalism
+			root.style.setProperty("--radius", "0px");
+
+			// Neo-brutalist shadows - heavy, offset, layered
+			root.style.setProperty("--shadow-2xs", "4px 4px 0px 0px #000");
+			root.style.setProperty("--shadow-xs", "6px 6px 0px 0px #000");
+			root.style.setProperty(
+				"--shadow-sm",
+				"8px 8px 0px 0px #000, 4px 4px 0px 0px #000"
+			);
+			root.style.setProperty(
+				"--shadow",
+				"8px 8px 0px 0px #000, 4px 4px 0px 0px #000"
+			);
+			root.style.setProperty(
+				"--shadow-md",
+				"12px 12px 0px 0px #000, 8px 8px 0px 0px #000"
+			);
+			root.style.setProperty(
+				"--shadow-lg",
+				"16px 16px 0px 0px #000, 12px 12px 0px 0px #000"
+			);
+			root.style.setProperty(
+				"--shadow-xl",
+				"20px 20px 0px 0px #000, 16px 16px 0px 0px #000"
+			);
+			root.style.setProperty(
+				"--shadow-2xl",
+				"24px 24px 0px 0px #000, 20px 20px 0px 0px #000"
+			);
+		} else {
+			// Reset to default values for other themes
+			root.style.setProperty("--font-sans", "Inter, sans-serif");
+			root.style.setProperty("--font-serif", "Georgia, serif");
+			root.style.setProperty("--font-mono", "JetBrains Mono, monospace");
+			root.style.setProperty("--radius", "0.5rem");
+
+			// Default shadows
+			root.style.setProperty(
+				"--shadow-2xs",
+				"0px 4px 10px 0px hsl(240 30% 25% / 0.06)"
+			);
+			root.style.setProperty(
+				"--shadow-xs",
+				"0px 4px 10px 0px hsl(240 30% 25% / 0.06)"
+			);
+			root.style.setProperty(
+				"--shadow-sm",
+				"0px 4px 10px 0px hsl(240 30% 25% / 0.12), 0px 1px 2px -1px hsl(240 30% 25% / 0.12)"
+			);
+			root.style.setProperty(
+				"--shadow",
+				"0px 4px 10px 0px hsl(240 30% 25% / 0.12), 0px 1px 2px -1px hsl(240 30% 25% / 0.12)"
+			);
+			root.style.setProperty(
+				"--shadow-md",
+				"0px 4px 10px 0px hsl(240 30% 25% / 0.12), 0px 2px 4px -1px hsl(240 30% 25% / 0.12)"
+			);
+			root.style.setProperty(
+				"--shadow-lg",
+				"0px 4px 10px 0px hsl(240 30% 25% / 0.12), 0px 4px 6px -1px hsl(240 30% 25% / 0.12)"
+			);
+			root.style.setProperty(
+				"--shadow-xl",
+				"0px 4px 10px 0px hsl(240 30% 25% / 0.12), 0px 8px 10px -1px hsl(240 30% 25% / 0.12)"
+			);
+			root.style.setProperty(
+				"--shadow-2xl",
+				"0px 4px 10px 0px hsl(240 30% 25% / 0.30)"
+			);
+		}
 	}, []);
 
 	// Load color scheme from localStorage on mount
 	useEffect(() => {
 		const savedScheme = localStorage.getItem("color-scheme");
-		if (
-			savedScheme &&
-			COLOR_SCHEMES.find((scheme) => scheme.id === savedScheme)
-		) {
+		if (savedScheme && COLOR_SCHEMES.find((s) => s.id === savedScheme)) {
 			setColorSchemeState(savedScheme);
+		} else {
+			// Apply default color scheme on initial load
+			const defaultScheme =
+				COLOR_SCHEMES.find((s) => s.id === DEFAULT_COLOR_SCHEME) ||
+				COLOR_SCHEMES[0];
+			applyColorScheme(defaultScheme);
 		}
-	}, []);
+	}, []); // Only run on mount
 
-	// Apply color scheme whenever it changes
+	// Apply color scheme when it changes
 	useEffect(() => {
 		applyColorScheme(colorSchemeData);
-	}, [colorSchemeData, applyColorScheme]);
+		localStorage.setItem("color-scheme", colorScheme);
+	}, [colorScheme, applyColorScheme]);
 
-	const setColorScheme = (scheme: string) => {
-		const schemeData = COLOR_SCHEMES.find((s) => s.id === scheme);
-		if (schemeData) {
-			setColorSchemeState(scheme);
-			localStorage.setItem("color-scheme", scheme);
-			applyColorScheme(schemeData);
-		}
-	};
+	const setColorScheme = useCallback((scheme: string) => {
+		setColorSchemeState(scheme);
+	}, []);
+
+	const value = useMemo(
+		() => ({
+			colorScheme,
+			colorSchemeName: colorSchemeData.name,
+			colorSchemeData,
+			setColorScheme,
+			availableSchemes: COLOR_SCHEMES,
+		}),
+		[colorScheme, colorSchemeData, setColorScheme]
+	);
 
 	return (
-		<ColorSchemeContext.Provider
-			value={{
-				colorScheme,
-				colorSchemeName: colorSchemeData.name,
-				colorSchemeData,
-				setColorScheme,
-				availableSchemes: COLOR_SCHEMES,
-			}}
-		>
+		<ColorSchemeContext.Provider value={value}>
 			<StackThemeWrapper>{children}</StackThemeWrapper>
 		</ColorSchemeContext.Provider>
 	);

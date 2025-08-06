@@ -6,7 +6,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { AppLogo } from "@/components/common/app-logo";
-import { ColorSchemeSelector } from "@/components/common/color-scheme-selector";
 import AppHeaderMobile from "@/components/layout/app-header-mobile";
 import { Button, ButtonWithLink } from "@/components/ui/button";
 import { ROUTES } from "@/lib/routes";
@@ -38,7 +37,7 @@ export default function AppHeader({
 	);
 
 	return (
-		<header className="sticky top-0 z-50 border-b border-primary p-4">
+		<header className="sticky top-0 z-50 border-b border-primary bg-secondary p-4 text-primary">
 			<div className="flex items-center justify-between">
 				{children ?? <AppLogo showText={true} />}
 
@@ -54,7 +53,7 @@ export default function AppHeader({
 									<PlusIcon className="h-4 w-4" /> Create
 								</ButtonWithLink>
 							)}
-							<ColorSchemeSelector />
+							{/* <ColorSchemeSelector /> */}
 							<UserButton />
 						</div>
 					)}

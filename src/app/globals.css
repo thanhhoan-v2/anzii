@@ -38,6 +38,11 @@
 		--input: 214 32% 91%;
 		--ring: 221 83% 53%;
 
+		--shadow-md:
+			0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+		--shadow-lg:
+			0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+
 		--radius: 0.5rem;
 	}
 
@@ -75,6 +80,11 @@
 		--border: 217 28% 17%;
 		--input: 217 28% 17%;
 		--ring: 217 91% 60%;
+
+		--shadow-md:
+			0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+		--shadow-lg:
+			0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.3);
 	}
 }
 

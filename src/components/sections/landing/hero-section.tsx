@@ -116,7 +116,7 @@ export default function HeroSection({
 					height={140}
 					rotate={12}
 					gradient="from-indigo-500/70"
-					className="left-[-10%] top-[15%] md:left-[-5%] md:top-[20%]"
+					className="left-[5%] top-[15%] md:left-[10%] md:top-[20%]"
 				/>
 
 				<ElegantShape
@@ -125,7 +125,7 @@ export default function HeroSection({
 					height={120}
 					rotate={-15}
 					gradient="from-rose-400"
-					className="right-[-5%] top-[70%] md:right-[0%] md:top-[75%]"
+					className="right-[5%] top-[70%] md:right-[10%] md:top-[75%]"
 				/>
 
 				<ElegantShape
