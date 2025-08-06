@@ -68,7 +68,7 @@ const ButtonWithLink = React.forwardRef<HTMLAnchorElement, ButtonWithLinkProps>(
 				asChild
 				size="icon"
 				className={cn(
-					"w-full rounded-xl bg-lime-400 px-8 py-4 text-base font-semibold text-black hover:bg-lime-500",
+					"w-full rounded-xl bg-primary px-8 py-4 text-base font-semibold text-black hover:bg-primary/50",
 					className
 				)}
 			>

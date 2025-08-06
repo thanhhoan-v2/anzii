@@ -38,20 +38,20 @@ export default function AppHeader({
 	);
 
 	return (
-		<header className="top-0 z-50 sticky bg-black p-4 border-zinc-800 border-b">
-			<div className="flex justify-between items-center">
-				{children ?? <AppLogo textClassName="text-white" showText={true} />}
+		<header className="sticky top-0 z-50 border-b border-primary p-4">
+			<div className="flex items-center justify-between">
+				{children ?? <AppLogo showText={true} />}
 
-				<div className="hidden md:flex items-center gap-6">
+				<div className="hidden items-center gap-6 md:flex">
 					{/* Protected/Dashboard Navigation */}
 					{!isPublicPage && (
 						<div className="flex items-center gap-4">
 							{pathname !== ROUTES.CREATE && (
 								<ButtonWithLink
 									href={ROUTES.CREATE}
-									className="px-3 h-9 text-sm"
+									className="h-9 px-3 text-sm"
 								>
-									<PlusIcon className="w-4 h-4" /> Create
+									<PlusIcon className="h-4 w-4" /> Create
 								</ButtonWithLink>
 							)}
 							<ColorSchemeSelector />
@@ -86,13 +86,13 @@ export default function AppHeader({
 
 				{/* Desktop Auth Buttons (for public pages only) */}
 				{isPublicPage && (
-					<div className="hidden md:flex items-center gap-2">
+					<div className="hidden items-center gap-2 md:flex">
 						{user ? (
 							<>
 								<ButtonWithLink
 									prefetch={true}
 									href={ROUTES.DASHBOARD}
-									className="px-3 h-9 text-sm"
+									className="h-9 px-3 text-sm"
 								>
 									Go to dashboard
 								</ButtonWithLink>
@@ -104,13 +104,13 @@ export default function AppHeader({
 									asChild
 									variant="ghost"
 									size="sm"
-									className="hover:bg-zinc-950 text-white hover:text-lime-400"
+									className="text-white hover:bg-zinc-950 hover:text-lime-400"
 								>
 									<Link href={ROUTES.SIGN_IN}>Log in</Link>
 								</Button>
 								<ButtonWithLink
 									href={ROUTES.SIGN_UP}
-									className="px-3 h-9 text-sm"
+									className="h-9 px-3 text-sm"
 								>
 									Sign up
 								</ButtonWithLink>
