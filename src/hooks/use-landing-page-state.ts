@@ -10,19 +10,19 @@ export function useLandingPageState() {
 	const router = useRouter();
 
 	const handleGetStarted = () => {
-		router.push("/dashboard");
+		router.push("/decks");
 	};
 
 	const handleEmailSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
 		console.log("Email signup:", email);
-		router.push("/dashboard");
+		router.push("/decks");
 	};
 
 	const handleContactSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
 		console.log("Contact form:", { name, email, message, contactType });
-		router.push("/dashboard");
+		router.push("/decks");
 	};
 
 	return {

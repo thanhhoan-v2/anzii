@@ -7,7 +7,7 @@ import { ROUTES } from "@/lib/routes";
 
 export default function Page() {
 	const user = useUser();
-	if (user) redirect(ROUTES.DASHBOARD);
+	if (user) redirect(ROUTES.DECKS);
 
 	return <SignIn />;
 }

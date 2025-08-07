@@ -52,7 +52,8 @@ export default function DeckCard({
 	};
 
 	return (
-		<ShadCard className="mx-auto flex max-w-[450px] flex-col transition-all lg:max-w-[450px]">
+		// <ShadCard className="flex flex-col mx-auto max-w-[450px] lg:max-w-[450px] transition-all">
+		<ShadCard className="flex flex-col transition-all">
 			<CardHeader className="gap-2">
 				<CardTitle className="flex w-full items-center justify-between">
 					<div>{deck.name}</div>
@@ -86,12 +87,6 @@ export default function DeckCard({
 				)}
 			</CardHeader>
 			<CardContent className="flex items-center justify-between gap-2">
-				<ButtonWithLink
-					className="w-[100px] text-sm"
-					href={ROUTES.DECK(deck.id)}
-				>
-					View Deck
-				</ButtonWithLink>
 				<Button
 					variant="ghost"
 					size="icon"
@@ -102,6 +97,12 @@ export default function DeckCard({
 					<Share2Icon />
 					<span className="sr-only">Copy deck URL</span>
 				</Button>
+				<ButtonWithLink
+					className="w-[100px] text-sm"
+					href={ROUTES.DECK(deck.id)}
+				>
+					View Deck
+				</ButtonWithLink>
 			</CardContent>
 		</ShadCard>
 	);

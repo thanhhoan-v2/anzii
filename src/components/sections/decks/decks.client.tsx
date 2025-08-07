@@ -12,9 +12,9 @@ import { useDeckManagement } from "@/hooks/use-deck-management";
 import { useFileImport } from "@/hooks/use-file-import";
 import { useToast } from "@/hooks/use-toast";
 
-import DashboardLoading from "./dashboard-loading";
+import DecksLoading from "./decks-loading";
 
-export default function DashboardContent() {
+export default function DecksClient() {
 	const [isAiDeckGeneratorOpen, setIsAiDeckGeneratorOpen] = useState(false);
 	const { toast } = useToast();
 	const user = useUser({ or: "redirect" });
@@ -31,7 +31,7 @@ export default function DashboardContent() {
 	};
 
 	if (deckManagement.isLoading) {
-		return <DashboardLoading />;
+		return <DecksLoading />;
 	}
 
 	if (!user) {

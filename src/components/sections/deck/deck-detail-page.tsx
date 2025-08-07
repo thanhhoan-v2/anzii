@@ -78,7 +78,7 @@ export default function DeckDetailPage() {
 	useEffect(() => {
 		if (error || (deckId && !isLoading && !deck)) {
 			toast({ variant: "destructive", title: "Deck not found" });
-			router.push(ROUTES.DASHBOARD);
+			router.push(ROUTES.DECKS);
 		}
 	}, [error, deck, isLoading, deckId, router, toast]);
 
@@ -174,7 +174,7 @@ export default function DeckDetailPage() {
 	const handleDeleteDeck = async (deckId: string) => {
 		try {
 			await deleteDeckMutation.mutateAsync(deckId);
-			router.push(ROUTES.DASHBOARD);
+			router.push(ROUTES.DECKS);
 		} catch {
 			// Error handling is done in the mutation
 		}

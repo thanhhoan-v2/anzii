@@ -16,7 +16,8 @@ export default function DeckList({
 	onResetDeck,
 }: DeckListProps) {
 	return (
-		<div className="grid items-center justify-center gap-6 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
+		// <div className="justify-center items-center gap-6 grid md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
+		<div className="flex flex-col gap-6">
 			{decks.map((deck) => {
 				const isResetting = resetLoadingDeckId === deck.id;
 

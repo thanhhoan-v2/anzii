@@ -90,10 +90,10 @@ export default function AppHeader({
 							<>
 								<ButtonWithLink
 									prefetch={true}
-									href={ROUTES.DASHBOARD}
+									href={ROUTES.DECKS}
 									className="h-9 px-3 text-sm"
 								>
-									Go to dashboard
+									Your Decks
 								</ButtonWithLink>
 								<UserButton />
 							</>

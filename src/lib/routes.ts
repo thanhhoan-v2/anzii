@@ -10,7 +10,7 @@ export const ROUTES = {
 	SIGN_UP: "/sign-up",
 	FORGOT_PASSWORD: "/forgot-password",
 	RESET_PASSWORD: "/reset-password",
-	DASHBOARD: "/dashboard",
+	DECKS: "/decks",
 	CREATE: "/create",
 	SETTINGS: "/settings",
 	DECK: (deckId: string) => `/deck/${deckId}`,

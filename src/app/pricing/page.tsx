@@ -39,11 +39,11 @@ export default function Page() {
 	const router = useRouter();
 
 	const handleGetStarted = (_plan: string) => {
-		router.push(ROUTES.DASHBOARD);
+		router.push(ROUTES.DECKS);
 	};
 
 	return (
-		<div className="bg-black min-h-screen">
+		<div className="min-h-screen bg-black">
 			<AppHeader />
 
 			<Suspense fallback={<LoadingSkeleton variant="hero" />}>

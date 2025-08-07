@@ -8,11 +8,11 @@ export default function BackButton({
 }: {
 	goBackTo?: string;
 }) {
-	let goBackToRoute = ROUTES.DASHBOARD;
+	let goBackToRoute = ROUTES.DECKS;
 	let goBackToLabel = "Dashboard";
 
 	if (goBackTo === "dashboard") {
-		goBackToRoute = ROUTES.DASHBOARD;
+		goBackToRoute = ROUTES.DECKS;
 		goBackToLabel = "Dashboard";
 	}
 

@@ -49,7 +49,7 @@ export default function MarkdownTab() {
 					title: "Deck Created!",
 					description: "Your deck has been generated from markdown.",
 				});
-				router.push(ROUTES.DASHBOARD);
+				router.push(ROUTES.DECKS);
 			} else {
 				throw new Error(result.error);
 			}

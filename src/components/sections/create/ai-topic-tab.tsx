@@ -72,7 +72,7 @@ export default function AiTopicTab() {
 					title: "Deck Generated!",
 					description: "Your AI deck has been created.",
 				});
-				router.push(ROUTES.DASHBOARD);
+				router.push(ROUTES.DECKS);
 			} else {
 				throw new Error(result.error);
 			}

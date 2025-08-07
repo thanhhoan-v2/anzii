@@ -7,7 +7,7 @@ import { ROUTES } from "@/lib/routes";
 export const stackServerApp = new StackServerApp({
 	tokenStore: "nextjs-cookie",
 	urls: {
-		home: ROUTES.DASHBOARD,
+		home: ROUTES.DECKS,
 		signIn: ROUTES.SIGN_IN,
 		signUp: ROUTES.SIGN_UP,
 		accountSettings: ROUTES.SETTINGS,
