@@ -37,7 +37,7 @@ export default function AppHeader({
 	);
 
 	return (
-		<header className="sticky top-0 z-50 border-b border-primary bg-secondary p-4 text-primary">
+		<header className="sticky top-0 z-50 border-b border-primary bg-secondary p-4 text-white">
 			<div className="flex items-center justify-between">
 				{children ?? <AppLogo showText={true} />}
 

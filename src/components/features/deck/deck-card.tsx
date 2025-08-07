@@ -1,7 +1,8 @@
-import { ExternalLinkIcon } from "lucide-react";
+import { Share2Icon } from "lucide-react";
+import { useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
-import { ButtonWithLink } from "@/components/ui/button";
+import { Button, ButtonWithLink } from "@/components/ui/button";
 import {
 	CardContent,
 	CardDescription,
@@ -9,9 +10,11 @@ import {
 	CardTitle,
 	Card as ShadCard,
 } from "@/components/ui/card";
+import { toast } from "@/hooks/use-toast";
 import { ROUTES } from "@/lib/routes";
 import type { DeckListItem } from "@/types";
 
+import CardTypeBadges from "./card-type-badges";
 import DeckDeleteBtn from "./deck-delete-dialog";
 
 interface DeckCardProps {
@@ -27,28 +30,78 @@ export default function DeckCard({
 	onDeleteDeck,
 	onResetDeck,
 }: DeckCardProps) {
+	const [copied, setCopied] = useState(false);
+
+	const handleCopyUrl = async () => {
+		const url = `${window.location.origin}${ROUTES.DECK(deck.id)}`;
+		try {
+			await navigator.clipboard.writeText(url);
+			setCopied(true);
+			if (toast) {
+				toast({
+					title: "Copied!",
+					description: "Deck URL copied to clipboard.",
+				});
+			}
+			setTimeout(() => setCopied(false), 1500);
+		} catch {
+			if (toast) {
+				toast({ title: "Error", description: "Failed to copy URL." });
+			}
+		}
+	};
+
 	return (
-		<ShadCard className="flex flex-col transition-all">
-			<div className="flex justify-between">
-				<CardHeader>
-					<CardTitle>{deck.name}</CardTitle>
-					{deck.description && (
-						<CardDescription className="line-clamp-2">
-							{deck.description}
-						</CardDescription>
+		<ShadCard className="mx-auto flex max-w-[450px] flex-col transition-all lg:max-w-[450px]">
+			<CardHeader className="gap-2">
+				<CardTitle className="flex w-full items-center justify-between">
+					<div>{deck.name}</div>
+					<DeckDeleteBtn
+						deckId={deck.id}
+						deckName={deck.name}
+						onDeleteDeck={onDeleteDeck}
+					/>
+				</CardTitle>
+				<div className="flex flex-wrap items-center gap-2">
+					<Badge className="w-fit">{deck.cardCount} cards</Badge>
+					<CardTypeBadges
+						flashcardCount={deck.flashcardCount}
+						mcqCount={deck.mcqCount}
+						fillInBlanksCount={deck.fillInBlanksCount}
+					/>
+					{deck.relatedTopics && deck.relatedTopics.length > 0 && (
+						<div className="ml-2 flex flex-wrap gap-1">
+							{deck.relatedTopics.map((topic, index) => (
+								<Badge key={index} variant="secondary" className="text-xs">
+									{topic}
+								</Badge>
+							))}
+						</div>
 					)}
-				</CardHeader>
-				<DeckDeleteBtn
-					deckId={deck.id}
-					deckName={deck.name}
-					onDeleteDeck={onDeleteDeck}
-				/>
-			</div>
-			<CardContent className="flex items-baseline justify-between gap-2">
-				<Badge className="text-md">{deck.cardCount} cards</Badge>
-				<ButtonWithLink className="w-[130px]" href={ROUTES.DECK(deck.id)}>
-					View Deck <ExternalLinkIcon />
+				</div>
+				{deck.description && (
+					<CardDescription className="line-clamp-2">
+						{deck.description}
+					</CardDescription>
+				)}
+			</CardHeader>
+			<CardContent className="flex items-center justify-between gap-2">
+				<ButtonWithLink
+					className="w-[100px] text-sm"
+					href={ROUTES.DECK(deck.id)}
+				>
+					View Deck
 				</ButtonWithLink>
+				<Button
+					variant="ghost"
+					size="icon"
+					className=""
+					onClick={handleCopyUrl}
+					aria-label="Copy deck URL"
+				>
+					<Share2Icon />
+					<span className="sr-only">Copy deck URL</span>
+				</Button>
 			</CardContent>
 		</ShadCard>
 	);

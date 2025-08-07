@@ -1,6 +1,6 @@
 "use client";
 
-import { Bot, FileText, PlusCircle, Upload } from "lucide-react";
+import { FileText, PlusCircle, SparklesIcon, Upload } from "lucide-react";
 
 import AiTopicTab from "@/components/sections/create/ai-topic-tab";
 import ImportTab from "@/components/sections/create/import-tab";
@@ -11,31 +11,31 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 export default function CreateTabs() {
 	return (
 		<Tabs defaultValue="manual" className="w-full">
-			<TabsList className="grid grid-cols-4 w-full">
+			<TabsList className="grid w-full grid-cols-4">
+				<TabsTrigger value="ai" className="flex items-center gap-2">
+					<SparklesIcon className="h-4 w-4" />
+					AI
+				</TabsTrigger>
 				<TabsTrigger value="manual" className="flex items-center gap-2">
-					<PlusCircle className="w-4 h-4" />
+					<PlusCircle className="h-4 w-4" />
 					Manual
 				</TabsTrigger>
-				<TabsTrigger value="ai" className="flex items-center gap-2">
-					<Bot className="w-4 h-4" />
-					AI Topic
-				</TabsTrigger>
 				<TabsTrigger value="markdown" className="flex items-center gap-2">
-					<FileText className="w-4 h-4" />
+					<FileText className="h-4 w-4" />
 					Markdown
 				</TabsTrigger>
 				<TabsTrigger value="import" className="flex items-center gap-2">
-					<Upload className="w-4 h-4" />
+					<Upload className="h-4 w-4" />
 					Import
 				</TabsTrigger>
 			</TabsList>
 
-			<TabsContent value="manual" className="space-y-6">
-				<ManualCreationTab />
-			</TabsContent>
-
 			<TabsContent value="ai" className="space-y-6">
 				<AiTopicTab />
+			</TabsContent>
+
+			<TabsContent value="manual" className="space-y-6">
+				<ManualCreationTab />
 			</TabsContent>
 
 			<TabsContent value="markdown" className="space-y-6">

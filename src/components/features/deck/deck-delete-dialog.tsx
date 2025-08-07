@@ -27,8 +27,8 @@ export default function DeckDeleteBtn({
 	return (
 		<AlertDialog>
 			<AlertDialogTrigger asChild>
-				<Button variant="ghost" size="icon" className="mr-4 mt-4">
-					<XIcon />
+				<Button variant="ghost" size="icon" className="h-8 w-8">
+					<XIcon className="h-4 w-4" />
 				</Button>
 			</AlertDialogTrigger>
 			<AlertDialogContent className="w-[350px] rounded-lg">

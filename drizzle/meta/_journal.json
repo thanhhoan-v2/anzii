@@ -15,6 +15,20 @@
       "when": 1751128099678,
       "tag": "0001_add_deck_description",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1751128099679,
+      "tag": "0002_add_card_type",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1754555504652,
+      "tag": "0003_freezing_grim_reaper",
+      "breakpoints": true
     }
   ]
 }

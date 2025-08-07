@@ -18,11 +18,23 @@ const GenerateDeckFromTopicInputSchema = z.object({
 	numberOfCards: z
 		.number()
 		.optional()
-		.describe("The number of flashcards to generate (5-30)."),
+		.describe("The number of flashcards to generate."),
 	description: z
 		.string()
 		.optional()
 		.describe("Additional context or focus areas for the flashcards."),
+	cardTypes: z
+		.object({
+			flashcard: z.boolean(),
+			mcq: z.boolean(),
+			fillInBlanks: z.boolean(),
+		})
+		.optional()
+		.describe("Types of cards to generate."),
+	notes: z
+		.string()
+		.optional()
+		.describe("Additional notes or instructions for AI."),
 });
 export type GenerateDeckFromTopicInput = z.infer<
 	typeof GenerateDeckFromTopicInputSchema
@@ -35,16 +47,21 @@ const GenerateDeckFromTopicOutputSchema = z.object({
 				question: z
 					.string()
 					.describe(
-						"The question for the flashcard. This should be a clear, concise question covering a key concept of the topic."
+						"The question for the card. This should be a clear, concise question covering a key concept of the topic."
 					),
 				answer: z
 					.string()
 					.describe(
-						"The answer for the flashcard. This should be a detailed and accurate answer to the question, suitable for learning."
+						"The answer for the card. This should be a detailed and accurate answer to the question, suitable for learning."
 					),
+				cardType: z
+					.enum(["flashcard", "mcq", "fillInBlanks"])
+					.optional()
+					.describe("The type of card (flashcard, mcq, or fillInBlanks)."),
 			})
 		)
-		.describe("An array of generated flashcards."),
+		.min(1)
+		.describe("An array of exactly the requested number of cards."),
 });
 export type GenerateDeckFromTopicOutput = z.infer<
 	typeof GenerateDeckFromTopicOutputSchema
@@ -54,26 +71,80 @@ export async function generateDeckFromTopic(
 	input: GenerateDeckFromTopicInput
 ): Promise<GenerateDeckFromTopicOutput> {
 	const cardCount = input.numberOfCards || 15;
+	const maxRetries = 3;
+	let attempt = 0;
 
-	const prompt = `You are an AI assistant that creates comprehensive flashcard decks for students.
-You will be given a topic and configuration. Your task is to generate a list of question and answer pairs that are suitable for flashcards for learning about that topic.
+	const cardTypes = input.cardTypes || {
+		flashcard: true,
+		mcq: false,
+		fillInBlanks: false,
+	};
+	const selectedTypes = Object.entries(cardTypes)
+		.filter(([_, enabled]) => enabled)
+		.map(([type]) => type)
+		.join(", ");
 
-Generate ${cardCount} flashcards.
-The questions should be clear and concise. The answers should be accurate and directly address the questions, providing enough detail for a student to learn from.
-Ensure the generated cards cover the key concepts of the provided topic.
+	const getCardTypeInstructions = (cardType: string) => {
+		switch (cardType) {
+			case "mcq":
+				return "For MCQ cards, create questions with multiple choice options. Format the answer as 'A) Option A, B) Option B, C) Option C, D) Option D. Correct answer: [letter]'. Each question should have exactly 4 options (A, B, C, D).";
+			case "fillInBlanks":
+				return "For Fill-in Blanks cards, create sentences with blanks (use ___ for blanks). The answer should be the word or phrase that fills the blank. Make sure the blanks are clear and the answers are specific.";
+			default:
+				return "For Flashcard cards, create clear question-answer pairs suitable for traditional flashcards. Questions should be concise and answers should be detailed but not too long.";
+		}
+	};
 
-Topic: ${input.topic}
+	const cardTypeInstruction = getCardTypeInstructions(
+		selectedTypes || "flashcard"
+	);
+
+	const prompt = `Create a flashcard deck with exactly ${cardCount} cards for: ${input.topic}
+
+Card type: ${selectedTypes || "flashcard"}
+${cardTypeInstruction}
+
 ${input.description ? `Additional context: ${input.description}` : ""}
+${input.notes ? `Additional notes: ${input.notes}` : ""}
 
-Generate exactly ${cardCount} flashcards with questions and answers.`;
+Instructions:
+1. Create exactly ${cardCount} flashcards
+2. Each card should have a question and answer
+3. Questions should be clear and concise
+4. Answers should be accurate and detailed
+5. Cover key concepts of the topic
 
-	const result = await generateText({
-		model: ai,
-		prompt,
-		experimental_output: Output.object({
-			schema: GenerateDeckFromTopicOutputSchema,
-		}),
-	});
+Output format: Return a JSON object with a "cards" array containing exactly ${cardCount} card objects.`;
 
-	return result.experimental_output as GenerateDeckFromTopicOutput;
+	while (attempt < maxRetries) {
+		attempt++;
+
+		const result = await generateText({
+			model: ai,
+			prompt,
+			experimental_output: Output.object({
+				schema: GenerateDeckFromTopicOutputSchema,
+			}),
+		});
+
+		const output = result.experimental_output as GenerateDeckFromTopicOutput;
+
+		// Validate that we got exactly the requested number of cards
+		if (output.cards.length === cardCount) {
+			return output;
+		}
+
+		// If this is the last attempt, throw an error
+		if (attempt === maxRetries) {
+			throw new Error(
+				`AI generated ${output.cards.length} cards instead of the requested ${cardCount} cards after ${maxRetries} attempts. Please try again.`
+			);
+		}
+
+		// Add a small delay before retrying
+		await new Promise((resolve) => setTimeout(resolve, 1000));
+	}
+
+	// This should never be reached, but TypeScript requires it
+	throw new Error("Failed to generate cards after maximum retries");
 }

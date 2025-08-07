@@ -9,24 +9,23 @@ import {
 	Save,
 	Settings,
 	Shield,
+	Type,
 	User,
 	UserCog,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
+import { FontGrid } from "@/components/common/font-grid";
+import { SettingsCardHeader } from "@/components/common/settings-card-header";
 import { ThemeGrid } from "@/components/common/theme-grid";
 import AppHeader from "@/components/layout/app-header";
 import { Button } from "@/components/ui/button";
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useColorScheme } from "@/hooks/use-color-scheme";
+import { useFont } from "@/hooks/use-font";
 import { useToast } from "@/hooks/use-toast";
 import { ROUTES } from "@/lib/routes";
 
@@ -36,40 +35,108 @@ export default function SettingsContent() {
 	const user = useUser();
 	const router = useRouter();
 	const { toast } = useToast();
+	const { font, setFont } = useFont();
+	const { colorScheme, setColorScheme } = useColorScheme();
 
 	const [displayName, setDisplayName] = useState("");
 	const [email, setEmail] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
 	const [isLoadingProfile, setIsLoadingProfile] = useState(true);
 	const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+	const [originalPreferences, setOriginalPreferences] = useState({
+		displayName: "",
+		theme: "",
+		font: "",
+	});
 
 	// Redirect to sign-in if not authenticated
 	useEffect(() => {
 		if (user === null) {
 			router.push(ROUTES.SIGN_IN);
 		} else if (user) {
-			const initialDisplayName = user.displayName || "";
-			setDisplayName(initialDisplayName);
-			setEmail(user.primaryEmail || "");
-			setIsLoadingProfile(false);
+			const loadUserPreferences = async () => {
+				try {
+					const response = await fetch("/api/user/preferences");
+					if (response.ok) {
+						const preferences = await response.json();
+						const displayNameValue =
+							preferences.displayName || user.displayName || "";
+						setDisplayName(displayNameValue);
+						setOriginalPreferences({
+							displayName: displayNameValue,
+							theme: preferences.theme || "space-grotesk",
+							font: preferences.font || "space-grotesk",
+						});
+					} else {
+						const displayNameValue = user.displayName || "";
+						setDisplayName(displayNameValue);
+						setOriginalPreferences({
+							displayName: displayNameValue,
+							theme: "space-grotesk",
+							font: "space-grotesk",
+						});
+					}
+				} catch (error) {
+					console.error("Error loading user preferences:", error);
+					const displayNameValue = user.displayName || "";
+					setDisplayName(displayNameValue);
+					setOriginalPreferences({
+						displayName: displayNameValue,
+						theme: "space-grotesk",
+						font: "space-grotesk",
+					});
+				}
+				setEmail(user.primaryEmail || "");
+				setIsLoadingProfile(false);
+			};
+
+			loadUserPreferences();
 		}
 	}, [user, router]);
 
 	// Track changes for unsaved indicator
 	useEffect(() => {
 		if (user && !isLoadingProfile) {
-			const hasChanges = displayName.trim() !== (user.displayName || "");
+			// Compare with the original preferences
+			const currentDisplayName = displayName.trim();
+			const hasDisplayNameChanges =
+				currentDisplayName !== originalPreferences.displayName;
+
+			const hasFontChanges = font !== originalPreferences.font;
+			const hasThemeChanges = colorScheme !== originalPreferences.theme;
+
+			const hasChanges =
+				hasDisplayNameChanges || hasFontChanges || hasThemeChanges;
 			setHasUnsavedChanges(hasChanges);
 		}
-	}, [displayName, user, isLoadingProfile]);
+	}, [
+		displayName,
+		originalPreferences,
+		user,
+		isLoadingProfile,
+		font,
+		colorScheme,
+	]);
 
 	const handleUpdateProfile = async () => {
 		if (!user) return;
 
 		setIsLoading(true);
 		try {
+			// Update Stack Auth user
 			await user.update({
 				displayName: displayName.trim() || undefined,
+			});
+
+			// Update database preferences
+			await fetch("/api/user/preferences", {
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					displayName: displayName.trim() || undefined,
+				}),
 			});
 
 			setHasUnsavedChanges(false);
@@ -109,7 +176,10 @@ export default function SettingsContent() {
 
 	const handleDiscardChanges = () => {
 		if (user) {
-			setDisplayName(user.displayName || "");
+			setDisplayName(originalPreferences.displayName);
+			// Reset font and theme to original values
+			setFont(originalPreferences.font);
+			setColorScheme(originalPreferences.theme);
 			setHasUnsavedChanges(false);
 		}
 	};
@@ -141,9 +211,35 @@ export default function SettingsContent() {
 						</div>
 
 						{hasUnsavedChanges && (
-							<div className="flex items-center gap-2 rounded-lg bg-amber-500/10 px-3 py-2 text-sm text-amber-400">
-								<div className="h-2 w-2 animate-pulse rounded-full bg-amber-400"></div>
-								Unsaved changes
+							<div className="flex items-center gap-3">
+								{/* <div className="flex items-center gap-2 bg-amber-500/10 px-3 py-2 rounded-lg text-amber-400 text-sm">
+									<div className="bg-amber-400 rounded-full w-2 h-2 animate-pulse"></div>
+									Unsaved changes
+								</div> */}
+								<Button
+									onClick={handleUpdateProfile}
+									disabled={isLoading}
+									className="bg-primary font-semibold text-black transition-all duration-200 hover:bg-primary/50 disabled:opacity-50"
+								>
+									{isLoading ? (
+										<>
+											<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+											Saving...
+										</>
+									) : (
+										<>
+											<Save className="mr-2 h-4 w-4" />
+											Save Changes
+										</>
+									)}
+								</Button>
+								<Button
+									variant="outline"
+									onClick={handleDiscardChanges}
+									className="border-zinc-700 text-gray-300 hover:bg-zinc-800 hover:text-white"
+								>
+									Discard
+								</Button>
 							</div>
 						)}
 					</div>
@@ -153,17 +249,13 @@ export default function SettingsContent() {
 						<div className="space-y-6 lg:col-span-2">
 							{/* Profile Settings */}
 							<Card className="border-zinc-800 bg-zinc-950/80 shadow-xl">
-								<CardHeader className="pb-4">
-									<CardTitle className="flex items-center gap-3 text-gray-100">
-										<div className="rounded-lg bg-blue-500/10 p-2">
-											<UserCog className="h-5 w-5 text-blue-400" />
-										</div>
-										Profile Information
-									</CardTitle>
-									<CardDescription className="text-gray-400">
-										Update your personal information and how others see you
-									</CardDescription>
-								</CardHeader>
+								<SettingsCardHeader
+									title="Profile Information"
+									description="Update your personal information and how others see you"
+									icon={UserCog}
+									iconColor="text-blue-400"
+									iconBgColor="bg-blue-500/10"
+								/>
 								<CardContent className="space-y-6">
 									<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
 										<div className="space-y-3">
@@ -211,51 +303,33 @@ export default function SettingsContent() {
 											</p>
 										</div>
 									</div>
+								</CardContent>
+							</Card>
 
-									<div className="flex items-center gap-3 border-t border-zinc-800 pt-4">
-										<Button
-											onClick={handleUpdateProfile}
-											disabled={isLoading || !hasUnsavedChanges}
-											className="bg-primary font-semibold text-black transition-all duration-200 hover:bg-primary/50 disabled:opacity-50"
-										>
-											{isLoading ? (
-												<>
-													<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-													Saving...
-												</>
-											) : (
-												<>
-													<Save className="mr-2 h-4 w-4" />
-													Save Changes
-												</>
-											)}
-										</Button>
-
-										{hasUnsavedChanges && (
-											<Button
-												variant="outline"
-												onClick={handleDiscardChanges}
-												className="border-zinc-700 text-gray-300 hover:bg-zinc-800 hover:text-white"
-											>
-												Discard
-											</Button>
-										)}
-									</div>
+							{/* Font Settings */}
+							<Card className="border-zinc-800 bg-zinc-950/80 shadow-xl">
+								<SettingsCardHeader
+									title="Typography"
+									description="Choose your preferred font for better readability"
+									icon={Type}
+									iconColor="text-purple-400"
+									iconBgColor="bg-purple-500/10"
+								/>
+								<CardContent className="space-y-4">
+									<FontGrid />
 								</CardContent>
 							</Card>
 
 							{/* Appearance Settings */}
 
 							<Card className="border-zinc-800 bg-zinc-950/80 shadow-xl">
-								<CardHeader className="pb-4">
-									<CardTitle className="flex items-center gap-2 text-lg text-gray-100">
-										<PaletteIcon className="h-5 w-5 text-primary" />
-										Appearance
-									</CardTitle>
-									<CardDescription className="text-gray-400">
-										Customize the look and feel of your experience
-									</CardDescription>
-								</CardHeader>
+								<SettingsCardHeader
+									title="Appearance"
+									description="Customize the look and feel of your experience"
+									icon={PaletteIcon}
+									iconColor="text-primary"
+									iconBgColor="bg-primary/10"
+								/>
 								<CardContent className="space-y-4">
 									<ThemeGrid />
 								</CardContent>

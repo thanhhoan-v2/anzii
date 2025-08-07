@@ -150,10 +150,6 @@ export function ThemeGrid() {
 					);
 				})}
 			</div>
-
-			<div className="pt-2 text-center text-xs text-muted-foreground">
-				Changes apply instantly across the entire app
-			</div>
 		</div>
 	);
 }

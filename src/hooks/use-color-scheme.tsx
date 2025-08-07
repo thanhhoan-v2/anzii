@@ -12,18 +12,14 @@ import {
 	useState,
 } from "react";
 
-import {
-	COLOR_SCHEMES,
-	DEFAULT_COLOR_SCHEME,
-	type IColorScheme,
-} from "@/types/colorscheme";
+import { DEFAULT_COLOR_SCHEME, type ITheme, THEMES } from "@/types/themes";
 
 interface ColorSchemeContextType {
 	colorScheme: string;
-	colorSchemeName: IColorScheme["name"];
-	colorSchemeData: IColorScheme;
+	colorSchemeName: ITheme["name"];
+	colorSchemeData: ITheme;
 	setColorScheme: (scheme: string) => void;
-	availableSchemes: IColorScheme[];
+	availableSchemes: ITheme[];
 }
 
 const ColorSchemeContext = createContext<ColorSchemeContextType | undefined>(
@@ -93,11 +89,10 @@ function InnerColorSchemeProvider({ children }: ColorSchemeProviderProps) {
 
 	// Get current color scheme data
 	const colorSchemeData =
-		COLOR_SCHEMES.find((scheme) => scheme.id === colorScheme) ||
-		COLOR_SCHEMES[0];
+		THEMES.find((scheme) => scheme.id === colorScheme) || THEMES[0];
 
 	// Apply color scheme to CSS custom properties
-	const applyColorScheme = useCallback((scheme: IColorScheme) => {
+	const applyColorScheme = useCallback((scheme: ITheme) => {
 		const root = document.documentElement;
 
 		// Apply all CSS custom properties
@@ -293,25 +288,63 @@ function InnerColorSchemeProvider({ children }: ColorSchemeProviderProps) {
 		}
 	}, []);
 
-	// Load color scheme from localStorage on mount
+	// Load color scheme from database on mount
 	useEffect(() => {
-		const savedScheme = localStorage.getItem("color-scheme");
-		if (savedScheme && COLOR_SCHEMES.find((s) => s.id === savedScheme)) {
-			setColorSchemeState(savedScheme);
-		} else {
-			// Apply default color scheme on initial load
-			const defaultScheme =
-				COLOR_SCHEMES.find((s) => s.id === DEFAULT_COLOR_SCHEME) ||
-				COLOR_SCHEMES[0];
-			applyColorScheme(defaultScheme);
-		}
-	}, []); // Only run on mount
+		const loadUserTheme = async () => {
+			try {
+				const response = await fetch("/api/user/preferences");
+				if (response.ok) {
+					const preferences = await response.json();
+					if (
+						preferences?.theme &&
+						THEMES.find((s) => s.id === preferences.theme)
+					) {
+						setColorSchemeState(preferences.theme);
+					} else {
+						// Apply default color scheme on initial load
+						const defaultScheme =
+							THEMES.find((s) => s.id === DEFAULT_COLOR_SCHEME) || THEMES[0];
+						applyColorScheme(defaultScheme);
+					}
+				} else {
+					// Apply default color scheme if no user preferences
+					const defaultScheme =
+						THEMES.find((s) => s.id === DEFAULT_COLOR_SCHEME) || THEMES[0];
+					applyColorScheme(defaultScheme);
+				}
+			} catch (error) {
+				console.error("Error loading user theme:", error);
+				// Apply default color scheme on error
+				const defaultScheme =
+					THEMES.find((s) => s.id === DEFAULT_COLOR_SCHEME) || THEMES[0];
+				applyColorScheme(defaultScheme);
+			}
+		};
+
+		loadUserTheme();
+	}, [applyColorScheme]); // Only run on mount
 
 	// Apply color scheme when it changes
 	useEffect(() => {
 		applyColorScheme(colorSchemeData);
-		localStorage.setItem("color-scheme", colorScheme);
-	}, [colorScheme, applyColorScheme]);
+
+		// Save to database
+		const saveUserTheme = async () => {
+			try {
+				await fetch("/api/user/preferences", {
+					method: "PUT",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({ theme: colorScheme }),
+				});
+			} catch (error) {
+				console.error("Error saving user theme:", error);
+			}
+		};
+
+		saveUserTheme();
+	}, [colorScheme, applyColorScheme, colorSchemeData]);
 
 	const setColorScheme = useCallback((scheme: string) => {
 		setColorSchemeState(scheme);
@@ -323,7 +356,7 @@ function InnerColorSchemeProvider({ children }: ColorSchemeProviderProps) {
 			colorSchemeName: colorSchemeData.name,
 			colorSchemeData,
 			setColorScheme,
-			availableSchemes: COLOR_SCHEMES,
+			availableSchemes: THEMES,
 		}),
 		[colorScheme, colorSchemeData, setColorScheme]
 	);

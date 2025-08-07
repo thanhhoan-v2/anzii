@@ -7,6 +7,7 @@ import { z } from "zod";
 import { generateCardsFromMarkdown } from "@/ai/flows/generate-cards-from-markdown";
 import { generateDeckDescription } from "@/ai/flows/generate-deck-description";
 import { generateDeckFromTopic } from "@/ai/flows/generate-deck-from-topic";
+import { generateRelatedTopics } from "@/ai/flows/generate-related-topics";
 import { summarizeTopic } from "@/ai/flows/summarize-topic";
 import { getDb } from "@/db";
 import { cards, decks } from "@/db/schema";
@@ -28,16 +29,24 @@ type ActionResponse = {
 };
 
 // Type for raw card data from database (with Date objects)
-type RawCardData = Omit<CardType, "dueDate" | "createdAt"> & {
+type RawCardData = Omit<CardType, "dueDate" | "createdAt" | "cardType"> & {
 	dueDate: Date;
 	createdAt?: Date;
+	cardType: string | null;
 };
 
-const convertCardTimestamps = (cardData: RawCardData): CardType => ({
-	...cardData,
-	dueDate: cardData.dueDate.toISOString(),
-	createdAt: cardData.createdAt?.toISOString(),
-});
+const convertCardTimestamps = (cardData: RawCardData): CardType => {
+	const { cardType, ...rest } = cardData;
+	return {
+		...rest,
+		dueDate: cardData.dueDate.toISOString(),
+		createdAt: cardData.createdAt?.toISOString(),
+		cardType:
+			cardType && ["flashcard", "mcq", "fillInBlanks"].includes(cardType)
+				? (cardType as "flashcard" | "mcq" | "fillInBlanks")
+				: undefined,
+	} as CardType;
+};
 
 export async function getDecksWithCounts(): Promise<DeckListItem[]> {
 	const db = getDb();
@@ -46,6 +55,18 @@ export async function getDecksWithCounts(): Promise<DeckListItem[]> {
 			.select({
 				deckId: cards.deckId,
 				cardCount: sql<number>`count(${cards.id})`.as("card_count"),
+				flashcardCount:
+					sql<number>`count(case when ${cards.cardType} = 'flashcard' then 1 end)`.as(
+						"flashcard_count"
+					),
+				mcqCount:
+					sql<number>`count(case when ${cards.cardType} = 'mcq' then 1 end)`.as(
+						"mcq_count"
+					),
+				fillInBlanksCount:
+					sql<number>`count(case when ${cards.cardType} = 'fillInBlanks' then 1 end)`.as(
+						"fill_in_blanks_count"
+					),
 			})
 			.from(cards)
 			.groupBy(cards.deckId)
@@ -57,8 +78,20 @@ export async function getDecksWithCounts(): Promise<DeckListItem[]> {
 			id: decks.id,
 			name: decks.name,
 			description: decks.description,
+			// relatedTopics: decks.relatedTopics,
 			cardCount:
 				sql<number>`coalesce(${cardCountSubquery.cardCount}, 0)`.mapWith(
+					Number
+				),
+			flashcardCount:
+				sql<number>`coalesce(${cardCountSubquery.flashcardCount}, 0)`.mapWith(
+					Number
+				),
+			mcqCount: sql<number>`coalesce(${cardCountSubquery.mcqCount}, 0)`.mapWith(
+				Number
+			),
+			fillInBlanksCount:
+				sql<number>`coalesce(${cardCountSubquery.fillInBlanksCount}, 0)`.mapWith(
 					Number
 				),
 		})
@@ -69,6 +102,7 @@ export async function getDecksWithCounts(): Promise<DeckListItem[]> {
 	return result.map((deck) => ({
 		...deck,
 		description: deck.description || undefined,
+		// relatedTopics: deck.relatedTopics || undefined,
 	}));
 }
 
@@ -240,6 +274,7 @@ export async function reviewCard({
 			...cardData,
 			dueDate: cardData.dueDate.toISOString(),
 			createdAt: cardData.createdAt.toISOString(),
+			cardType: cardData.cardType as "flashcard" | "mcq" | "fillInBlanks",
 		};
 
 		const updatedCard = calculateNextReview(card, rating);
@@ -333,6 +368,12 @@ export async function createDeckFromAi(data: {
 	topic: string;
 	numberOfCards?: number;
 	description?: string;
+	cardTypes?: {
+		flashcard: boolean;
+		mcq: boolean;
+		fillInBlanks: boolean;
+	};
+	notes?: string;
 }): Promise<ActionResponse> {
 	const db = getDb();
 	try {
@@ -346,7 +387,19 @@ export async function createDeckFromAi(data: {
 		});
 		const deckDescription = descriptionResult.description;
 
-		const aiResult = await generateDeckFromTopic(data);
+		// Generate related topics
+		const relatedTopicsResult = await generateRelatedTopics({
+			topic: data.topic,
+		});
+		const relatedTopics = relatedTopicsResult.relatedTopics;
+
+		const aiResult = await generateDeckFromTopic({
+			topic: data.topic,
+			numberOfCards: data.numberOfCards,
+			description: data.description,
+			cardTypes: data.cardTypes,
+			notes: data.notes,
+		});
 		if (!aiResult.cards || aiResult.cards.length === 0) {
 			return {
 				success: false,
@@ -354,12 +407,13 @@ export async function createDeckFromAi(data: {
 			};
 		}
 
-		// Create deck with summarized name and description
+		// Create deck with summarized name, description, and related topics
 		const [newDeck] = await db
 			.insert(decks)
 			.values({
 				name: deckName,
 				description: deckDescription,
+				relatedTopics: relatedTopics,
 			})
 			.returning();
 
@@ -371,6 +425,7 @@ export async function createDeckFromAi(data: {
 					deckId: newDeck.id,
 					question: card.question,
 					answer: card.answer,
+					cardType: card.cardType || "flashcard",
 				}))
 			);
 		}

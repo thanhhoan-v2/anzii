@@ -4,6 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import BackButton from "@/components/common/back-button";
+import DeckDeleteDialog from "@/components/features/deck/deck-delete-dialog";
 import CardEditor from "@/components/features/study/card-editor";
 import ReviewSession from "@/components/features/study/review-session";
 import AppHeader from "@/components/layout/app-header";
@@ -24,7 +25,7 @@ import {
 } from "@/components/ui/card";
 import { useAddCard, useDeleteCard, useUpdateCard } from "@/hooks/use-cards";
 import { useDeckManagement } from "@/hooks/use-deck-management";
-import { useDeck, useUpdateDeckName } from "@/hooks/use-decks";
+import { useDeck, useDeleteDeck, useUpdateDeckName } from "@/hooks/use-decks";
 import { useReviewSession } from "@/hooks/use-review-session";
 import { useToast } from "@/hooks/use-toast";
 import { ROUTES } from "@/lib/routes";
@@ -47,6 +48,7 @@ export default function DeckDetailPage() {
 	const addCardMutation = useAddCard();
 	const updateCardMutation = useUpdateCard();
 	const deleteCardMutation = useDeleteCard();
+	const deleteDeckMutation = useDeleteDeck();
 
 	const [isEditingName, setIsEditingName] = useState(false);
 	const [deckName, setDeckName] = useState("");
@@ -169,6 +171,15 @@ export default function DeckDetailPage() {
 		}
 	};
 
+	const handleDeleteDeck = async (deckId: string) => {
+		try {
+			await deleteDeckMutation.mutateAsync(deckId);
+			router.push(ROUTES.DASHBOARD);
+		} catch {
+			// Error handling is done in the mutation
+		}
+	};
+
 	if (isLoading || !deck) {
 		return <DeckLoading />;
 	}
@@ -196,7 +207,14 @@ export default function DeckDetailPage() {
 					/>
 				) : (
 					<Card>
-						<CardHeader className="gap-5">
+						<CardHeader className="relative gap-5">
+							<div className="absolute right-2 top-2 z-10">
+								<DeckDeleteDialog
+									deckId={deck.id}
+									deckName={deck.name}
+									onDeleteDeck={handleDeleteDeck}
+								/>
+							</div>
 							<DeckNameEditor
 								deckName={deckName}
 								isEditing={isEditingName}
