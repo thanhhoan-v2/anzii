@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import BackButton from "@/components/common/back-button";
 import DeckDeleteDialog from "@/components/features/deck/deck-delete-dialog";
 import CardEditor from "@/components/features/study/card-editor";
+import MCQCardEditor from "@/components/features/study/mcq-card-editor";
 import ReviewSession from "@/components/features/study/review-session";
 import AppHeader from "@/components/layout/app-header";
 import {
@@ -30,6 +31,7 @@ import { useReviewSession } from "@/hooks/use-review-session";
 import { useToast } from "@/hooks/use-toast";
 import { ROUTES } from "@/lib/routes";
 import type { Card as CardType } from "@/types";
+import { Rating } from "@/types";
 
 export default function DeckDetailPage() {
 	const router = useRouter();
@@ -139,16 +141,35 @@ export default function DeckDetailPage() {
 					cardId: cardToEdit.id,
 					deckId: deck.id,
 					...cardData,
+					cardType: cardToEdit.cardType, // Preserve the card type
 				});
 			} else {
-				// Adding new card
-				await addCardMutation.mutateAsync({ deckId: deck.id, ...cardData });
+				// Adding new card - determine card type based on content
+				const cardType = determineCardType(cardData);
+				await addCardMutation.mutateAsync({
+					deckId: deck.id,
+					...cardData,
+					cardType,
+				});
 			}
 			setCardToEdit(null);
 			setIsCardEditorOpen(false);
 		} catch {
 			// Error handling is done in the mutations
 		}
+	};
+
+	// Determine card type based on content
+	const determineCardType = (cardData: {
+		question: string;
+		answer: string;
+	}) => {
+		// Check if the answer contains MCQ format (A) Option A, B) Option B, etc.)
+		const mcqPattern = /[A-D]\)[^,]+,\s*[A-D]\)[^,]+/;
+		if (mcqPattern.test(cardData.answer)) {
+			return "mcq";
+		}
+		return "flashcard";
 	};
 
 	const handleAddCardClick = () => {
@@ -180,6 +201,14 @@ export default function DeckDetailPage() {
 		}
 	};
 
+	// Handle MCQ answers by calling the review session's handleRate
+	const handleMCQAnswer = (cardId: string, rating: Rating) => {
+		reviewSession.handleRate(rating);
+	};
+
+	// Determine which card editor to show
+	const isMCQCard = cardToEdit?.cardType === "mcq";
+
 	if (isLoading || !deck) {
 		return <DeckLoading />;
 	}
@@ -201,9 +230,11 @@ export default function DeckDetailPage() {
 						isFlipped={reviewSession.isFlipped}
 						pendingReviewsCount={reviewSession.pendingReviews.length}
 						isProcessingReviews={reviewSession.isProcessingReviews}
+						mcqAnswersCount={reviewSession.mcqAnswers.length}
 						onFlip={reviewSession.handleFlip}
 						onRate={reviewSession.handleRate}
 						onEndSession={reviewSession.handleEndSession}
+						onMCQAnswer={handleMCQAnswer}
 					/>
 				) : (
 					<Card>
@@ -277,12 +308,22 @@ export default function DeckDetailPage() {
 				)}
 			</main>
 
-			<CardEditor
-				isOpen={isCardEditorOpen}
-				onOpenChange={setIsCardEditorOpen}
-				onSave={handleSaveCard}
-				cardToEdit={cardToEdit}
-			/>
+			{/* Render appropriate card editor based on card type */}
+			{isMCQCard ? (
+				<MCQCardEditor
+					isOpen={isCardEditorOpen}
+					onOpenChange={setIsCardEditorOpen}
+					onSave={handleSaveCard}
+					cardToEdit={cardToEdit}
+				/>
+			) : (
+				<CardEditor
+					isOpen={isCardEditorOpen}
+					onOpenChange={setIsCardEditorOpen}
+					onSave={handleSaveCard}
+					cardToEdit={cardToEdit}
+				/>
+			)}
 
 			<DeckNameEditDialog
 				isOpen={showConfirmDeckNameEditDialog}

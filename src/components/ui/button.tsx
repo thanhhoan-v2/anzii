@@ -59,14 +59,26 @@ export interface ButtonWithLinkProps {
 	children: React.ReactNode;
 	className?: string;
 	prefetch?: boolean;
+	variant?: "default" | "secondary" | "outline" | "ghost" | "link";
 }
 
 const ButtonWithLink = React.forwardRef<HTMLAnchorElement, ButtonWithLinkProps>(
-	({ href, children, className, prefetch = false, ...props }, ref) => {
+	(
+		{
+			href,
+			children,
+			className,
+			variant = "default",
+			prefetch = false,
+			...props
+		},
+		ref
+	) => {
 		return (
 			<Button
 				asChild
 				size="icon"
+				variant={variant}
 				className={cn(
 					"w-full rounded-xl bg-primary px-8 py-4 text-base font-semibold text-black hover:bg-primary/50",
 					className

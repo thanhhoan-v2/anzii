@@ -18,6 +18,7 @@ interface UseReviewSessionReturn {
 	// Pending reviews state
 	pendingReviews: Array<{ cardId: string; deckId: string; rating: Rating }>;
 	isProcessingReviews: boolean;
+	mcqAnswers: Array<{ cardId: string; deckId: string; rating: Rating }>; // Keep for compatibility
 
 	// Actions
 	startReviewSession: (deckId: string) => Promise<void>;
@@ -171,27 +172,53 @@ export function useReviewSession(): UseReviewSessionReturn {
 
 	const handleRate = useCallback(
 		(rating: Rating) => {
-			if (!isFlipped || !activeDeck) return;
+			if (!activeDeck) return;
 
 			const currentCard = reviewQueue[currentCardIndex];
 
-			// Add review to pending queue for background processing
-			setPendingReviews((prev) => [
-				...prev,
-				{
-					cardId: currentCard.id,
-					deckId: activeDeck.id,
-					rating,
-				},
-			]);
+			// For MCQ cards, we don't need to check isFlipped since they handle their own state
+			// For regular flashcards, we need to ensure the card is flipped
+			if (currentCard?.cardType !== "mcq" && !isFlipped) return;
+
+			// For MCQ cards, store the answer in state instead of immediately syncing
+			if (currentCard?.cardType === "mcq") {
+				// Check if this MCQ answer is already in the queue to prevent duplicates
+				setPendingReviews((prev) => {
+					const isAlreadyQueued = prev.some(
+						(answer) => answer.cardId === currentCard.id
+					);
+
+					if (!isAlreadyQueued) {
+						const newMcqAnswer = {
+							cardId: currentCard.id,
+							deckId: activeDeck.id,
+							rating,
+						};
+
+						// Move MCQ answer to pending reviews immediately for better reliability
+						return [...prev, newMcqAnswer];
+					}
+					return prev;
+				});
+			} else {
+				// For regular flashcards, add to pending queue for immediate processing
+				setPendingReviews((prev) => [
+					...prev,
+					{
+						cardId: currentCard.id,
+						deckId: activeDeck.id,
+						rating,
+					},
+				]);
+			}
 
 			// Immediately update UI for better UX
 			if (currentCardIndex + 1 < reviewQueue.length) {
 				setCurrentCardIndex((prev) => prev + 1);
 				setIsFlipped(false);
 			} else {
-				// Last card completed - don't end session automatically
-				// Just move to the "session complete" state by advancing the index
+				// Last card completed - all answers should already be in pending reviews
+				// Move to the "session complete" state by advancing the index
 				setCurrentCardIndex((prev) => prev + 1);
 				setIsFlipped(false);
 				toast({
@@ -222,6 +249,7 @@ export function useReviewSession(): UseReviewSessionReturn {
 		// Pending reviews state
 		pendingReviews,
 		isProcessingReviews,
+		mcqAnswers: [], // MCQ answers are now processed immediately
 
 		// Actions
 		startReviewSession,

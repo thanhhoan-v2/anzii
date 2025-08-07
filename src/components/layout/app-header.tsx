@@ -1,7 +1,7 @@
 "use client";
 
 import { UserButton, useUser } from "@stackframe/stack";
-import { PlusIcon } from "lucide-react";
+import { PlusIcon, TelescopeIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -40,6 +40,13 @@ export default function AppHeader({
 		<header className="sticky top-0 z-50 border-b border-primary bg-secondary p-4 text-white">
 			<div className="flex items-center justify-between">
 				{children ?? <AppLogo showText={true} />}
+
+				<Link
+					href={ROUTES.EXPLORE}
+					className="flex items-center gap-2 rounded-md px-2 py-1 font-bold hover:bg-primary hover:text-secondary"
+				>
+					<TelescopeIcon className="h-4 w-4" /> Explore
+				</Link>
 
 				<div className="hidden items-center gap-6 md:flex">
 					{/* Protected/Dashboard Navigation */}

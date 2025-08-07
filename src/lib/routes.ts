@@ -14,4 +14,6 @@ export const ROUTES = {
 	CREATE: "/create",
 	SETTINGS: "/settings",
 	DECK: (deckId: string) => `/deck/${deckId}`,
+
+	EXPLORE: "/explore",
 } as const;

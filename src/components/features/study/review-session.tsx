@@ -1,6 +1,7 @@
 import { ArrowLeft, CheckCircle, Loader2 } from "lucide-react";
 
 import Flashcard from "@/components/features/study/Flashcard";
+import MCQCard from "@/components/features/study/mcq-card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import type { Card as CardType, Deck, Rating } from "@/types";
@@ -14,9 +15,11 @@ interface ReviewSessionProps {
 	isFlipped: boolean;
 	pendingReviewsCount: number;
 	isProcessingReviews: boolean;
+	mcqAnswersCount: number;
 	onFlip: () => void;
 	onRate: (rating: Rating) => void;
 	onEndSession: () => void;
+	onMCQAnswer: (cardId: string, rating: Rating) => void;
 }
 
 export default function ReviewSession({
@@ -28,14 +31,32 @@ export default function ReviewSession({
 	isFlipped,
 	pendingReviewsCount,
 	isProcessingReviews,
+	mcqAnswersCount,
 	onFlip,
 	onRate,
 	onEndSession,
+	onMCQAnswer,
 }: ReviewSessionProps) {
 	// Check if we're done with all cards
 	const isSessionComplete =
 		currentCard === null || currentCardIndex >= reviewQueueLength;
 	const hasPendingSync = pendingReviewsCount > 0 || isProcessingReviews;
+
+	// Handle MCQ answer submission
+	const handleMCQAnswer = (selectedOptions: string[], isCorrect: boolean) => {
+		// Convert MCQ result to rating for SRS algorithm
+		let rating: Rating;
+		if (isCorrect) {
+			rating = "easy"; // Correct answer gets "easy" rating
+		} else {
+			rating = "hard"; // Incorrect answer gets "hard" rating
+		}
+
+		// Call the parent's onMCQAnswer handler
+		if (currentCard) {
+			onMCQAnswer(currentCard.id, rating);
+		}
+	};
 
 	// If session is complete, show syncing status or completion
 	if (isSessionComplete) {
@@ -80,6 +101,9 @@ export default function ReviewSession({
 		);
 	}
 
+	// Determine if current card is MCQ
+	const isMCQ = currentCard?.cardType === "mcq";
+
 	// Normal review interface
 	return (
 		<div className="flex h-full w-full flex-col items-center">
@@ -89,46 +113,60 @@ export default function ReviewSession({
 						<p className="text-sm text-muted-foreground">
 							{`Reviewing "${activeDeck.name}" | Card ${currentCardIndex + 1} of ${reviewQueueLength}`}
 						</p>
-						{hasPendingSync && (
+						{(hasPendingSync || mcqAnswersCount > 0) && (
 							<div className="flex items-center gap-1 text-xs text-muted-foreground">
 								<Loader2 className="h-3 w-3 animate-spin" />
-								<span>Syncing...</span>
+								<span>
+									{hasPendingSync
+										? `Syncing... (${pendingReviewsCount} pending)`
+										: `Stored ${mcqAnswersCount} MCQ answers`}
+								</span>
 							</div>
 						)}
 					</div>
 				</div>
 				<Progress value={progressValue} className="mt-1 h-2 w-full" />
 			</div>
-			<Flashcard card={currentCard} isFlipped={isFlipped} onFlip={onFlip} />
-			<div className="mt-6 flex w-full justify-center gap-4">
-				{isFlipped ? (
-					<>
-						<Button
-							onClick={() => onRate("hard")}
-							variant="destructive"
-							className="w-28"
-						>
-							Hard
+
+			{/* Render appropriate card component based on type */}
+			{isMCQ ? (
+				<MCQCard card={currentCard} onAnswer={handleMCQAnswer} />
+			) : (
+				<Flashcard card={currentCard} isFlipped={isFlipped} onFlip={onFlip} />
+			)}
+
+			{/* Show rating buttons only for non-MCQ cards */}
+			{!isMCQ && (
+				<div className="mt-6 flex w-full justify-center gap-4">
+					{isFlipped ? (
+						<>
+							<Button
+								onClick={() => onRate("hard")}
+								variant="destructive"
+								className="w-28"
+							>
+								Hard
+							</Button>
+							<Button
+								onClick={() => onRate("medium")}
+								className="w-28 bg-warning text-warning-foreground hover:bg-warning/90"
+							>
+								Medium
+							</Button>
+							<Button
+								onClick={() => onRate("easy")}
+								className="w-28 bg-success text-success-foreground hover:bg-success/90"
+							>
+								Easy
+							</Button>
+						</>
+					) : (
+						<Button onClick={onFlip} size="lg" className="w-48">
+							Show Answer
 						</Button>
-						<Button
-							onClick={() => onRate("medium")}
-							className="w-28 bg-warning text-warning-foreground hover:bg-warning/90"
-						>
-							Medium
-						</Button>
-						<Button
-							onClick={() => onRate("easy")}
-							className="w-28 bg-success text-success-foreground hover:bg-success/90"
-						>
-							Easy
-						</Button>
-					</>
-				) : (
-					<Button onClick={onFlip} size="lg" className="w-48">
-						Show Answer
-					</Button>
-				)}
-			</div>
+					)}
+				</div>
+			)}
 		</div>
 	);
 }

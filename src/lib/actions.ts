@@ -318,10 +318,12 @@ export async function addCard({
 	deckId,
 	question,
 	answer,
+	cardType,
 }: {
 	deckId: string;
 	question: string;
 	answer: string;
+	cardType?: "flashcard" | "mcq" | "fillInBlanks";
 }): Promise<ActionResponse> {
 	const db = getDb();
 	try {
@@ -329,6 +331,7 @@ export async function addCard({
 			deckId,
 			question,
 			answer,
+			cardType: cardType || "flashcard",
 		});
 		revalidatePath(ROUTES.DECK(deckId));
 		revalidatePath(ROUTES.HOME);
@@ -344,17 +347,23 @@ export async function updateCard({
 	deckId,
 	question,
 	answer,
+	cardType,
 }: {
 	cardId: string;
 	deckId: string;
 	question: string;
 	answer: string;
+	cardType?: "flashcard" | "mcq" | "fillInBlanks";
 }): Promise<ActionResponse> {
 	const db = getDb();
 	try {
 		await db
 			.update(cards)
-			.set({ question, answer })
+			.set({
+				question,
+				answer,
+				...(cardType && { cardType }),
+			})
 			.where(eq(cards.id, cardId));
 		revalidatePath(ROUTES.DECK(deckId));
 		return { success: true };

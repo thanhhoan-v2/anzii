@@ -16,6 +16,7 @@ export function useAddCard() {
 			deckId: string;
 			question: string;
 			answer: string;
+			cardType?: "flashcard" | "mcq" | "fillInBlanks";
 		}) => {
 			const result = await addCard(data);
 			if (!result.success) {
@@ -52,6 +53,7 @@ export function useUpdateCard() {
 			deckId: string;
 			question: string;
 			answer: string;
+			cardType?: "flashcard" | "mcq" | "fillInBlanks";
 		}) => {
 			const result = await updateCard(data);
 			if (!result.success) {
