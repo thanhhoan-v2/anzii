@@ -9,7 +9,7 @@ import { generateDeckDescription } from "@/ai/flows/generate-deck-description";
 import { generateDeckFromTopic } from "@/ai/flows/generate-deck-from-topic";
 import { summarizeTopic } from "@/ai/flows/summarize-topic";
 import { getDb } from "@/db";
-import { cards, decks } from "@/db/schema";
+import { cards, decks, userLikes, users } from "@/db/schema";
 import { calculateNextReview } from "@/lib/srs";
 import { shuffle } from "@/lib/utils";
 import type {
@@ -25,6 +25,7 @@ type ActionResponse = {
 	success: boolean;
 	error?: string;
 	deckId?: string;
+	liked?: boolean;
 };
 
 // Type for raw card data from database (with Date objects)
@@ -77,6 +78,8 @@ export async function getDecksWithCounts(): Promise<DeckListItem[]> {
 			id: decks.id,
 			name: decks.name,
 			description: decks.description,
+			likeCount: decks.likeCount,
+			userCount: decks.userCount,
 			cardCount:
 				sql<number>`coalesce(${cardCountSubquery.cardCount}, 0)`.mapWith(
 					Number
@@ -509,5 +512,96 @@ export async function createDeck(data: {
 	} catch (error) {
 		console.error(error);
 		return { success: false, error: "Failed to create deck." };
+	}
+}
+
+export async function getUserLikedDecks(userId: string): Promise<string[]> {
+	const db = getDb();
+	try {
+		const userLikesResult = await db
+			.select({ deckId: userLikes.deckId })
+			.from(userLikes)
+			.where(eq(userLikes.userId, userId));
+
+		return userLikesResult.map((like) => like.deckId);
+	} catch (error) {
+		console.error(error);
+		return [];
+	}
+}
+
+export async function toggleDeckLike(
+	deckId: string,
+	userId: string
+): Promise<ActionResponse> {
+	const db = getDb();
+	try {
+		// First, ensure the user exists in our users table
+		// For now, we'll create a placeholder user if they don't exist
+		// In a real app, you'd get the user info from Stack Auth
+		const existingUser = await db
+			.select({ id: users.id })
+			.from(users)
+			.where(eq(users.id, userId))
+			.limit(1);
+
+		if (existingUser.length === 0) {
+			// Create a placeholder user for demo purposes
+			// In a real app, you'd get user info from Stack Auth session
+			await db.insert(users).values({
+				id: userId,
+				email: `user-${userId}@placeholder.com`, // Placeholder email
+				displayName: `User ${userId.slice(0, 8)}`, // Placeholder name
+			});
+		}
+
+		// Check if user already liked this deck
+		const existingLike = await db
+			.select({ id: userLikes.id })
+			.from(userLikes)
+			.where(eq(userLikes.deckId, deckId) && eq(userLikes.userId, userId))
+			.limit(1);
+
+		let liked: boolean;
+
+		if (existingLike.length > 0) {
+			// User already liked, so unlike
+			await db
+				.delete(userLikes)
+				.where(eq(userLikes.deckId, deckId) && eq(userLikes.userId, userId));
+			liked = false;
+		} else {
+			// User hasn't liked, so like
+			await db.insert(userLikes).values({
+				deckId,
+				userId,
+			});
+			liked = true;
+		}
+
+		revalidatePath(ROUTES.HOME);
+		revalidatePath(ROUTES.DECK(deckId));
+		return { success: true, liked };
+	} catch (error) {
+		console.error(error);
+		return { success: false, error: "Failed to toggle deck like." };
+	}
+}
+
+export async function incrementUserCount(
+	deckId: string
+): Promise<ActionResponse> {
+	const db = getDb();
+	try {
+		await db
+			.update(decks)
+			.set({ userCount: sql`${decks.userCount} + 1` })
+			.where(eq(decks.id, deckId));
+		revalidatePath(ROUTES.HOME);
+		revalidatePath(ROUTES.DECK(deckId));
+		return { success: true };
+	} catch (error) {
+		console.error(error);
+		return { success: false, error: "Failed to update user count." };
 	}
 }

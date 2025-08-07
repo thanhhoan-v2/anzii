@@ -16,6 +16,8 @@ export const decks = pgTable("decks", {
 		.$defaultFn(() => randomUUID()),
 	name: text("name").notNull(),
 	description: text("description"),
+	likeCount: integer("like_count").notNull().default(0),
+	userCount: integer("user_count").notNull().default(0),
 	createdAt: timestamp("created_at", { withTimezone: true })
 		.defaultNow()
 		.notNull(),
@@ -23,6 +25,7 @@ export const decks = pgTable("decks", {
 
 export const decksRelations = relations(decks, ({ many }) => ({
 	cards: many(cards),
+	userLikes: many(userLikes),
 }));
 
 export const cards = pgTable("cards", {
@@ -68,4 +71,31 @@ export const users = pgTable("users", {
 
 export const usersRelations = relations(users, ({ many }) => ({
 	decks: many(decks),
+	userLikes: many(userLikes),
+}));
+
+export const userLikes = pgTable("user_likes", {
+	id: text("id")
+		.primaryKey()
+		.$defaultFn(() => randomUUID()),
+	userId: text("user_id")
+		.notNull()
+		.references(() => users.id, { onDelete: "cascade" }),
+	deckId: text("deck_id")
+		.notNull()
+		.references(() => decks.id, { onDelete: "cascade" }),
+	createdAt: timestamp("created_at", { withTimezone: true })
+		.defaultNow()
+		.notNull(),
+});
+
+export const userLikesRelations = relations(userLikes, ({ one }) => ({
+	user: one(users, {
+		fields: [userLikes.userId],
+		references: [users.id],
+	}),
+	deck: one(decks, {
+		fields: [userLikes.deckId],
+		references: [decks.id],
+	}),
 }));

@@ -25,6 +25,8 @@ export interface DeckListItem {
 	flashcardCount: number;
 	mcqCount: number;
 	fillInBlanksCount: number;
+	likeCount: number;
+	userCount: number;
 }
 
 export type Rating = "hard" | "medium" | "easy";

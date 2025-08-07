@@ -41,7 +41,15 @@
 
 ## Recent Updates
 
-### Next.js 15 & React 19 Upgrade (Latest)
+### Social Features & Engagement (Latest)
+
+- **Like System**: Users can now like decks with a heart icon, showing appreciation for quality content
+- **User Count Tracking**: Displays the number of times a deck has been viewed/finished by users
+- **Real-time Updates**: Like counts update instantly with optimistic UI updates using React Query
+- **Engagement Metrics**: Badges show both like count and user finish count for better deck discovery
+- **Improved Discovery**: Users can see which decks are popular and frequently used by the community
+
+### Next.js 15 & React 19 Upgrade
 
 - **Latest Framework**: Upgraded to Next.js 15.4.5 and React 19.1.1 for improved performance and features
 - **Enhanced TypeScript Support**: Updated TypeScript configurations for better type safety

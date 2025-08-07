@@ -84,6 +84,24 @@ export default function DeckDetailPage() {
 		}
 	}, [error, deck, isLoading, deckId, router, toast]);
 
+	// Increment user count when deck is loaded
+	useEffect(() => {
+		if (deck && deckId) {
+			const incrementUserCount = async () => {
+				try {
+					await fetch(`/api/decks/${deckId}/increment-user-count`, {
+						method: "POST",
+					});
+				} catch (error) {
+					// Silently fail - user count increment is not critical
+					console.error("Failed to increment user count:", error);
+				}
+			};
+
+			incrementUserCount();
+		}
+	}, [deck, deckId]);
+
 	// Deck name editing handlers
 	const handleDeckNameSave = async () => {
 		if (!deck) return;
