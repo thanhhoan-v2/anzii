@@ -7,7 +7,6 @@ import { z } from "zod";
 import { generateCardsFromMarkdown } from "@/ai/flows/generate-cards-from-markdown";
 import { generateDeckDescription } from "@/ai/flows/generate-deck-description";
 import { generateDeckFromTopic } from "@/ai/flows/generate-deck-from-topic";
-import { generateRelatedTopics } from "@/ai/flows/generate-related-topics";
 import { summarizeTopic } from "@/ai/flows/summarize-topic";
 import { getDb } from "@/db";
 import { cards, decks } from "@/db/schema";
@@ -78,7 +77,6 @@ export async function getDecksWithCounts(): Promise<DeckListItem[]> {
 			id: decks.id,
 			name: decks.name,
 			description: decks.description,
-			// relatedTopics: decks.relatedTopics,
 			cardCount:
 				sql<number>`coalesce(${cardCountSubquery.cardCount}, 0)`.mapWith(
 					Number
@@ -102,7 +100,6 @@ export async function getDecksWithCounts(): Promise<DeckListItem[]> {
 	return result.map((deck) => ({
 		...deck,
 		description: deck.description || undefined,
-		// relatedTopics: deck.relatedTopics || undefined,
 	}));
 }
 
@@ -396,12 +393,6 @@ export async function createDeckFromAi(data: {
 		});
 		const deckDescription = descriptionResult.description;
 
-		// Generate related topics
-		const relatedTopicsResult = await generateRelatedTopics({
-			topic: data.topic,
-		});
-		const relatedTopics = relatedTopicsResult.relatedTopics;
-
 		const aiResult = await generateDeckFromTopic({
 			topic: data.topic,
 			numberOfCards: data.numberOfCards,
@@ -416,13 +407,12 @@ export async function createDeckFromAi(data: {
 			};
 		}
 
-		// Create deck with summarized name, description, and related topics
+		// Create deck with summarized name and description
 		const [newDeck] = await db
 			.insert(decks)
 			.values({
 				name: deckName,
 				description: deckDescription,
-				relatedTopics: relatedTopics,
 			})
 			.returning();
 

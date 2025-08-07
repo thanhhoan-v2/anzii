@@ -10,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function CreateTabs() {
 	return (
-		<Tabs defaultValue="manual" className="w-full">
+		<Tabs defaultValue="ai" className="w-full">
 			<TabsList className="grid w-full grid-cols-4">
 				<TabsTrigger value="ai" className="flex items-center gap-2">
 					<SparklesIcon className="h-4 w-4" />

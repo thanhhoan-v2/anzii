@@ -30,7 +30,6 @@
 - AI-powered flashcard generation from any content (PDFs, text, markdown)
 - Intelligent deck naming with AI topic summarization (max 5 words)
 - AI-generated deck descriptions for better context and organization
-- **AI-generated related topics** - automatically suggests 3 closely related topics for each AI-created deck
 - Scientifically-proven spaced repetition scheduling with SM-2 algorithm
 - Advanced analytics and progress tracking with learning insights
 - Multi-format import and export capabilities
@@ -64,6 +63,13 @@
 - **Embedded Review Sessions**: Review sessions are embedded within the deck detail page - no separate review page needed
 - **Seamless Experience**: Users stay on the same page when starting and completing review sessions
 - **Improved UX**: All deck management and review functionality in one unified interface
+
+### Simplified AI Features
+
+- **Streamlined AI Generation**: Removed related topics feature to focus on core AI functionality
+- **Cleaner Database Schema**: Simplified deck structure by removing related_topics column
+- **Reduced Complexity**: Streamlined AI prompts and database queries for better performance
+- **Focused Experience**: Concentrated on essential AI features: deck generation, naming, and descriptions
 
 ## Project Structure
 

@@ -41,12 +41,14 @@ export default function AppHeader({
 			<div className="flex items-center justify-between">
 				{children ?? <AppLogo showText={true} />}
 
-				<Link
-					href={ROUTES.EXPLORE}
-					className="flex items-center gap-2 rounded-md px-2 py-1 font-bold hover:bg-primary hover:text-secondary"
-				>
-					<TelescopeIcon className="h-4 w-4" /> Explore
-				</Link>
+				{pathname === ROUTES.DECKS && (
+					<Link
+						href={ROUTES.EXPLORE}
+						className="flex items-center gap-2 rounded-md px-2 py-1 font-bold hover:bg-primary hover:text-secondary"
+					>
+						<TelescopeIcon className="h-4 w-4" /> Explore
+					</Link>
+				)}
 
 				<div className="hidden items-center gap-6 md:flex">
 					{/* Protected/Dashboard Navigation */}

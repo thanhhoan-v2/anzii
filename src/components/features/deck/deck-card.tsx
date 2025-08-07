@@ -70,18 +70,9 @@ export default function DeckCard({
 						mcqCount={deck.mcqCount}
 						fillInBlanksCount={deck.fillInBlanksCount}
 					/>
-					{deck.relatedTopics && deck.relatedTopics.length > 0 && (
-						<div className="ml-2 flex flex-wrap gap-1">
-							{deck.relatedTopics.map((topic, index) => (
-								<Badge key={index} variant="secondary" className="text-xs">
-									{topic}
-								</Badge>
-							))}
-						</div>
-					)}
 				</div>
 				{deck.description && (
-					<CardDescription className="line-clamp-2">
+					<CardDescription className="max-w-[800px]">
 						{deck.description}
 					</CardDescription>
 				)}

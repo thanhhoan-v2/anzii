@@ -25,7 +25,6 @@ export interface DeckListItem {
 	flashcardCount: number;
 	mcqCount: number;
 	fillInBlanksCount: number;
-	relatedTopics?: string[]; // Array of 3 related topics for AI-generated decks
 }
 
 export type Rating = "hard" | "medium" | "easy";

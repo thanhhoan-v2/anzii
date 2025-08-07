@@ -3,7 +3,6 @@ import { randomUUID } from "node:crypto";
 import { relations } from "drizzle-orm";
 import {
 	integer,
-	json,
 	pgTable,
 	real,
 	text,
@@ -17,7 +16,6 @@ export const decks = pgTable("decks", {
 		.$defaultFn(() => randomUUID()),
 	name: text("name").notNull(),
 	description: text("description"),
-	relatedTopics: json("related_topics").$type<string[]>(),
 	createdAt: timestamp("created_at", { withTimezone: true })
 		.defaultNow()
 		.notNull(),
