@@ -44,6 +44,7 @@
 ### Social Features & Engagement (Latest)
 
 - **Like System**: Users can now like decks with a heart icon, showing appreciation for quality content
+- **Optimistic Likes with React Query**: Likes update instantly using cache-first optimistic updates; network confirmation happens in the background and results are reconciled automatically
 - **User Count Tracking**: Displays the number of times a deck has been viewed/finished by users
 - **Real-time Updates**: Like counts update instantly with optimistic UI updates using React Query
 - **Engagement Metrics**: Badges show both like count and user finish count for better deck discovery
@@ -99,6 +100,13 @@ Anzii uses [TanStack Query (React Query)](https://tanstack.com/query/latest) for
 - **Optimized Caching**: 5-minute stale time with automatic background refetching
 - **Error Boundaries**: Graceful error handling with user-friendly fallbacks
 - **Optimistic Updates**: Instant UI updates for better user experience
+
+### Implementation Details
+
+- **Query Keys**: Deck lists are keyed by `['decks', userId]` to scope liked status per user
+- **Liked Status**: `DeckListItem` now includes `likedByUser` derived on the server per user context for consistent refresh behavior
+- **Mutations**: `useDeckLike()` performs optimistic cache updates for both deck list and single deck, with error rollbacks and invalidation on settle
+
 - **Loading Animations**: Smooth skeleton loading with shimmer effects and rotating icons
 - **DevTools**: Built-in development tools for debugging queries and mutations
 

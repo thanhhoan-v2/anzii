@@ -10,7 +10,9 @@ export async function GET() {
 			return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 		}
 
-		const preferences = await UserService.getUserPreferences(user.primaryEmail);
+		const preferences = await UserService.getUserPreferences(
+			user.primaryEmail ?? ""
+		);
 		return NextResponse.json(preferences);
 	} catch (error) {
 		console.error("Error fetching user preferences:", error);
@@ -31,8 +33,8 @@ export async function PUT(request: NextRequest) {
 		const body = await request.json();
 		const { displayName, theme, font } = body;
 
-		const updatedUser = await UserService.updateUserPreferences(
-			user.primaryEmail,
+		const updatedOrCreatedUser = await UserService.upsertUser(
+			user.primaryEmail ?? "",
 			{
 				displayName,
 				theme,
@@ -41,9 +43,9 @@ export async function PUT(request: NextRequest) {
 		);
 
 		return NextResponse.json({
-			displayName: updatedUser.displayName,
-			theme: updatedUser.theme,
-			font: updatedUser.font,
+			displayName: updatedOrCreatedUser.displayName,
+			theme: updatedOrCreatedUser.theme,
+			font: updatedOrCreatedUser.font,
 		});
 	} catch (error) {
 		console.error("Error updating user preferences:", error);

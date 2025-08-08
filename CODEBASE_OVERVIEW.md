@@ -197,7 +197,7 @@ export function useDecks() {
 	return useQuery({
 		queryKey: queryKeys.decks,
 		queryFn: async (): Promise<DeckListItem[]> => {
-			return await getDecksWithCounts();
+			return await getDecksWithCounts(userId);
 		},
 		staleTime: 30 * 1000, // 30 seconds
 	});

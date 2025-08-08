@@ -4,10 +4,10 @@ import { incrementUserCount } from "@/lib/actions";
 
 export async function POST(
 	request: NextRequest,
-	{ params }: { params: { deckId: string } }
+	context: { params: Promise<{ deckId: string }> }
 ) {
 	try {
-		const { deckId } = params;
+		const { deckId } = await context.params;
 
 		if (!deckId) {
 			return NextResponse.json(

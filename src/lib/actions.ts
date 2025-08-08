@@ -1,6 +1,8 @@
 "use server";
 
-import { asc, eq, sql } from "drizzle-orm";
+import { randomUUID } from "node:crypto";
+
+import { and, asc, eq, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
@@ -9,7 +11,7 @@ import { generateDeckDescription } from "@/ai/flows/generate-deck-description";
 import { generateDeckFromTopic } from "@/ai/flows/generate-deck-from-topic";
 import { summarizeTopic } from "@/ai/flows/summarize-topic";
 import { getDb } from "@/db";
-import { cards, decks, userLikes, users } from "@/db/schema";
+import { cards, decks, userLikes } from "@/db/schema";
 import { calculateNextReview } from "@/lib/srs";
 import { shuffle } from "@/lib/utils";
 import type {
@@ -48,7 +50,9 @@ const convertCardTimestamps = (cardData: RawCardData): CardType => {
 	} as CardType;
 };
 
-export async function getDecksWithCounts(): Promise<DeckListItem[]> {
+export async function getDecksWithCounts(
+	userId?: string
+): Promise<DeckListItem[]> {
 	const db = getDb();
 	const cardCountSubquery = db.$with("card_count_sq").as(
 		db
@@ -72,6 +76,7 @@ export async function getDecksWithCounts(): Promise<DeckListItem[]> {
 			.groupBy(cards.deckId)
 	);
 
+	// When a userId is provided, include whether the user has liked each deck
 	const result = await db
 		.with(cardCountSubquery)
 		.select({
@@ -95,6 +100,16 @@ export async function getDecksWithCounts(): Promise<DeckListItem[]> {
 				sql<number>`coalesce(${cardCountSubquery.fillInBlanksCount}, 0)`.mapWith(
 					Number
 				),
+			...(userId
+				? {
+						// likedByUser is true when there's a matching like row for this user and deck
+						likedByUser: sql<boolean>`EXISTS (
+                            SELECT 1 FROM ${userLikes}
+                            WHERE ${userLikes.deckId} = ${decks.id}
+                            AND ${userLikes.userId} = ${userId}
+                        )`,
+					}
+				: {}),
 		})
 		.from(decks)
 		.leftJoin(cardCountSubquery, eq(decks.id, cardCountSubquery.deckId))
@@ -535,55 +550,57 @@ export async function toggleDeckLike(
 	userId: string
 ): Promise<ActionResponse> {
 	const db = getDb();
+
 	try {
-		// First, ensure the user exists in our users table
-		// For now, we'll create a placeholder user if they don't exist
-		// In a real app, you'd get the user info from Stack Auth
-		const existingUser = await db
-			.select({ id: users.id })
-			.from(users)
-			.where(eq(users.id, userId))
-			.limit(1);
+		// Ensure user exists (placeholder until real auth wiring)
+		await db.execute(sql`
+			INSERT INTO "users" ("id", "email", "display_name")
+			VALUES (${userId}, ${`user-${userId}@placeholder.com`}, ${`User ${userId.slice(0, 8)}`})
+			ON CONFLICT ("id") DO NOTHING
+		`);
 
-		if (existingUser.length === 0) {
-			// Create a placeholder user for demo purposes
-			// In a real app, you'd get user info from Stack Auth session
-			await db.insert(users).values({
-				id: userId,
-				email: `user-${userId}@placeholder.com`, // Placeholder email
-				displayName: `User ${userId.slice(0, 8)}`, // Placeholder name
-			});
-		}
-
-		// Check if user already liked this deck
+		// Check if user already likes this deck
 		const existingLike = await db
 			.select({ id: userLikes.id })
 			.from(userLikes)
-			.where(eq(userLikes.deckId, deckId) && eq(userLikes.userId, userId))
+			.where(and(eq(userLikes.deckId, deckId), eq(userLikes.userId, userId)))
 			.limit(1);
 
 		let liked: boolean;
 
 		if (existingLike.length > 0) {
-			// User already liked, so unlike
+			// Unlike: Remove the like
 			await db
 				.delete(userLikes)
-				.where(eq(userLikes.deckId, deckId) && eq(userLikes.userId, userId));
+				.where(and(eq(userLikes.deckId, deckId), eq(userLikes.userId, userId)));
 			liked = false;
 		} else {
-			// User hasn't liked, so like
+			// Like: Add the like
+			const likeId = randomUUID();
 			await db.insert(userLikes).values({
-				deckId,
-				userId,
+				id: likeId,
+				userId: userId,
+				deckId: deckId,
 			});
 			liked = true;
 		}
+
+		// Update like count atomically using a single query
+		await db.execute(sql`
+			UPDATE "decks" 
+			SET "like_count" = (
+				SELECT COUNT(*)::int
+				FROM "user_likes"
+				WHERE "deck_id" = ${deckId}
+			)
+			WHERE "id" = ${deckId}
+		`);
 
 		revalidatePath(ROUTES.HOME);
 		revalidatePath(ROUTES.DECK(deckId));
 		return { success: true, liked };
 	} catch (error) {
-		console.error(error);
+		console.error("Error in toggleDeckLike:", error);
 		return { success: false, error: "Failed to toggle deck like." };
 	}
 }

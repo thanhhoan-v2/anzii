@@ -1,3 +1,5 @@
+import { useUser } from "@stackframe/stack";
+import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useState } from "react";
 
 import { useToast } from "@/hooks/use-toast";
@@ -6,6 +8,7 @@ import {
 	getDecksWithCounts,
 	resetDeckProgress,
 } from "@/lib/actions";
+import { queryKeys } from "@/lib/query-keys";
 import type { DeckListItem } from "@/types";
 
 interface UseDeckManagementReturn {
@@ -19,6 +22,8 @@ interface UseDeckManagementReturn {
 }
 
 export function useDeckManagement(): UseDeckManagementReturn {
+	const user = useUser();
+	const queryClient = useQueryClient();
 	const [decks, setDecks] = useState<DeckListItem[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [resetLoadingDeckId, setResetLoadingDeckId] = useState<string | null>(
@@ -32,7 +37,7 @@ export function useDeckManagement(): UseDeckManagementReturn {
 				setIsLoading(true);
 			}
 			try {
-				const fetchedDecks = await getDecksWithCounts();
+				const fetchedDecks = await getDecksWithCounts(user?.id);
 				setDecks(fetchedDecks);
 			} catch {
 				toast({
@@ -46,7 +51,7 @@ export function useDeckManagement(): UseDeckManagementReturn {
 				}
 			}
 		},
-		[toast]
+		[toast, user?.id]
 	);
 
 	// Initial load
@@ -63,6 +68,8 @@ export function useDeckManagement(): UseDeckManagementReturn {
 					description: "The deck has been removed.",
 				});
 				await fetchDecks();
+				// Ensure React Query deck lists refetch for all users/filters
+				queryClient.invalidateQueries({ queryKey: queryKeys.decks });
 			} else {
 				toast({
 					variant: "destructive",
@@ -71,7 +78,7 @@ export function useDeckManagement(): UseDeckManagementReturn {
 				});
 			}
 		},
-		[toast, fetchDecks]
+		[toast, fetchDecks, queryClient]
 	);
 
 	const handleResetDeck = useCallback(
@@ -86,6 +93,7 @@ export function useDeckManagement(): UseDeckManagementReturn {
 						description: "All cards are now due for review.",
 					});
 					await fetchDecks();
+					queryClient.invalidateQueries({ queryKey: queryKeys.decks });
 				} else {
 					toast({
 						variant: "destructive",
@@ -97,7 +105,7 @@ export function useDeckManagement(): UseDeckManagementReturn {
 				setResetLoadingDeckId(null);
 			}
 		},
-		[toast, fetchDecks]
+		[toast, fetchDecks, queryClient]
 	);
 
 	const refreshDecks = useCallback(async () => {

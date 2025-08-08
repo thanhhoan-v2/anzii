@@ -4,7 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import BackButton from "@/components/common/back-button";
-import DeckDeleteDialog from "@/components/features/deck/deck-delete-dialog";
+import DeckActionsBtn from "@/components/features/deck/deck-actions-btn";
 import CardEditor from "@/components/features/study/card-editor";
 import MCQCardEditor from "@/components/features/study/mcq-card-editor";
 import ReviewSession from "@/components/features/study/review-session";
@@ -12,8 +12,6 @@ import AppHeader from "@/components/layout/app-header";
 import {
 	AddCardButton,
 	CardsTable,
-	DeckNameEditDialog,
-	DeckNameEditor,
 } from "@/components/sections/deck/components";
 import DeckLoading from "@/components/sections/deck/deck-loading";
 import { Button } from "@/components/ui/button";
@@ -52,12 +50,9 @@ export default function DeckDetailPage() {
 	const deleteCardMutation = useDeleteCard();
 	const deleteDeckMutation = useDeleteDeck();
 
-	const [isEditingName, setIsEditingName] = useState(false);
 	const [deckName, setDeckName] = useState("");
 	const [isCardEditorOpen, setIsCardEditorOpen] = useState(false);
 	const [cardToEdit, setCardToEdit] = useState<CardType | null>(null);
-	const [showConfirmDeckNameEditDialog, setShowConfirmDeckNameEditDialog] =
-		useState(false);
 
 	// Calculate total card count (no longer filtering by due date)
 	const totalCardCount = deck?.cards.length || 0;
@@ -103,10 +98,10 @@ export default function DeckDetailPage() {
 	}, [deck, deckId]);
 
 	// Deck name editing handlers
-	const handleDeckNameSave = async () => {
+	const handleDeckRename = async (newName: string) => {
 		if (!deck) return;
 
-		if (deckName.trim().length < 3) {
+		if (newName.trim().length < 3) {
 			toast({
 				variant: "destructive",
 				title: "Invalid Name",
@@ -118,31 +113,15 @@ export default function DeckDetailPage() {
 		try {
 			await updateDeckNameMutation.mutateAsync({
 				deckId: deck.id,
-				name: deckName.trim(),
+				name: newName.trim(),
 			});
-			setIsEditingName(false);
-			setShowConfirmDeckNameEditDialog(false);
 		} catch {
 			// Error handling is done in the mutation
 		}
 	};
 
-	const handleCancelDeckNameEdit = () => {
-		setDeckName(deck!.name); // Revert to original name
-		setIsEditingName(false);
-		setShowConfirmDeckNameEditDialog(false);
-	};
-
-	const handleDeckNameEditStart = () => {
-		setIsEditingName(true);
-	};
-
 	const handleDeckNameChange = (name: string) => {
 		setDeckName(name);
-	};
-
-	const handleDeckNameSaveClick = () => {
-		setShowConfirmDeckNameEditDialog(true);
 	};
 
 	// Card management handlers
@@ -258,20 +237,18 @@ export default function DeckDetailPage() {
 					<Card>
 						<CardHeader className="relative gap-5">
 							<div className="absolute right-2 top-2 z-10">
-								<DeckDeleteDialog
+								<DeckActionsBtn
 									deckId={deck.id}
 									deckName={deck.name}
 									onDeleteDeck={handleDeleteDeck}
+									onRenameDeck={handleDeckRename}
+									isRenamePending={updateDeckNameMutation.isPending}
 								/>
 							</div>
-							<DeckNameEditor
-								deckName={deckName}
-								isEditing={isEditingName}
-								isPending={updateDeckNameMutation.isPending}
-								onStartEdit={handleDeckNameEditStart}
-								onSave={handleDeckNameSaveClick}
-								onNameChange={handleDeckNameChange}
-							/>
+							{/* <h1 className="font-bold text-2xl">{deckName}</h1> */}
+							<h1 className="text-3xl font-bold transition-all duration-300">
+								{deckName}
+							</h1>
 							<CardDescription>
 								{deck.description && (
 									<>
@@ -342,13 +319,6 @@ export default function DeckDetailPage() {
 					cardToEdit={cardToEdit}
 				/>
 			)}
-
-			<DeckNameEditDialog
-				isOpen={showConfirmDeckNameEditDialog}
-				onOpenChange={setShowConfirmDeckNameEditDialog}
-				onConfirm={handleDeckNameSave}
-				onCancel={handleCancelDeckNameEdit}
-			/>
 		</div>
 	);
 }

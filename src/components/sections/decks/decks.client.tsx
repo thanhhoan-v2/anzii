@@ -9,6 +9,7 @@ import AppHeader from "@/components/layout/app-header";
 import WelcomeScreen from "@/components/sections/welcome-screen";
 import { Input } from "@/components/ui/input";
 import { useDeckManagement } from "@/hooks/use-deck-management";
+import { useDecks } from "@/hooks/use-decks";
 import { useFileImport } from "@/hooks/use-file-import";
 import { useToast } from "@/hooks/use-toast";
 
@@ -19,6 +20,7 @@ export default function DecksClient() {
 	const { toast } = useToast();
 	const user = useUser({ or: "redirect" });
 	const deckManagement = useDeckManagement();
+	const { data: decksData, isLoading: decksIsLoading } = useDecks(user?.id);
 	const fileImport = useFileImport(() => deckManagement.fetchDecks());
 
 	const handleDeckCreated = () => {
@@ -30,7 +32,7 @@ export default function DecksClient() {
 		deckManagement.fetchDecks();
 	};
 
-	if (deckManagement.isLoading) {
+	if (decksIsLoading) {
 		return <DecksLoading />;
 	}
 
@@ -43,14 +45,14 @@ export default function DecksClient() {
 			<AppHeader />
 
 			<main className="container mx-auto p-4 md:p-8">
-				{deckManagement.decks.length === 0 ? (
+				{(decksData?.length || 0) === 0 ? (
 					<WelcomeScreen
 						onImport={fileImport.handleImportClick}
 						onAiCreate={() => setIsAiDeckGeneratorOpen(true)}
 					/>
 				) : (
 					<DeckList
-						decks={deckManagement.decks}
+						decks={decksData || []}
 						resetLoadingDeckId={deckManagement.resetLoadingDeckId}
 						onDeleteDeck={deckManagement.handleDeleteDeck}
 						onResetDeck={deckManagement.handleResetDeck}

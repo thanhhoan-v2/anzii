@@ -27,6 +27,8 @@ export interface DeckListItem {
 	fillInBlanksCount: number;
 	likeCount: number;
 	userCount: number;
+	// Whether the current user has liked this deck
+	likedByUser?: boolean;
 }
 
 export type Rating = "hard" | "medium" | "easy";
