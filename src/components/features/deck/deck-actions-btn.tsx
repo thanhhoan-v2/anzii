@@ -26,6 +26,7 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useToast } from "@/hooks/use-toast";
 
 interface DeckActionsBtnProps {
 	deckId: string;
@@ -34,6 +35,7 @@ interface DeckActionsBtnProps {
 	onRenameDeck: (newName: string) => Promise<void>;
 	onShareDeck?: () => void;
 	isRenamePending?: boolean;
+	isDeletePending?: boolean;
 }
 
 export default function DeckActionsBtn({
@@ -43,8 +45,11 @@ export default function DeckActionsBtn({
 	onRenameDeck,
 	onShareDeck,
 	isRenamePending = false,
+	isDeletePending = false,
 }: DeckActionsBtnProps) {
 	const [isRenameDialogOpen, setIsRenameDialogOpen] = useState(false);
+	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+	const { toast } = useToast();
 
 	const handleShare = async () => {
 		if (onShareDeck) {
@@ -55,37 +60,38 @@ export default function DeckActionsBtn({
 			try {
 				await navigator.clipboard.writeText(deckUrl);
 				// Show a toast notification if available
-				if (typeof window !== "undefined" && "toast" in window) {
-					// @ts-expect-error - toast might be available globally
-					window.toast?.({
-						title: "Link copied",
-						description: "Deck URL copied to clipboard",
-					});
-				} else {
-					// Fallback for when toast is not available
-					// console.log("Deck URL copied to clipboard");
-				}
+				toast({
+					title: "Link copied",
+					description: "Deck URL copied to clipboard",
+				});
 			} catch (error) {
 				console.error("Failed to copy deck URL:", error);
 			}
 		}
 	};
 
+	const handleDelete = () => {
+		// Fire-and-forget mutation - no awaiting!
+		onDeleteDeck(deckId);
+		// Close the dropdown after deletion
+		setIsDropdownOpen(false);
+	};
+
 	return (
 		<>
-			<DropdownMenu>
+			<DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
 				<DropdownMenuTrigger asChild>
-					<Button variant="ghost" size="icon" className="h-8 w-8">
-						<MoreHorizontalIcon className="h-4 w-4" />
+					<Button variant="ghost" size="icon" className="w-8 h-8">
+						<MoreHorizontalIcon className="w-4 h-4" />
 					</Button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent align="end" className="w-48">
 					<DropdownMenuItem onClick={() => setIsRenameDialogOpen(true)}>
-						<PencilIcon className="mr-2 h-4 w-4" />
+						<PencilIcon className="mr-2 w-4 h-4" />
 						Rename
 					</DropdownMenuItem>
 					<DropdownMenuItem onClick={handleShare}>
-						<ShareIcon className="mr-2 h-4 w-4" />
+						<ShareIcon className="mr-2 w-4 h-4" />
 						Share
 					</DropdownMenuItem>
 					<DropdownMenuSeparator />
@@ -94,12 +100,13 @@ export default function DeckActionsBtn({
 							<DropdownMenuItem
 								onSelect={(e) => e.preventDefault()}
 								className="text-destructive focus:text-destructive"
+								disabled={isDeletePending}
 							>
-								<Trash2Icon className="mr-2 h-4 w-4" />
-								Delete
+								<Trash2Icon className="mr-2 w-4 h-4" />
+								{isDeletePending ? "Deleting..." : "Delete"}
 							</DropdownMenuItem>
 						</AlertDialogTrigger>
-						<AlertDialogContent className="w-[350px] rounded-lg">
+						<AlertDialogContent className="rounded-lg w-[350px]">
 							<AlertDialogHeader>
 								<AlertDialogTitle className="text-center">
 									Delete deck
@@ -110,15 +117,19 @@ export default function DeckActionsBtn({
 									cards.
 								</AlertDialogDescription>
 							</AlertDialogHeader>
-							<AlertDialogFooter className="flex flex-row items-center justify-center gap-2">
-								<AlertDialogCancel className="my-auto w-full">
+							<AlertDialogFooter className="flex flex-row justify-center items-center gap-2">
+								<AlertDialogCancel
+									className="my-auto w-full"
+									disabled={isDeletePending}
+								>
 									No, keep it
 								</AlertDialogCancel>
 								<AlertDialogAction
-									className="w-full rounded-lg bg-destructive text-destructive-foreground hover:bg-destructive/90"
-									onClick={() => onDeleteDeck(deckId)}
+									className="bg-destructive hover:bg-destructive/90 rounded-lg w-full text-destructive-foreground"
+									onClick={handleDelete}
+									disabled={isDeletePending}
 								>
-									Yes, delete it
+									{isDeletePending ? "Deleting..." : "Yes, delete it"}
 								</AlertDialogAction>
 							</AlertDialogFooter>
 						</AlertDialogContent>

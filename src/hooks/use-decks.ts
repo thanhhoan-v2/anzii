@@ -297,29 +297,76 @@ export function useDeleteDeck() {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: async (deckId: string) => {
+		mutationFn: async ({
+			deckId,
+			userId,
+		}: {
+			deckId: string;
+			userId: string;
+		}) => {
 			const result = await deleteDeck(deckId);
 			if (!result.success) {
 				throw new Error(result.error || "Failed to delete deck");
 			}
 			return result;
 		},
-		onSuccess: (_, deckId) => {
-			// Remove the deck from cache
-			queryClient.removeQueries({ queryKey: queryKeys.deck(deckId) });
-			// Invalidate the decks list
-			queryClient.invalidateQueries({ queryKey: queryKeys.decks });
-			toast({
-				title: "Success",
-				description: "Deck deleted successfully",
+		onMutate: async ({
+			deckId,
+			userId,
+		}: {
+			deckId: string;
+			userId: string;
+		}) => {
+			// Cancel any outgoing refetches to avoid race conditions
+			const decksKey = ["decks", userId] as const;
+			await queryClient.cancelQueries({ queryKey: decksKey });
+			await queryClient.cancelQueries({ queryKey: queryKeys.deck(deckId) });
+
+			// Snapshot the previous values for rollback
+			const previousDeck = queryClient.getQueryData<Deck>(
+				queryKeys.deck(deckId)
+			);
+			const previousDecks = queryClient.getQueryData<DeckListItem[]>(decksKey);
+
+			// Optimistically remove the deck from the decks list cache
+			queryClient.setQueryData<DeckListItem[]>(decksKey, (oldDecks) => {
+				if (!oldDecks) return oldDecks;
+				return oldDecks.filter((deck) => deck.id !== deckId);
 			});
+
+			// Optimistically remove the individual deck cache
+			queryClient.setQueryData<Deck>(queryKeys.deck(deckId), (oldDeck) => {
+				if (!oldDeck) return oldDeck;
+				// Return undefined to indicate the deck has been deleted
+				return undefined;
+			});
+
+			return { previousDeck, previousDecks, decksKey } as const;
 		},
-		onError: (error: Error) => {
-			toast({
-				title: "Error",
-				description: error.message,
-				variant: "destructive",
-			});
+		onError: (err, { deckId, userId }, context) => {
+			console.error("Delete deck mutation failed:", err);
+
+			// Rollback optimistic updates on error
+			if (context?.previousDecks && context.decksKey) {
+				queryClient.setQueryData(context.decksKey, context.previousDecks);
+			}
+			if (context?.previousDeck) {
+				queryClient.setQueryData(queryKeys.deck(deckId), context.previousDeck);
+			}
+
+			// Error toast is handled by the calling component
+		},
+		onSuccess: (data, { deckId, userId }) => {
+			// The optimistic updates have already been applied
+			// Success toast is handled by the calling component
+		},
+		onSettled: (data, error, { deckId, userId }) => {
+			// Only invalidate on error to rollback, not on success
+			if (error) {
+				const decksKey = ["decks", userId] as const;
+				queryClient.invalidateQueries({ queryKey: decksKey });
+				queryClient.invalidateQueries({ queryKey: queryKeys.deck(deckId) });
+			}
 		},
 	});
 }

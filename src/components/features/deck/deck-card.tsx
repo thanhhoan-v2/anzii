@@ -1,21 +1,22 @@
-import { Share2Icon, UsersIcon } from "lucide-react";
+import { UsersIcon } from "lucide-react";
 import { useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
-import { Button, ButtonWithLink } from "@/components/ui/button";
+import { ButtonWithLink } from "@/components/ui/button";
 import {
+	Card as ShadCard,
 	CardContent,
 	CardDescription,
 	CardHeader,
 	CardTitle,
-	Card as ShadCard,
 } from "@/components/ui/card";
+import { useUpdateDeckName } from "@/hooks/use-decks";
 import { toast } from "@/hooks/use-toast";
 import { ROUTES } from "@/lib/routes";
 import type { DeckListItem } from "@/types";
 
 import CardTypeBadges from "./card-type-badges";
-import DeckDeleteBtn from "./deck-delete-dialog";
+import DeckActionsBtn from "./deck-actions-btn";
 import LikeButton from "./like-button";
 
 interface DeckCardProps {
@@ -23,6 +24,7 @@ interface DeckCardProps {
 	isResetting: boolean;
 	onDeleteDeck: (deckId: string) => void;
 	onResetDeck: (deckId: string) => void;
+	isDeletePending?: boolean;
 }
 
 export default function DeckCard({
@@ -30,8 +32,10 @@ export default function DeckCard({
 	isResetting,
 	onDeleteDeck,
 	onResetDeck,
+	isDeletePending = false,
 }: DeckCardProps) {
 	const [copied, setCopied] = useState(false);
+	const updateDeckNameMutation = useUpdateDeckName();
 
 	const handleCopyUrl = async () => {
 		const url = `${window.location.origin}${ROUTES.DECK(deck.id)}`;
@@ -52,15 +56,29 @@ export default function DeckCard({
 		}
 	};
 
+	const handleRenameDeck = async (newName: string) => {
+		try {
+			await updateDeckNameMutation.mutateAsync({
+				deckId: deck.id,
+				name: newName,
+			});
+		} catch {
+			// Error handling is done in the mutation
+		}
+	};
+
 	return (
 		<ShadCard className="flex flex-col transition-all" data-testid="deck-card">
 			<CardHeader className="gap-2">
-				<CardTitle className="flex w-full items-center justify-between">
+				<CardTitle className="flex justify-between items-center w-full">
 					<div>{deck.name}</div>
-					<DeckDeleteBtn
+					<DeckActionsBtn
 						deckId={deck.id}
 						deckName={deck.name}
 						onDeleteDeck={onDeleteDeck}
+						onRenameDeck={handleRenameDeck}
+						isRenamePending={updateDeckNameMutation.isPending}
+						isDeletePending={isDeletePending}
 					/>
 				</CardTitle>
 				<div className="flex flex-wrap items-center gap-2">
@@ -81,10 +99,10 @@ export default function DeckCard({
 					</CardDescription>
 				)}
 			</CardHeader>
-			<CardContent className="flex items-center justify-between gap-2">
+			<CardContent className="flex justify-between items-center gap-2">
 				<div className="flex items-center gap-2">
 					<LikeButton deck={deck} />
-					<Button
+					{/* <Button
 						variant="ghost"
 						size="icon"
 						className=""
@@ -93,7 +111,7 @@ export default function DeckCard({
 					>
 						<Share2Icon />
 						<span className="sr-only">Copy deck URL</span>
-					</Button>
+					</Button> */}
 				</div>
 				<ButtonWithLink
 					className="w-[100px] text-sm"

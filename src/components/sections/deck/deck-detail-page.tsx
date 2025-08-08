@@ -1,5 +1,6 @@
 "use client";
 
+import { useUser } from "@stackframe/stack";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -36,6 +37,7 @@ export default function DeckDetailPage() {
 	const params = useParams();
 	const { deckId } = params;
 	const { toast } = useToast();
+	const user = useUser();
 	const deckManagement = useDeckManagement();
 	const reviewSession = useReviewSession();
 
@@ -190,8 +192,9 @@ export default function DeckDetailPage() {
 	};
 
 	const handleDeleteDeck = async (deckId: string) => {
+		if (!user?.id) return;
 		try {
-			await deleteDeckMutation.mutateAsync(deckId);
+			await deleteDeckMutation.mutateAsync({ deckId, userId: user.id });
 			router.push(ROUTES.DECKS);
 		} catch {
 			// Error handling is done in the mutation
@@ -211,12 +214,12 @@ export default function DeckDetailPage() {
 	}
 
 	return (
-		<div className="font-body min-h-screen bg-background text-foreground">
+		<div className="bg-background min-h-screen font-body text-foreground">
 			<AppHeader>
 				<BackButton />
 			</AppHeader>
 
-			<main className="container mx-auto p-4 md:p-8">
+			<main className="mx-auto p-4 md:p-8 container">
 				{reviewSession.sessionInProgress && reviewSession.activeDeck ? (
 					<ReviewSession
 						activeDeck={reviewSession.activeDeck}
@@ -236,17 +239,18 @@ export default function DeckDetailPage() {
 				) : (
 					<Card>
 						<CardHeader className="relative gap-5">
-							<div className="absolute right-2 top-2 z-10">
+							<div className="top-2 right-2 z-10 absolute">
 								<DeckActionsBtn
 									deckId={deck.id}
 									deckName={deck.name}
 									onDeleteDeck={handleDeleteDeck}
 									onRenameDeck={handleDeckRename}
 									isRenamePending={updateDeckNameMutation.isPending}
+									isDeletePending={deleteDeckMutation.isPending}
 								/>
 							</div>
 							{/* <h1 className="font-bold text-2xl">{deckName}</h1> */}
-							<h1 className="text-3xl font-bold transition-all duration-300">
+							<h1 className="font-bold text-3xl transition-all duration-300">
 								{deckName}
 							</h1>
 							<CardDescription>
@@ -258,7 +262,7 @@ export default function DeckDetailPage() {
 								)}
 								{deck.cards.length} cards in this deck.
 							</CardDescription>
-							<div className="flex flex-wrap items-center justify-between gap-2">
+							<div className="flex flex-wrap justify-between items-center gap-2">
 								<AddCardButton
 									onClick={handleAddCardClick}
 									isPending={addCardMutation.isPending}

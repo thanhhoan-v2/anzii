@@ -8,8 +8,11 @@ import DeckList from "@/components/features/deck/deck-list";
 import AppHeader from "@/components/layout/app-header";
 import WelcomeScreen from "@/components/sections/welcome-screen";
 import { Input } from "@/components/ui/input";
-import { useDeckManagement } from "@/hooks/use-deck-management";
-import { useDecks } from "@/hooks/use-decks";
+import {
+	useDecks,
+	useDeleteDeck,
+	useResetDeckProgress,
+} from "@/hooks/use-decks";
 import { useFileImport } from "@/hooks/use-file-import";
 import { useToast } from "@/hooks/use-toast";
 
@@ -19,9 +22,13 @@ export default function DecksClient() {
 	const [isAiDeckGeneratorOpen, setIsAiDeckGeneratorOpen] = useState(false);
 	const { toast } = useToast();
 	const user = useUser({ or: "redirect" });
-	const deckManagement = useDeckManagement();
 	const { data: decksData, isLoading: decksIsLoading } = useDecks(user?.id);
-	const fileImport = useFileImport(() => deckManagement.fetchDecks());
+	const deleteDeckMutation = useDeleteDeck();
+	const resetDeckProgressMutation = useResetDeckProgress();
+	const fileImport = useFileImport(() => {
+		// Refresh decks after import
+		window.location.reload();
+	});
 
 	const handleDeckCreated = () => {
 		setIsAiDeckGeneratorOpen(false);
@@ -29,7 +36,49 @@ export default function DecksClient() {
 			title: "Deck Generated!",
 			description: "Your new deck has been created.",
 		});
-		deckManagement.fetchDecks();
+	};
+
+	const handleDeleteDeck = (deckId: string) => {
+		if (!user?.id) return;
+		// Fire-and-forget mutation - no awaiting!
+		deleteDeckMutation.mutate(
+			{ deckId, userId: user.id },
+			{
+				onSuccess: () => {
+					toast({
+						title: "Deck Deleted",
+						description: "The deck has been removed.",
+					});
+				},
+				onError: (error) => {
+					console.error("Error deleting deck:", error);
+					toast({
+						title: "Error",
+						description: "Failed to delete deck. Please try again.",
+						variant: "destructive",
+					});
+				},
+			}
+		);
+	};
+
+	const handleResetDeck = (deckId: string) => {
+		resetDeckProgressMutation.mutate(deckId, {
+			onSuccess: () => {
+				toast({
+					title: "Deck Reset",
+					description: "All cards are now due for review.",
+				});
+			},
+			onError: (error) => {
+				console.error("Error resetting deck:", error);
+				toast({
+					title: "Error",
+					description: "Failed to reset deck. Please try again.",
+					variant: "destructive",
+				});
+			},
+		});
 	};
 
 	if (decksIsLoading) {
@@ -41,10 +90,10 @@ export default function DecksClient() {
 	}
 
 	return (
-		<div className="min-h-screen bg-background font-sans text-foreground">
+		<div className="bg-background min-h-screen font-sans text-foreground">
 			<AppHeader />
 
-			<main className="container mx-auto p-4 md:p-8">
+			<main className="mx-auto p-4 md:p-8 container">
 				{(decksData?.length || 0) === 0 ? (
 					<WelcomeScreen
 						onImport={fileImport.handleImportClick}
@@ -53,9 +102,12 @@ export default function DecksClient() {
 				) : (
 					<DeckList
 						decks={decksData || []}
-						resetLoadingDeckId={deckManagement.resetLoadingDeckId}
-						onDeleteDeck={deckManagement.handleDeleteDeck}
-						onResetDeck={deckManagement.handleResetDeck}
+						resetLoadingDeckId={
+							resetDeckProgressMutation.isPending ? "pending" : null
+						}
+						onDeleteDeck={handleDeleteDeck}
+						onResetDeck={handleResetDeck}
+						isDeletePending={deleteDeckMutation.isPending}
 					/>
 				)}
 			</main>
