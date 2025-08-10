@@ -52,7 +52,7 @@ export default function DecksSearch({
 		)
 		.slice(0, 8);
 
-	if (pathname !== ROUTES.DECKS) return null;
+	// if (pathname !== ROUTES.DECKS) return null;
 
 	return (
 		<form

@@ -53,13 +53,14 @@ export default function AppHeader({
 			<div className="flex justify-between items-center">
 				{children ?? <AppLogo showText={false} />}
 
-				{pathname === ROUTES.DECKS && (
-					<>
-						<div className="hidden md:block">
-							<DecksSearch variant="desktop" inputRef={searchInputRef} />
-						</div>
-					</>
-				)}
+				{pathname === ROUTES.DECKS ||
+					(pathname === ROUTES.EXPLORE && (
+						<>
+							<div className="hidden md:block">
+								<DecksSearch variant="desktop" inputRef={searchInputRef} />
+							</div>
+						</>
+					))}
 
 				<div className="hidden md:flex items-center gap-6">
 					{/* Protected/Dashboard Navigation */}
@@ -139,38 +140,41 @@ export default function AppHeader({
 				)}
 
 				<div className="md:hidden flex items-center gap-2">
-					{pathname === ROUTES.DECKS && (
-						<div className="md:hidden block">
-							<Dialog
-								open={isSearchDialogOpen}
-								onOpenChange={setIsSearchDialogOpen}
-							>
-								<DialogTrigger asChild>
-									<Button
-										variant="ghost"
-										size="icon"
-										aria-label="Search"
-										className="hover:bg-zinc-950 text-white hover:text-lime-400"
-									>
-										<Search className="w-5 h-5" />
-									</Button>
-								</DialogTrigger>
-								<DialogContent className="top-0 left-0 m-0 p-0 rounded-none w-screen max-w-none h-screen translate-x-0 translate-y-0">
-									<div className="flex flex-col bg-background h-full">
-										<div className="p-4 border-b">
-											<div className="font-medium text-base">Search decks</div>
+					{pathname === ROUTES.DECKS ||
+						(pathname === ROUTES.EXPLORE && (
+							<div className="md:hidden block">
+								<Dialog
+									open={isSearchDialogOpen}
+									onOpenChange={setIsSearchDialogOpen}
+								>
+									<DialogTrigger asChild>
+										<Button
+											variant="ghost"
+											size="icon"
+											aria-label="Search"
+											className="hover:bg-zinc-950 text-white hover:text-lime-400"
+										>
+											<Search className="w-5 h-5" />
+										</Button>
+									</DialogTrigger>
+									<DialogContent className="top-0 left-0 m-0 p-0 rounded-none w-screen max-w-none h-screen translate-x-0 translate-y-0">
+										<div className="flex flex-col bg-background h-full">
+											<div className="p-4 border-b">
+												<div className="font-medium text-base">
+													Search decks
+												</div>
+											</div>
+											<div className="p-4">
+												<DecksSearch
+													variant="mobile"
+													onDone={() => setIsSearchDialogOpen(false)}
+												/>
+											</div>
 										</div>
-										<div className="p-4">
-											<DecksSearch
-												variant="mobile"
-												onDone={() => setIsSearchDialogOpen(false)}
-											/>
-										</div>
-									</div>
-								</DialogContent>
-							</Dialog>
-						</div>
-					)}
+									</DialogContent>
+								</Dialog>
+							</div>
+						))}
 
 					<AppHeaderMobile isNotDashboard={isPublicPage} />
 				</div>
