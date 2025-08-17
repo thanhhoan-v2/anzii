@@ -21,6 +21,8 @@ export interface DeckListItem {
 	id: string;
 	name: string;
 	description?: string;
+	userId?: string;
+	userDisplayName?: string;
 	cardCount: number;
 	flashcardCount: number;
 	mcqCount: number;

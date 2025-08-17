@@ -14,10 +14,11 @@ import { getDb } from "@/db";
 import { cards, decks, userLikes } from "@/db/schema";
 import { calculateNextReview } from "@/lib/srs";
 import { shuffle } from "@/lib/utils";
+import { stackServerApp } from "@/stack";
 import type {
 	Card as CardType,
-	DeckListItem,
 	Deck as DeckType,
+	DeckListItem,
 	Rating,
 } from "@/types";
 
@@ -83,6 +84,7 @@ export async function getDecksWithCounts(
 			id: decks.id,
 			name: decks.name,
 			description: decks.description,
+			userId: decks.userId,
 			likeCount: decks.likeCount,
 			userCount: decks.userCount,
 			cardCount:
@@ -115,9 +117,21 @@ export async function getDecksWithCounts(
 		.leftJoin(cardCountSubquery, eq(decks.id, cardCountSubquery.deckId))
 		.orderBy(asc(decks.createdAt));
 
+	// Fetch display names for all users
+	const userDisplayNames: { [userId: string]: string | null } = {};
+	const uniqueUserIds = [...new Set(result.map(deck => deck.userId).filter(Boolean))] as string[];
+	
+	await Promise.all(
+		uniqueUserIds.map(async (userId) => {
+			userDisplayNames[userId] = await getUserDisplayName(userId);
+		})
+	);
+
 	return result.map((deck) => ({
 		...deck,
+		userId: deck.userId || undefined,
 		description: deck.description || undefined,
+		userDisplayName: deck.userId ? userDisplayNames[deck.userId] || undefined : undefined,
 	}));
 }
 
@@ -147,6 +161,7 @@ export async function getDeck(deckId: string): Promise<DeckType | null> {
 export async function createDeckFromMarkdown(data: {
 	topic: string;
 	markdown: string;
+	userId?: string;
 }): Promise<ActionResponse> {
 	const db = getDb();
 	try {
@@ -161,7 +176,10 @@ export async function createDeckFromMarkdown(data: {
 		// Create deck first
 		const [newDeck] = await db
 			.insert(decks)
-			.values({ name: data.topic })
+			.values({ 
+				name: data.topic,
+				userId: data.userId,
+			})
 			.returning();
 
 		// Then add cards if any exist
@@ -398,6 +416,7 @@ export async function createDeckFromAi(data: {
 		fillInBlanks: boolean;
 	};
 	notes?: string;
+	userId?: string;
 }): Promise<ActionResponse> {
 	const db = getDb();
 	try {
@@ -431,6 +450,7 @@ export async function createDeckFromAi(data: {
 			.values({
 				name: deckName,
 				description: deckDescription,
+				userId: data.userId,
 			})
 			.returning();
 
@@ -514,12 +534,16 @@ export async function resetDeckProgress(
 
 export async function createDeck(data: {
 	name: string;
+	userId?: string;
 }): Promise<ActionResponse> {
 	const db = getDb();
 	try {
 		const [newDeck] = await db
 			.insert(decks)
-			.values({ name: data.name })
+			.values({ 
+				name: data.name,
+				userId: data.userId,
+			})
 			.returning();
 
 		revalidatePath(ROUTES.HOME);
@@ -620,5 +644,15 @@ export async function incrementUserCount(
 	} catch (error) {
 		console.error(error);
 		return { success: false, error: "Failed to update user count." };
+	}
+}
+
+export async function getUserDisplayName(userId: string): Promise<string | null> {
+	try {
+		const user = await stackServerApp.getUser(userId);
+		return user?.displayName || user?.primaryEmail || null;
+	} catch (error) {
+		console.error("Failed to get user display name:", error);
+		return null;
 	}
 }

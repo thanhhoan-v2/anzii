@@ -1,5 +1,6 @@
 "use client";
 
+import { useUser } from "@stackframe/stack";
 import { Bot, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -23,6 +24,7 @@ import { ROUTES } from "@/lib/routes";
 export default function AiTopicTab() {
 	const router = useRouter();
 	const { toast } = useToast();
+	const user = useUser();
 
 	// AI topic state
 	const [aiTopic, setAiTopic] = useState("");
@@ -57,6 +59,7 @@ export default function AiTopicTab() {
 		setIsCreatingAi(true);
 		try {
 			const result = await createDeckFromAi({
+				userId: user?.id,
 				topic: aiTopic.trim(),
 				description: description.trim(),
 				cardTypes: {
@@ -130,7 +133,7 @@ export default function AiTopicTab() {
 					<RadioGroup
 						value={cardType}
 						onValueChange={setCardType}
-						className="mt-2 space-y-2"
+						className="space-y-2 mt-2"
 					>
 						<div className="flex items-center space-x-2">
 							<RadioGroupItem value="flashcard" id="flashcard" />
@@ -179,12 +182,12 @@ export default function AiTopicTab() {
 				>
 					{isCreatingAi ? (
 						<>
-							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+							<Loader2 className="mr-2 w-4 h-4 animate-spin" />
 							Generating Deck...
 						</>
 					) : (
 						<>
-							<Bot className="mr-2 h-4 w-4" />
+							<Bot className="mr-2 w-4 h-4" />
 							Generate with AI
 						</>
 					)}

@@ -43,6 +43,13 @@
       "when": 1754624086231,
       "tag": "0005_lush_patch",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1755410239904,
+      "tag": "0006_lowly_hannibal_king",
+      "breakpoints": true
     }
   ]
 }

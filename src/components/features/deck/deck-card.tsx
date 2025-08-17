@@ -93,6 +93,14 @@ export default function DeckCard({
 						<UsersIcon className="size-4" />
 						{deck.userCount} reviews
 					</Badge>
+					{deck.userDisplayName && (
+						<Badge
+							variant="secondary"
+							className="flex items-center gap-1 text-xs"
+						>
+							👤 {deck.userDisplayName}
+						</Badge>
+					)}
 				</div>
 				{deck.description && (
 					<CardDescription className="max-w-[800px]">

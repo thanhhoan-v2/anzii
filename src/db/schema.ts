@@ -16,6 +16,7 @@ export const decks = pgTable("decks", {
 		.$defaultFn(() => randomUUID()),
 	name: text("name").notNull(),
 	description: text("description"),
+	userId: text("user_id"),
 	likeCount: integer("like_count").notNull().default(0),
 	userCount: integer("user_count").notNull().default(0),
 	createdAt: timestamp("created_at", { withTimezone: true })
