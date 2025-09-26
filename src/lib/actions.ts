@@ -32,13 +32,13 @@ type ActionResponse = {
 };
 
 // Type for raw card data from database (with Date objects)
-type RawCardData = Omit<CardType, "dueDate" | "createdAt" | "cardType"> & {
+type DatabaseCardData = Omit<CardType, "dueDate" | "createdAt" | "cardType"> & {
 	dueDate: Date;
 	createdAt?: Date;
 	cardType: string | null;
 };
 
-const convertCardTimestamps = (cardData: RawCardData): CardType => {
+const convertCardTimestamps = (cardData: DatabaseCardData): CardType => {
 	const { cardType, ...rest } = cardData;
 	return {
 		...rest,

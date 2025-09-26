@@ -111,16 +111,6 @@ export default function DeckCard({
 			<CardContent className="flex justify-between items-center gap-2">
 				<div className="flex items-center gap-2">
 					<LikeButton deck={deck} />
-					{/* <Button
-						variant="ghost"
-						size="icon"
-						className=""
-						onClick={handleCopyUrl}
-						aria-label="Copy deck URL"
-					>
-						<Share2Icon />
-						<span className="sr-only">Copy deck URL</span>
-					</Button> */}
 				</div>
 				<ButtonWithLink
 					className="w-[100px] text-sm"

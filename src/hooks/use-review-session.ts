@@ -164,7 +164,7 @@ export function useReviewSession(): UseReviewSessionReturn {
 		//     description: "You've returned to the dashboard.",
 		// });
 		onSessionCompleteRef.current();
-	}, [toast]);
+	}, []);
 
 	const handleFlip = useCallback(() => {
 		setIsFlipped(true);
