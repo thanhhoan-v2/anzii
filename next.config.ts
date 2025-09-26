@@ -29,6 +29,20 @@ const nextConfig: NextConfig = {
 			},
 		],
 	},
+	// Next.js 15.5 features
+	experimental: {
+		// Enable typed routes for type safety
+		typedRoutes: true,
+		// Enable Turbopack for production builds (optional)
+		turbo: {
+			rules: {
+				"*.svg": {
+					loaders: ["@svgr/webpack"],
+					as: "*.js",
+				},
+			},
+		},
+	},
 };
 
 export default nextConfig;

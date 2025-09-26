@@ -14,7 +14,11 @@
       "Bash(npm run lint:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(git tag:*)"
+      "Bash(git tag:*)",
+      "Bash(npm ls:*)",
+      "Bash(npm outdated)",
+      "Bash(npm install:*)",
+      "Bash(npx @next/codemod@latest next-lint-to-eslint-cli:*)"
     ],
     "deny": [],
     "ask": []
