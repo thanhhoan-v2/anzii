@@ -15,7 +15,7 @@ describe("AppLogo", () => {
 		render(<AppLogo />);
 		const logoSvg = screen.getByTestId("app-logo-svg");
 		expect(logoSvg).toBeInTheDocument();
-		expect(logoSvg).toHaveClass("h-10", "w-10", "text-lime-400");
+		expect(logoSvg).toHaveClass("h-10", "w-10", "text-primary");
 	});
 
 	it("renders the text by default", () => {

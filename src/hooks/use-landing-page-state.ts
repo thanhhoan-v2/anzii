@@ -15,13 +15,13 @@ export function useLandingPageState() {
 
 	const handleEmailSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
-		console.log("Email signup:", email);
+		// TODO: Implement email signup logic
 		router.push("/decks");
 	};
 
 	const handleContactSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
-		console.log("Contact form:", { name, email, message, contactType });
+		// TODO: Implement contact form submission logic
 		router.push("/decks");
 	};
 

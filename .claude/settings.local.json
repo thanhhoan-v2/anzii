@@ -18,7 +18,10 @@
       "Bash(npm ls:*)",
       "Bash(npm outdated)",
       "Bash(npm install:*)",
-      "Bash(npx @next/codemod@latest next-lint-to-eslint-cli:*)"
+      "Bash(npx @next/codemod@latest next-lint-to-eslint-cli:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm run test:*)",
+      "Bash(npm test)"
     ],
     "deny": [],
     "ask": []
