@@ -39,6 +39,20 @@
 - Offline study mode with sync when online
 - Dedicated review pages for focused study sessions
 
+## Documentation
+
+[![GitBook](https://img.shields.io/static/v1?message=Complete%20Documentation&logo=gitbook&logoColor=ffffff&label=%20&labelColor=5c5c5c&color=white)](https://anzii.gitbook.io/docs)
+
+Anzii includes comprehensive documentation covering all aspects of the application:
+
+- **📚 [Complete Documentation](https://anzii.gitbook.io/docs)** - Full GitBook documentation
+- **🚀 [Quick Start Guide](docs/setup-and-installation/quick-start.md)** - Get started in minutes
+- **🏗️ [API Documentation](docs/api/README.md)** - Complete API reference
+- **📊 [Performance Guide](docs/performance/README.md)** - Optimization strategies
+- **🔄 [Migration Guides](docs/migration-guides/README.md)** - Upgrade procedures
+- **🐛 [Troubleshooting](docs/deployment-and-support/debugging.md)** - Common issues and solutions
+- **📋 [Changelog](CHANGELOG.md)** - Version history and updates
+
 ## Recent Updates
 
 ### Social Features & Engagement (Latest)

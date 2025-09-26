@@ -20,6 +20,24 @@
 * [State Management](advanced-features/state-management.md)
 * [Authentication](advanced-features/authentication.md)
 
+## API Documentation
+
+* [API Overview](api/README.md)
+* [Database Schema](api/database-schema.md)
+
+## Performance & Optimization
+
+* [Performance Guide](performance/README.md)
+
+## Migration Guides
+
+* [Migration Overview](migration-guides/README.md)
+* [v1.x to v2.0 Migration](migration-guides/v1-to-v2.md)
+
+## Features Documentation
+
+* [Facebook-Style Like System](features/facebook-style-like-system.md)
+
 ## Deployment & Support
 
 * [Deployment Guide](deployment-and-support/deployment.md)

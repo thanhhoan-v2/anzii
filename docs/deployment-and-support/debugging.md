@@ -158,6 +158,9 @@ sudo systemctl start postgresql  # Linux
 
 # Check connection string format
 DATABASE_URL="postgresql://username:password@host:port/database"
+
+# For Neon database (cloud)
+DATABASE_URL="postgresql://user:pass@ep-xxx.us-east-1.aws.neon.tech/dbname?sslmode=require"
 ```
 
 **Authentication Failed**
@@ -171,21 +174,53 @@ sudo -u postgres psql -c "SELECT usename FROM pg_user WHERE usename = 'anzii_use
 
 # Reset user password
 sudo -u postgres psql -c "ALTER USER anzii_user PASSWORD 'new_password';"
+
+# For Neon database issues
+# Check Neon dashboard for connection details
+# Verify database name and endpoint
+# Check for connection pooling settings
 ```
 
 **Migration Errors**
 
 ```bash
 # Check migration files
-ls -la drizzle/
+ls -la src/db/migrations/
 
-# Reset database
-dropdb anzii
-createdb anzii
-pnpm db:migrate
+# View current migration status
+npm run db:studio
 
-# Check migration status
-pnpm db:studio
+# Reset database (CAREFUL: destroys data)
+npm run db:push --force
+
+# Rollback specific migration
+npm run db:rollback
+
+# Generate new migration
+npm run db:generate
+
+# Apply migrations manually
+npm run db:migrate
+```
+
+**Social Features Database Issues**
+
+```bash
+# Check if user_likes table exists
+psql $DATABASE_URL -c "\dt user_likes"
+
+# Verify like counts are accurate
+psql $DATABASE_URL -c "
+SELECT d.id, d.name, d.like_count,
+       (SELECT COUNT(*) FROM user_likes ul WHERE ul.deck_id = d.id) as actual_likes
+FROM decks d
+WHERE d.like_count != (SELECT COUNT(*) FROM user_likes ul WHERE ul.deck_id = d.id);"
+
+# Fix inconsistent like counts
+psql $DATABASE_URL -c "
+UPDATE decks SET like_count = (
+  SELECT COUNT(*) FROM user_likes WHERE deck_id = decks.id
+);"
 ```
 
 ### 2. AI API Issues
@@ -275,13 +310,106 @@ console.log("Current user:", user);
 // http://localhost:3000/handler/forgot-password
 ```
 
-### 4. Build and Deployment Issues
+### 4. React Query and Social Features Issues
 
-**Build Errors**
+**Like System Not Working**
+
+```tsx
+// Debug like mutations
+const deckLikeMutation = useDeckLike();
+
+// Add logging to mutation
+const handleLike = () => {
+  console.log('Attempting to like deck:', deck.id);
+
+  deckLikeMutation.mutate(
+    { deckId: deck.id, userId },
+    {
+      onSuccess: (data) => {
+        console.log('Like successful:', data);
+      },
+      onError: (error) => {
+        console.error('Like failed:', error);
+      }
+    }
+  );
+};
+
+// Check mutation state
+console.log('Mutation state:', {
+  isPending: deckLikeMutation.isPending,
+  isError: deckLikeMutation.isError,
+  error: deckLikeMutation.error
+});
+```
+
+**Optimistic Updates Not Working**
+
+```tsx
+// Debug React Query cache
+import { useQueryClient } from '@tanstack/react-query';
+
+function DebugCache() {
+  const queryClient = useQueryClient();
+
+  // Inspect cache contents
+  const cacheData = queryClient.getQueryData(['decks', userId]);
+  console.log('Cache data:', cacheData);
+
+  // Check if cache is being updated
+  queryClient.setQueryData(['decks', userId], (oldData) => {
+    console.log('Cache update - old data:', oldData);
+    return oldData;
+  });
+
+  return null;
+}
+```
+
+**Cache Invalidation Issues**
 
 ```bash
-# Clear Next.js cache
+# Clear React Query cache manually
+# In browser dev tools console:
+window.queryClient?.clear()
+
+# Or restart development server
+npm run dev
+```
+
+**API Route Authentication Issues**
+
+```tsx
+// Debug authentication in API routes
+// src/app/api/decks/[deckId]/like/route.ts
+export async function POST(request: NextRequest, context) {
+  try {
+    const user = await stackServerApp.getUser();
+    console.log('Authenticated user:', user);
+
+    if (!user) {
+      console.log('No authenticated user found');
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // Continue with like logic...
+  } catch (error) {
+    console.error('Auth error:', error);
+  }
+}
+```
+
+### 5. Build and Deployment Issues
+
+**Next.js 15 Build Errors**
+
+```bash
+# Clear Next.js cache and regenerate
 rm -rf .next
+rm -rf .next/cache
+
+# Clear Turbopack cache
+rm -rf node_modules/.cache
 
 # Reinstall dependencies
 rm -rf node_modules package-lock.json
@@ -292,6 +420,36 @@ npm run typecheck
 
 # Check ESLint errors
 npm run lint
+
+# Test production build
+npm run build
+npm run start
+```
+
+**React 19 Compatibility Issues**
+
+```bash
+# Check for React 19 compatibility warnings
+npm run build 2>&1 | grep -i "react"
+
+# Verify React dependencies
+npm ls react react-dom
+
+# Check for conflicting React versions
+npm ls | grep react
+```
+
+**Turbopack Build Issues**
+
+```bash
+# Disable Turbopack temporarily
+TURBOPACK=0 npm run dev
+
+# Check Turbopack specific errors
+npm run dev 2>&1 | grep -i "turbo"
+
+# Clear Turbopack cache
+rm -rf node_modules/.cache/turbopack
 ```
 
 **Environment Variable Issues**
@@ -300,9 +458,13 @@ npm run lint
 # Verify environment variables
 node -e "console.log(process.env.DATABASE_URL)"
 node -e "console.log(process.env.GEMINI_API_KEY)"
+node -e "console.log(process.env.STACK_PROJECT_ID)"
 
 # Check .env.local file
 cat .env.local
+
+# Check for variable name typos
+grep -r "process.env" src/ | grep -v node_modules
 
 # Verify in production
 # Vercel Dashboard → Project Settings → Environment Variables
@@ -314,11 +476,37 @@ cat .env.local
 # Check build logs
 # Vercel Dashboard → Deployments → Latest deployment
 
-# Test build locally
-npm run build
+# Test build locally with exact production environment
+NODE_ENV=production npm run build
 
 # Check for missing dependencies
-npm ls
+npm ls --production
+
+# Verify package.json scripts
+npm run lint && npm run typecheck && npm run build
+
+# Check for memory issues during build
+node --max-old-space-size=4096 ./node_modules/.bin/next build
+```
+
+**Vercel Deployment Issues**
+
+```bash
+# Check deployment function sizes
+vercel ls
+
+# Monitor function execution time
+# Vercel Dashboard → Functions → Execution time
+
+# Check for serverless function timeouts
+# Increase function timeout in vercel.json:
+# {
+#   "functions": {
+#     "app/api/**/*.ts": {
+#       "maxDuration": 30
+#     }
+#   }
+# }
 ```
 
 ## 🔧 Debugging Techniques
