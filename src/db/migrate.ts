@@ -22,7 +22,6 @@ async function runMigrations() {
 		// eslint-disable-next-line no-console
 		console.log("✅ Migrations completed successfully!");
 	} catch (error) {
-		// eslint-disable-next-line no-console
 		console.error("❌ Migration failed:", error);
 		throw error;
 	}
@@ -37,7 +36,6 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 			process.exit(0);
 		})
 		.catch((error) => {
-			// eslint-disable-next-line no-console
 			console.error("💥 Migration script failed:", error);
 			process.exit(1);
 		});
